@@ -58,14 +58,19 @@ export function decorateField(scene: THREE.Scene) {
 
 export function createStadium(scene: THREE.Scene) {
   const canvas = document.createElement('canvas');
-  canvas.width = 1024;
-  canvas.height = 256;
+  canvas.width = 2048;
+  canvas.height = 512;
   const ctx = canvas.getContext('2d')!;
   const fill = (color: string, x: number, y: number, width: number, height: number) => {
     ctx.fillStyle = color;
     ctx.fillRect(x, y, width, height);
   };
-  fill('#8eb8bd', 0, 0, 1024, 256);
+  ctx.scale(2, 2);
+  const sky = ctx.createLinearGradient(0, 0, 0, 170);
+  sky.addColorStop(0, '#92c8db');
+  sky.addColorStop(1, '#d4e1bc');
+  ctx.fillStyle = sky;
+  ctx.fillRect(0, 0, 1024, 256);
   for (let i = 0; i < 24; i++) {
     const x = i * 45;
     fill('#34593c', x + 16, 37, 8, 100);
@@ -110,12 +115,12 @@ export function createStadium(scene: THREE.Scene) {
     for (let light = 0; light < 3; light++) fill('#f5e6ac', x + 3 + light * 7, 18, 5, 9);
   }
   const map = new THREE.CanvasTexture(canvas);
-  map.magFilter = THREE.NearestFilter;
+  map.magFilter = THREE.LinearFilter;
   map.colorSpace = THREE.SRGBColorSpace;
   const backdrop = new THREE.Mesh(
-    new THREE.PlaneGeometry(150, 20),
+    new THREE.PlaneGeometry(180, 24),
     new THREE.MeshBasicMaterial({ map }),
   );
-  backdrop.position.set(0, 10, -35);
+  backdrop.position.set(0, 12, -31);
   scene.add(backdrop);
 }

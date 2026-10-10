@@ -320,7 +320,7 @@ Português é requisito do jogo: menus, cartas, controles, resultados, erros, aj
 - [x] Passe incompleto com queda, quique e repouso da bola. A animação é de apresentação; não muda o resultado encerrado.
 - [ ] Animação coordenada de contato entre defensor e portador, orientações e sprite sheets finais.
 - [x] Números de jardas, marcações reforçadas a cada dez jardas, linha de scrimmage e linha de primeira descida a dez jardas.
-- [x] Câmera mais inclinada e estádio procedural com prédio de tijolos, árvores, torcida, publicidade e refletores, inspirado na composição da referência.
+- [x] Câmera com leve inclinação lateral, gramado de alta resolução, antialiasing e estádio procedural com prédio de tijolos, árvores, torcida, publicidade e refletores, inspirado na composição da referência.
 - [x] Times fictícios Aurora Wolves e Crimson Hawks identificados no placar e nas end zones.
 - [ ] Novos assets e refinamento de profundidade, estádio e câmera por época.
 
@@ -335,3 +335,11 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [ ] Perfis de exemplo: QB especialista em passe curto, passador de profundidade e dual-threat; apresentar forças e limitações no elenco.
 - [ ] Configuração por atleta independente da época; tendências históricas podem influenciar distribuições, sem tornar todos os jogadores iguais.
 - [ ] Testes comparando atletas rápidos/lentos e especialistas de passe, com cenários equivalentes e aleatoriedade reproduzível.
+
+### Correção visual do campo
+
+- [x] Manter linhas quase horizontais com inclinação discreta no eixo Y; evitar campo girado na diagonal.
+- [x] Suavizar linhas e textos sem perder os sprites pixelizados; textura do gramado 2048×1024 e estádio 2048×512.
+- [x] Remover arquibancadas planas soltas e reduzir a faixa ao redor do gramado.
+- [ ] Arte final do estádio e iluminação por época; a arte atual continua procedural e provisória.
+

@@ -83,13 +83,13 @@ Há timer de cinco segundos, passe assistido para WR 1 ao esgotar a janela (se o
 
 Os atletas têm quatro poses de corrida, com movimento de braços e pernas apenas quando se deslocam. Tackle/sack mostram o portador caindo; passes incompletos mostram a bola caindo, quicando e parando. Essas animações continuam após o resultado sem reabrir a simulação.
 
-O campo ganhou números de jardas, marcações a cada dez jardas, linha de scrimmage azul e primeira descida amarela a dez jardas. A câmera tem maior inclinação e o estádio possui árvores, prédio de tijolos, torcida, publicidade e refletores em arte procedural local. **Aurora Wolves** e **Crimson Hawks** são os times fictícios, com nomes nas end zones.
+O campo ganhou números de jardas, marcações a cada dez jardas, linha de scrimmage azul e primeira descida amarela a dez jardas. A câmera usa uma inclinação lateral discreta, com campo quase horizontal, suavização de bordas e renderização em até 2× a resolução CSS. O gramado tem textura procedural de 2048×1024 e o estádio possui árvores, prédio de tijolos, torcida, publicidade e refletores em arte procedural local. **Aurora Wolves** e **Crimson Hawks** são os times fictícios, com nomes nas end zones.
 
 Variações de velocidade, aceleração e habilidade de passe curto/médio/longo por jogador estão previstas no plano; ainda não foram implementadas.
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os treze testes de simulação, apoio à corrida e apresentação das animações, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os quatorze testes de simulação, apoio à corrida, apresentação das animações e alinhamento da câmera, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -146,3 +146,4 @@ docs/
 Usamos mensagens no formato `tipo: descrição`, como `feat: adicionar seleção de jogadas` ou `fix: ocultar rotas após o snap`.
 
 Consulte as [instruções do repositório](.github/agent-instructions.md) antes de contribuir.
+

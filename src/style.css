@@ -103,13 +103,13 @@ h1 {
   margin-top: 5px;
 }
 #field {
-  height: clamp(260px, 40vw, 460px);
+  height: clamp(300px, 44vw, 540px);
   width: 100%;
   overflow: hidden;
 }
 canvas {
   display: block;
-  image-rendering: pixelated;
+  image-rendering: auto;
 }
 #render-status {
   margin: 0;

@@ -3,7 +3,7 @@ import type { PlayState } from '../simulation/play';
 
 export function createAdaptiveCamera(camera: THREE.OrthographicCamera) {
   let center = -22;
-  let halfHeight = 27;
+  let halfHeight = 30;
   const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
   function update(state: PlayState, aspect: number, dt: number) {
     const relevant = state.athletes.filter(
@@ -13,7 +13,7 @@ export function createAdaptiveCamera(camera: THREE.OrthographicCamera) {
     const max = Math.max(state.ball.x, ...relevant.map((athlete) => athlete.x));
     const desiredCenter = (min + max) / 2 + 3;
     const desiredHeight = Math.max(
-      27 + Math.min(14, Math.max(0, max - min - 20) * 0.18),
+      30 + Math.min(14, Math.max(0, max - min - 20) * 0.18),
       (max - min + 18) / (2 * aspect),
     );
     const blend = state.phase === 'ready' || reducedMotion ? 1 : 1 - Math.exp(-dt * 4);
@@ -23,8 +23,8 @@ export function createAdaptiveCamera(camera: THREE.OrthographicCamera) {
     camera.right = halfHeight * aspect;
     camera.top = halfHeight;
     camera.bottom = -halfHeight;
-    camera.position.set(center + 20, 95, 125);
-    camera.lookAt(center, 5, -3);
+    camera.position.set(center + 3, 125, 100);
+    camera.lookAt(center, 9, -3);
     camera.updateProjectionMatrix();
   }
   return { update };

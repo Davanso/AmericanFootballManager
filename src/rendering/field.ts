@@ -3,14 +3,15 @@ import { createAthletes } from './athletes';
 import type { PlayState } from '../simulation/play';
 import { createAdaptiveCamera } from './adaptiveCamera';
 import { createStadium, decorateField } from './stadium';
+import { createTurfTexture } from './turfTexture';
 
 // Render the field independently of simulation rules.
 export function createField(host: HTMLElement, initial: PlayState) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#8eb8bd');
   const camera = new THREE.OrthographicCamera(-80, 80, 55, -55, 0.1, 500);
-  const renderer = new THREE.WebGLRenderer({ antialias: false });
-  renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
+  const renderer = new THREE.WebGLRenderer({ antialias: true });
+  renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 1.5), 2));
   host.append(renderer.domElement);
 
   function rectangle(width: number, depth: number, color: string, x = 0, z = 0, y = 0) {
@@ -23,11 +24,15 @@ export function createField(host: HTMLElement, initial: PlayState) {
     scene.add(mesh);
   }
 
-  rectangle(134, 72, '#b8b694');
-  rectangle(120, 53.33, '#35714b', 0, 0, 0.01);
-  for (let yard = -50; yard < 50; yard += 5) {
-    rectangle(5, 53.33, yard % 10 === 0 ? '#438255' : '#3b784e', yard + 2.5, 0, 0.02);
-  }
+  rectangle(180, 110, '#35583c', 0, 0, -0.03);
+  rectangle(128, 60, '#d1cfb9');
+  const turf = new THREE.Mesh(
+    new THREE.PlaneGeometry(120, 53.33),
+    new THREE.MeshBasicMaterial({ map: createTurfTexture() }),
+  );
+  turf.rotation.x = -Math.PI / 2;
+  turf.position.y = 0.01;
+  scene.add(turf);
   rectangle(10, 53.33, '#183f52', -55, 0, 0.03);
   rectangle(10, 53.33, '#9d4c38', 55, 0, 0.03);
   for (let yard = -50; yard <= 50; yard += 5) {
@@ -37,24 +42,6 @@ export function createField(host: HTMLElement, initial: PlayState) {
     for (const z of [-23.5, -3, 3, 23.5]) rectangle(0.12, 0.65, '#e5e5bf', yard, z, 0.05);
   }
   for (const z of [-26.65, 26.65]) rectangle(120, 0.35, '#e5e5bf', 0, z, 0.05);
-
-  // Small pixel-style crowd blocks keep all assets local to the application.
-  for (const side of [-1, 1]) {
-    for (let row = 0; row < 3; row++) {
-      rectangle(125, 2.5, '#254957', 0, side * (39 + row * 3), 1 + row);
-      for (let seat = 0; seat < 62; seat++) {
-        const colors = ['#d6bb78', '#bb654b', '#678b91', '#ece0b7'];
-        rectangle(
-          0.9,
-          0.9,
-          colors[(seat + row) % colors.length],
-          -60 + seat * 2,
-          side * (39 + row * 3),
-          1.1 + row,
-        );
-      }
-    }
-  }
 
   decorateField(scene);
   createStadium(scene);
