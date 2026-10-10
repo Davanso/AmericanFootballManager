@@ -37,13 +37,19 @@ export function createPlayStatus() {
             : state.kind === 'deep'
               ? 'JOGADA · PASSE LONGO'
               : 'JOGADA · PASSE CURTO';
+    const penalty = state.pendingPenalty;
+    document.querySelector<HTMLElement>('#penalty-choice')!.hidden = !penalty;
+    document.querySelector<HTMLElement>('#penalty-text')!.textContent =
+      penalty?.kind === 'falseStart'
+        ? 'FLAG · FALSE START · 5 JARDAS'
+        : 'FLAG · FACEMASK · 15 JARDAS';
     const pendingConversion = needsConversion(state);
     document.querySelector<HTMLElement>('#conversion-choice')!.hidden = !pendingConversion;
     const defenseSelect = document.querySelector<HTMLSelectElement>('#defense-plan')!;
-    defenseSelect.disabled = state.phase !== 'ready';
+    defenseSelect.disabled = state.phase !== 'ready' || Boolean(penalty);
     defenseSelect.value = state.defensePlan;
     const sideSelect = document.querySelector<HTMLSelectElement>('#control-side')!;
-    sideSelect.disabled = state.phase !== 'ready';
+    sideSelect.disabled = state.phase !== 'ready' || Boolean(penalty);
     sideSelect.value = state.controlSide;
     const qbSelect = document.querySelector<HTMLSelectElement>('#qb-profile')!;
     qbSelect.disabled = state.phase !== 'ready';
@@ -52,6 +58,7 @@ export function createPlayStatus() {
     scenario.disabled = !between || pendingConversion || Boolean(state.drive.attempt);
     choices.forEach((button) => {
       button.disabled =
+        Boolean(penalty) ||
         !between ||
         pendingConversion ||
         (Boolean(state.drive.attempt) &&
@@ -106,6 +113,19 @@ export function createPlayStatus() {
       (state.kind === 'run'
         ? 'Entrega ao RB #34 · depois, WASD ou setas para correr'
         : PASS_TARGETS.map((target) => `${target.label} · ${target.name}`).join(' / '));
+    if (penalty) {
+      snap.disabled = true;
+      next.disabled = true;
+      startSpot.disabled = true;
+      scenario.disabled = true;
+      sideSelect.disabled = true;
+      qbSelect.disabled = true;
+      chooseKick.disabled = true;
+      passes.forEach((button) => (button.disabled = true));
+      info.textContent = 'FLAG';
+      status.textContent = 'Jogada parada · aceite ou recuse a penalidade';
+      return;
+    }
     if (state.phase === 'ready') {
       info.textContent = state.lateGame
         ? 'FIM DE JOGO · ' + state.gameSeconds.toFixed(1) + 's'

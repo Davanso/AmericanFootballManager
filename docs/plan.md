@@ -446,3 +446,10 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Pressão/movimento reduzem precisão; cobertura próxima pode interceptar, com troca de posse sem retorno nesta etapa.
 - [x] RNG com seed e testes de reprodução, diferença entre perfis e interceptação sem pontos ofensivos.
 - [ ] Aceleração, resistência, precisão média independente, técnica de bloqueio e retorno da interceptação.
+
+## 28. Flags iniciais
+
+- [x] False start raro antes do snap e facemask raro durante tackle, com RNG reproduzível na partida.
+- [x] Pausar para aceitar/recusar; repetir descida ou conceder primeira descida; metade da distância perto das end zones.
+- [x] Testes de falta antes do snap, pausa do relógio, recusa e distâncias.
+- [ ] Faltas em conversões, flags adicionais e decisão automática do técnico adversário; validar por ano antes de ampliar.

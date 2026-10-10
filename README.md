@@ -77,7 +77,7 @@ O projeto está na fase de **partida curta e treino livre**: treino de corrida p
 
 Há timer de cinco segundos, passe assistido para WR 1 ao esgotar a janela (se o QB estiver atrás da linha), recepção, passe incompleto, sack, tackle, saída de campo, touchdown e reinício. A pressão pode encerrar a jogada antes do timer. O treino tem limite de 15 segundos.
 
-**Limitações:** uma corrida pelo meio, duas jogadas de passe e field goal simplificado, bloqueios aproximados por proximidade e resistência temporária; chute sem vento, atributos ou tentativa de bloqueio; passe guiado até o recebedor em movimento; sem retorno de interceptação, animações completas de corrida/tackle, replay ou gestão. A partida curta tem posse dos dois times e quatro períodos de 60 segundos. Kickoff com retorno, penalidades e safety ainda não estão implementados. No treino livre, o botão Novo drive continua iniciando outra série de treino. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
+**Limitações:** uma corrida pelo meio, duas jogadas de passe e field goal simplificado, bloqueios aproximados por proximidade e resistência temporária; chute sem vento, atributos ou tentativa de bloqueio; passe guiado até o recebedor em movimento; sem retorno de interceptação, animações completas de corrida/tackle, replay ou gestão. A partida curta tem posse dos dois times e quatro períodos de 60 segundos. Kickoff com retorno e safety ainda não estão implementados. No treino livre, o botão Novo drive continua iniciando outra série de treino. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
 
 **Melhorias da demo:** quando o QB corre, o ataque troca rotas por apoio e distribui bloqueios. A defesa combina perseguição, antecipação e contenção de laterais, com separação entre companheiros para reduzir aglomeração. São heurísticas iniciais, ainda sem leitura tática e atributos individuais completos.
 
@@ -93,7 +93,7 @@ Perfis de QB equilibrado, móvel e de profundidade já alteram velocidade e prec
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 69 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 73 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -163,7 +163,7 @@ O seletor **Situação do treino → Fim de jogo · 20s** habilita um cenário d
 
 ### Próximos passos planejados
 
-O placar fixo no rodapé e o controle da defesa estão implementados. Faltas/flags com pequena chance reproduzível (false start e facemask como primeiros exemplos). As faltas ainda não foram implementadas. Cada ajuste passa a exigir testes de regressão, conforme as instruções para agentes.
+O placar fixo no rodapé e o controle da defesa estão implementados. Faltas/flags com pequena chance reproduzível (false start e facemask como primeiros exemplos). False start e facemask estão implementados na partida curta. Cada ajuste passa a exigir testes de regressão, conforme as instruções para agentes.
 
 ### Conversões e cobertura defensiva
 
@@ -198,3 +198,7 @@ Painel fixo no rodapé com bordas quadradas, paleta retrô, pontos dos dois time
 ### Atributos e interceptações
 
 A partida usa atributos individuais; no treino, escolha um perfil no seletor **Perfil do quarterback** para ativá-los. O QB móvel corre mais, o especialista de profundidade tem maior precisão longa. Velocidade e recepção variam no elenco. Pressão e movimento reduzem a chance de completar passes. Cobertura próxima pode gerar interceptação e troca de posse imediata, ainda sem retorno. Resultados usam aleatoriedade reproduzível por seed.
+
+### Flags iniciais
+
+Na partida curta há pequena chance de false start antes do snap e facemask num tackle. A jogada pausa para aceitar ou recusar a penalidade. False start recua a bola e repete a descida; facemask avança a bola e concede primeira descida. Perto da end zone há redução para metade da distância. Essa demo permite ao usuário revisar a decisão das flags dos dois lados; faltas em conversões ainda estão desativadas.

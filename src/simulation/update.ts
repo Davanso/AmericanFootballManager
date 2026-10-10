@@ -1,3 +1,4 @@
+import { flagFacemask } from './penalties';
 import { resolvePass } from './passResolution';
 import { updatePunt } from './punting';
 import { attackInput } from '../ai/quarterback';
@@ -31,6 +32,7 @@ function followCarrier(state: PlayState) {
       Math.hypot(athlete.x - carrier.x, athlete.z - carrier.z) < 1.5,
   );
   if (!tackled) return;
+  const facemask = flagFacemask(state);
   if (carrier.id === 'qb' && carrier.x < state.lineOfScrimmage)
     return finishPlay(state, 'Sack! A defesa chegou ao quarterback.', 'tackle', carrier.id);
   finishPlay(
@@ -39,6 +41,7 @@ function followCarrier(state: PlayState) {
     'tackle',
     carrier.id,
   );
+  if (facemask) state.result = 'FLAG · facemask · defesa · 15 jardas / primeira descida';
 }
 function updatePass(state: PlayState, dt: number) {
   state.flight = Math.min(1, state.flight + dt / 0.8);
@@ -53,7 +56,7 @@ function updatePass(state: PlayState, dt: number) {
   resolvePass(state, receiver);
 }
 export function updatePlay(state: PlayState, input: Input, dt: number) {
-  if (state.phase === 'ready' || state.phase === 'finished') return;
+  if (state.pendingPenalty || state.phase === 'ready' || state.phase === 'finished') return;
   moveDefender(state, input, dt);
   if (state.controlSide === 'defense') input = attackInput(state);
   state.elapsed += dt;

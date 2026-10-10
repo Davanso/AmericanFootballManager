@@ -21,17 +21,19 @@ export function scoreboardView(match: MatchSession | undefined, state: PlayState
         ? 'TOUCHDOWN'
         : downLabel(state.drive),
     spot: `${state.drive.spot < 0 ? possession.toUpperCase() : possession === 'wolves' ? 'HAWKS' : 'WOLVES'} ${yard}`,
-    phase: match?.finished
-      ? matchResult(match)
-      : state.phase === 'ready'
-        ? 'ANTES DO SNAP'
-        : state.phase === 'finished'
-          ? 'FIM DA JOGADA'
-          : state.controlSide === 'defense'
-            ? 'VOCÊ NA DEFESA'
-            : state.carrier === 'rb'
-              ? 'RB #34 · CORRA'
-              : 'EM JOGO',
+    phase: state.pendingPenalty
+      ? 'FLAG · JOGADA PARADA'
+      : match?.finished
+        ? matchResult(match)
+        : state.phase === 'ready'
+          ? 'ANTES DO SNAP'
+          : state.phase === 'finished'
+            ? 'FIM DA JOGADA'
+            : state.controlSide === 'defense'
+              ? 'VOCÊ NA DEFESA'
+              : state.carrier === 'rb'
+                ? 'RB #34 · CORRA'
+                : 'EM JOGO',
   };
 }
 export function updateBroadcastScoreboard(match: MatchSession | undefined, state: PlayState) {

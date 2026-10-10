@@ -13,6 +13,7 @@ export function createMatchStatus() {
     disable(
       '#choose-punt',
       state.phase !== 'ready' ||
+        Boolean(state.pendingPenalty) ||
         Boolean(state.drive.attempt) ||
         Boolean(match && state.controlSide === 'defense'),
     );
@@ -39,6 +40,10 @@ export function createMatchStatus() {
     text('#next-play', 'Próxima jogada →');
     if (needsConversion(state))
       text('#render-status', 'Touchdown · escolha a conversão para continuar');
+    if (state.pendingPenalty) {
+      disable('#next-play', true);
+      disable('#snap', true);
+    }
     if (match.finished) {
       text('#render-status', 'FIM DA PARTIDA · ' + matchResult(match));
       disable('#snap', true);

@@ -1,3 +1,5 @@
+import { tryFalseStart } from './penalties';
+import type { Penalty } from './penalties';
 import type { QBProfile, PlayerAttributes } from '../data/playerAttributes';
 import { advanceDrive, createDrive } from './drive';
 import type { Drive } from './drive';
@@ -30,6 +32,9 @@ export type Phase =
   | 'pass'
   | 'finished';
 export interface PlayState {
+  flagsEnabled?: boolean;
+  flagChecked?: boolean;
+  pendingPenalty?: Penalty;
   qbProfile?: QBProfile;
   randomState: number;
   matchPlay?: boolean;
@@ -177,7 +182,8 @@ export function createPlay(
 }
 
 export function startPlay(state: PlayState) {
-  if (state.phase !== 'ready') return;
+  if (state.phase !== 'ready' || state.pendingPenalty) return;
+  if (tryFalseStart(state)) return;
   state.phase = 'snap';
 }
 export function finishPlay(

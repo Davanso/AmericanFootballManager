@@ -602,3 +602,16 @@ button kbd {
     margin: 0;
   }
 }
+
+#penalty-choice {
+  padding: 18px;
+  background: #e4b446;
+  color: #102d36;
+  border: 3px solid #fff0c5;
+}
+#penalty-choice:not([hidden]) {
+  display: flex;
+  gap: 14px;
+  align-items: center;
+  flex-wrap: wrap;
+}

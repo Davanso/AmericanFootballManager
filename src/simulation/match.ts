@@ -41,6 +41,7 @@ function matchPlay(session: MatchSession, drive: PlayState['drive'], kind: PlayK
     session.possession === 'wolves' ? 'offense' : 'defense',
   );
   state.matchPlay = true;
+  state.flagsEnabled = true;
   state.randomState = previous.randomState;
   applyRoster(state, session.possession === 'wolves' ? (previous.qbProfile ?? 'balanced') : 'deep');
   return state;
@@ -49,6 +50,8 @@ export function tickMatch(session: MatchSession, input: Input, dt: number) {
   if (session.finished) return;
   const state = session.play;
   state.matchPlay = true;
+  state.flagsEnabled = true;
+  if (!state.qbProfile) applyRoster(state, session.possession === 'wolves' ? 'balanced' : 'deep');
   state.lateGame = session.quarter === 4 && session.remaining <= 30 && !state.drive.attempt;
   updatePlay(state, input, dt);
   if (!state.drive.attempt) session.remaining = state.gameSeconds;
@@ -59,6 +62,7 @@ export function tickMatch(session: MatchSession, input: Input, dt: number) {
   }
   if (
     state.phase === 'finished' &&
+    !state.pendingPenalty &&
     session.remaining === 0 &&
     session.quarter === 4 &&
     !needsConversion(state)
@@ -71,7 +75,12 @@ export function matchConversion(session: MatchSession, attempt: 'extraPoint' | '
   session.play.matchPlay = true;
 }
 export function nextMatchPlay(session: MatchSession) {
-  if (session.finished || session.play.phase !== 'finished' || needsConversion(session.play))
+  if (
+    session.finished ||
+    session.play.phase !== 'finished' ||
+    session.play.pendingPenalty ||
+    needsConversion(session.play)
+  )
     return;
   const previous = session.play;
   session.scores[session.possession] = previous.drive.score;

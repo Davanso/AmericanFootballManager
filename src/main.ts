@@ -18,6 +18,7 @@ import { createMatchStatus } from './ui/matchStatus';
 import { broadcastMarkup, updateBroadcastScoreboard } from './ui/broadcastScoreboard';
 import { applyRoster, QB_PROFILES } from './data/playerAttributes';
 import type { QBProfile } from './data/playerAttributes';
+import { resolvePenalty } from './simulation/penalties';
 import { createDrive } from './simulation/drive';
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -44,7 +45,7 @@ app.innerHTML = `
         .join(
           '',
         )}</select><select id="control-side" aria-label="Lado controlado"><option value="offense">Controlar ataque</option><option value="defense">Controlar defesa</option></select></label>
-      <p id="render-status" role="status">Preparando o campo…</p>
+      <section id="penalty-choice" hidden aria-label="Decisão de penalidade"><strong id="penalty-text">FLAG</strong><button id="accept-penalty" type="button">Aceitar falta</button><button id="decline-penalty" type="button">Recusar falta</button></section><p id="render-status" role="status">Preparando o campo…</p>
     </section>
     <section id="kick-controls" hidden aria-label="Controle do chute"><div class="kick-direction"><span id="kick-arrow">↑</span></div><label>FORÇA <meter id="kick-meter" min="0" max="1" value="0.8"></meter></label><button id="kick-confirm" type="button">Fixar direção</button><p id="kick-hint">Espaço: fixar direção, depois força.</p></section><footer class="play-controls"><div><span class="tag" id="play-title">JOGADA · PASSE CURTO</span><p id="result">Dê o snap e encontre um recebedor.</p></div><div class="actions"><button id="snap" type="button">Dar snap</button>${PASS_TARGETS.map((target, index) => `<button data-pass="${index}" type="button" aria-label="Passar para ${target.name}, tecla ${target.label}"><kbd style="--target-color:${target.color}">${target.label}</kbd> ${target.name}</button>`).join('')}<button id="restart" type="button">Reiniciar</button></div></footer>
     <section class="playbook" aria-label="Desenho da jogada de treino"><div class="playChoices"><button type="button" data-kind="run" aria-label="Selecionar corrida pelo meio" class="play-choice">${playDiagram('run')}</button><button type="button" data-kind="short" aria-label="Selecionar passe curto" class="play-choice">${playDiagram()}</button><button type="button" data-kind="deep" aria-label="Selecionar passe longo" class="play-choice">${playDiagram('deep')}</button><button id="choose-kick" type="button" aria-label="Field goal · 3 pontos"><span>Field goal · 3 pontos</span><svg viewBox="0 0 160 64" width="160" height="64" role="img" aria-label="Formação de chute: snap para holder e chute entre os postes"><path d="M125 8V40H150V8 M137 40V57" fill="none" stroke="#f1d575" stroke-width="3"/><path d="M42 34Q80 10 132 25" fill="none" stroke="#f1d575" stroke-width="2" stroke-dasharray="4 3"/><path d="M61 8V58" stroke="#517b67"/><g fill="#eee5cc"><circle cx="61" cy="15" r="3"/><circle cx="61" cy="24" r="3"/><circle cx="61" cy="33" r="3"/><circle cx="61" cy="42" r="3"/><circle cx="61" cy="51" r="3"/><circle cx="42" cy="34" r="3"/><circle cx="32" cy="44" r="3"/></g></svg></button><button id="choose-punt" type="button">Punt · trocar posse</button></div><div><p class="eyebrow">DO PLAYBOOK AO CAMPO</p><p>As cores e teclas do desenho acompanham seus recebedores.<br>Depois do snap, as rotas somem. Os alvos continuam identificados.</p></div></section>
@@ -103,7 +104,7 @@ function mountDemo() {
       kind = state.kind;
       return;
     }
-    if (state.phase !== 'finished' || needsConversion(state)) return;
+    if (state.pendingPenalty || state.phase !== 'finished' || needsConversion(state)) return;
     const ended = state.drive.status !== 'active';
     if (ended) kind = 'short';
     state = createPlay(
@@ -135,6 +136,7 @@ function mountDemo() {
   startSpot.addEventListener('change', onStartSpot);
   scenario.addEventListener('change', onStartSpot);
   const selectKind = (value: PlayKind) => {
+    if (state.pendingPenalty) return;
     if (match && state.controlSide === 'defense') return;
     if (
       needsConversion(state) ||
@@ -215,6 +217,18 @@ function mountDemo() {
     applyRoster(state, qbProfile.value as QBProfile);
   };
   qbProfile.addEventListener('change', onQBProfile);
+  const penaltyButtons = [
+    document.querySelector<HTMLButtonElement>('#accept-penalty')!,
+    document.querySelector<HTMLButtonElement>('#decline-penalty')!,
+  ];
+  const penaltyHandlers = penaltyButtons.map((button, index) => {
+    const handler = () => {
+      state = resolvePenalty(state, index === 0);
+      if (match) match.play = state;
+    };
+    button.addEventListener('click', handler);
+    return handler;
+  });
   let last = performance.now();
   let accumulator = 0;
   let frame = 0;
@@ -251,6 +265,9 @@ function mountDemo() {
     );
     controlSide.removeEventListener('change', onControlSide);
     defensePlan.removeEventListener('change', onDefensePlan);
+    penaltyButtons.forEach((button, index) =>
+      button.removeEventListener('click', penaltyHandlers[index]),
+    );
     qbProfile.removeEventListener('change', onQBProfile);
     sessionMode.removeEventListener('change', onSessionMode);
     puntButton.removeEventListener('click', onPunt);

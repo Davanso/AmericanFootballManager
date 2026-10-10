@@ -1,0 +1,56 @@
+import { expect, it } from 'vitest';
+import { createPlay, startPlay, finishPlay } from '../../simulation/play';
+import { createDrive } from '../../simulation/drive';
+import { flagFacemask, resolvePenalty } from '../../simulation/penalties';
+import { updatePlay } from '../../simulation/update';
+it('stops a false start and repeats the same down five yards back', () => {
+  const state = createPlay();
+  state.flagsEnabled = true;
+  state.randomState = 1;
+  startPlay(state);
+  expect(state.phase).toBe('ready');
+  expect(state.pendingPenalty!.kind).toBe('falseStart');
+  const time = state.gameSeconds;
+  updatePlay(state, { x: 1, z: 0 }, 1);
+  expect(state.gameSeconds).toBe(time);
+  const next = resolvePenalty(state, true);
+  expect(next.drive.spot).toBe(-24);
+  expect(next.drive.down).toBe(1);
+  expect(next.drive.target).toBe(-9);
+  startPlay(next);
+  expect(next.phase).toBe('snap');
+});
+it('enforces half-distance near the goal instead of putting the ball outside the field', () => {
+  const state = createPlay(createDrive(0, -49));
+  state.flagsEnabled = true;
+  state.randomState = 1;
+  startPlay(state);
+  expect(resolvePenalty(state, true).drive.spot).toBe(-49.5);
+});
+it('grants a first down for accepted facemask or retains the play when declined', () => {
+  const state = createPlay();
+  state.flagsEnabled = true;
+  state.randomState = 1;
+  state.phase = 'live';
+  state.ball.x = -15;
+  expect(flagFacemask(state)).toBe(true);
+  finishPlay(state, 'Tackle', 'tackle');
+  const accepted = resolvePenalty(state, true);
+  expect(accepted.drive.spot).toBe(0);
+  expect(accepted.drive.down).toBe(1);
+  const declined = resolvePenalty(state, false);
+  expect(declined.drive.down).toBe(2);
+  expect(declined.drive.spot).toBe(-15);
+});
+it('does not create random flags in base training or conversions', () => {
+  const state = createPlay();
+  state.randomState = 1;
+  startPlay(state);
+  expect(state.pendingPenalty).toBeUndefined();
+  const attempt = createPlay();
+  attempt.flagsEnabled = true;
+  attempt.drive.attempt = 'twoPoint';
+  attempt.randomState = 1;
+  startPlay(attempt);
+  expect(attempt.pendingPenalty).toBeUndefined();
+});
