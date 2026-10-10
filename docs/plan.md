@@ -141,18 +141,18 @@ Essa estrutura é proposta; adaptar à implementação sem misturar o estado da 
 Meta: dar o snap, ver todos os atletas agir e sentir a tensão de escolher entre passar e correr.
 
 - [ ] Campo com perspectiva e direção visual dos anos 80.
-- [ ] Dois times com 11 atletas, inicialmente com sprites simples.
-- [ ] Uma jogada de passe com três opções de recebedor.
-- [ ] Posicionamento inicial de ataque e defesa.
-- [ ] Rotas visíveis antes do snap.
-- [ ] Rotas escondidas imediatamente após iniciar a jogada.
-- [ ] Animação do snap e posse de bola pelo QB.
-- [ ] QB controlável com opções de passe e corrida.
-- [ ] Timer visível de decisão.
+- [x] Dois times com 11 atletas, inicialmente com sprites simples.
+- [x] Uma jogada de passe com três opções de recebedor.
+- [x] Posicionamento inicial de ataque e defesa.
+- [x] Rotas visíveis antes do snap.
+- [x] Rotas escondidas imediatamente após iniciar a jogada.
+- [x] Animação do snap e posse de bola pelo QB.
+- [x] QB controlável com opções de passe e corrida.
+- [x] Timer visível de decisão.
 - [ ] Bots executando rotas, bloqueios, cobertura e pressão.
-- [ ] Passe completo, passe incompleto e sack.
-- [ ] Avanço do portador da bola e término básico da jogada.
-- [ ] Resultado compreensível e opção de reiniciar a situação.
+- [x] Passe completo, passe incompleto e sack.
+- [x] Avanço do portador da bola e término básico da jogada.
+- [x] Resultado compreensível e opção de reiniciar a situação.
 
 Critério de conclusão: a jogada funciona de ponta a ponta; o usuário consegue tomar uma decisão e entender o resultado observando o campo.
 
@@ -254,4 +254,84 @@ Esses itens não estão cancelados; entram depois de validar a experiência prin
 - [x] Primeiro run verificado no navegador.
 - [x] TypeScript e build de produção verificados.
 
-O campo é uma base provisória. A etapa 1 continua com refinamento visual e validação do enquadramento para atletas; as etapas de simulação e bots ainda não foram implementadas.
+O campo é uma base provisória. A etapa 1 continua com refinamento visual; a primeira implementação de simulação e bots está registrada abaixo.
+
+## 15. Primeira demo simples
+
+Implementada uma jogada de treino com simulação em passos de 1/60 segundo, módulos separados para estado/regras, bots, renderização e interface. Os atletas usam sprites locais provisórios e duas poses de movimento e sombras; animações completas ainda estão pendentes.
+
+O timer começa após o snap. O QB pode passar enquanto estiver atrás da linha, ou correr. Passe assistido após cinco segundos; defesa pode provocar sack antes disso. Recebedor avança por bot após receber. Resultados encerram e congelam a jogada; Reiniciar restaura a formação e as rotas.
+
+Limitações: bloqueios aproximados por proximidade e resistência temporária, cobertura aproximada, passe guiado e uma jogada fixa. O item de bots com bloqueios completos permanece pendente. Não há drive, replay, temporada ou gestão.
+
+Próxima etapa: refinar bloqueios e percepção defensiva, animações e legibilidade dos recebedores; depois adicionar seleção entre corrida, passe curto e passe longo, downs e distância.
+
+## 16. Leitura visual, câmera e tradução — requisitos do usuário
+
+### Cartas com desenhos das jogadas
+
+É obrigatório que cada opção de jogada tenha uma imagem/diagrama mostrando formação e rotas, como as cartas da referência inicial. O desenho deve corresponder à jogada executada, com setas, cores e identificação dos alvos. Não apresentar apenas nomes textuais.
+
+- [x] Primeira carta do passe curto, derivada dos dados reais da formação e das rotas.
+- [ ] Todas as opções futuras com diagrama, destaque de seleção e descrição curta.
+
+### Identificação dos alvos e teclado
+
+Exibir a mesma tecla/símbolo no botão e sobre o recebedor correspondente, inspirado em Madden. Não depender de “WR superior” ou da ordem numérica para decisões rápidas. Cores ajudam, mas a tecla precisa identificar o alvo por si só.
+
+- [x] J / Carter, K / Hayes e L / Brooks nos botões e sobre os atletas.
+- [x] Suporte às teclas de passe e WASD/setas para movimento. J/K/L evitam conflito com WASD; são escolhas provisórias da demo.
+- [ ] Remapeamento e gamepad com símbolos correspondentes ao dispositivo ativo.
+
+### Defesa desde o snap
+
+Toda a defesa deve agir desde o primeiro passo do snap, sem aguardar a decisão do QB. Bloqueios podem reduzir e desviar o avanço, mas não congelar artificialmente os atletas.
+
+- [x] Pressão dos rushers, marcação dos recebedores e recuo dos defensores de zona durante o snap.
+- [x] Aproximação de bloqueios: bloqueadores buscam rushers; contato reduz a velocidade por um período limitado.
+- [ ] Melhorar disputas de bloqueio, percepção, atributos e reação à bola.
+
+### Arte, rotas e câmera adaptativa
+
+Buscar a riqueza visual da referência com atletas humanos expressivos, capacetes, ombreiras, uniformes, sombras e detalhes retrô. A câmera começa próxima à ação, sem precisar mostrar o campo inteiro, e acompanha QB, recebedores e bola. Quando as rotas se espalham ou o passe avança, abre o enquadramento suavemente para preservar a leitura. Recebedores executam rotas longas; RBs participam conforme o playbook.
+
+- [x] Sprites provisórios com maior detalhamento, proporções robustas, sombras e duas poses.
+- [x] Rotas mais grossas, contrastantes, coloridas e com setas; desaparecem no snap.
+- [x] Câmera próxima com enquadramento adaptativo conforme a distância entre QB, alvos e bola cresce.
+- [ ] Validar câmera em passes longos reais, mudanças de posse e telas pequenas. A jogada atual é um passe curto.
+- [ ] Animações direcionais completas de corrida, passe, bloqueio, recepção e tackle; acabamento artístico ainda em evolução.
+
+### Tradução para português
+
+Português é requisito do jogo: menus, cartas, controles, resultados, erros, ajuda e futuras telas de gestão. A interface da demo já está em português. Termos como QB, snap e touchdown terão explicação na ajuda futura.
+
+- [ ] Centralizar textos em catálogo pt-BR, evitando strings de interface espalhadas.
+- [ ] Revisar terminologia esportiva, números, unidades, acentos e textos expandidos.
+- [ ] Validar acessibilidade e mensagens de todas as fases.
+- [ ] Preparar a estrutura para outros idiomas, sem exigir uma segunda língua no primeiro lançamento.
+
+## 17. Dinâmica de corrida, animações e identidade do estádio
+
+- [x] Quando o QB inicia uma corrida, jogadores ofensivos mudam de rotas para apoio e bloqueios distribuídos contra ameaças distintas.
+- [x] Defesa combina os perseguidores mais próximos com antecipação e contenção de corredores de fuga. Separação local reduz companheiros sobrepostos.
+- [ ] Refinar tempo de reação, estabilidade das atribuições, caminho dos bloqueadores, disputas físicas e retorno às rotas. As heurísticas atuais reconhecem imediatamente a intenção de correr; percepção realista é futura.
+- [x] Quatro poses de corrida com braços, pernas e oscilação, acionadas por deslocamento.
+- [x] Tackle e sack com queda do portador e manutenção da pose no gramado.
+- [x] Passe incompleto com queda, quique e repouso da bola. A animação é de apresentação; não muda o resultado encerrado.
+- [ ] Animação coordenada de contato entre defensor e portador, orientações e sprite sheets finais.
+- [x] Números de jardas, marcações reforçadas a cada dez jardas, linha de scrimmage e linha de primeira descida a dez jardas.
+- [x] Câmera mais inclinada e estádio procedural com prédio de tijolos, árvores, torcida, publicidade e refletores, inspirado na composição da referência.
+- [x] Times fictícios Aurora Wolves e Crimson Hawks identificados no placar e nas end zones.
+- [ ] Novos assets e refinamento de profundidade, estádio e câmera por época.
+
+### Futuro: atributos e estilos individuais de jogadores
+
+As diferenças entre atletas são essenciais e devem afetar a simulação, os bots, a seleção do elenco e as decisões do usuário. Não usar um único perfil universal de QB.
+
+- [ ] Velocidade máxima, aceleração, agilidade e resistência individuais; QBs móveis e QBs lentos.
+- [ ] Precisão de passe curto, médio, longo/de profundidade, força do braço e tempo de lançamento.
+- [ ] Precisão sob pressão e em movimento, leitura defensiva e tomada de decisão.
+- [ ] Velocidade, separação e recepção de WRs/RBs; força e técnica de bloqueio; perseguição, cobertura e tackle de defensores.
+- [ ] Perfis de exemplo: QB especialista em passe curto, passador de profundidade e dual-threat; apresentar forças e limitações no elenco.
+- [ ] Configuração por atleta independente da época; tendências históricas podem influenciar distribuições, sem tornar todos os jogadores iguais.
+- [ ] Testes comparando atletas rápidos/lentos e especialistas de passe, com cenários equivalentes e aleatoriedade reproduzível.

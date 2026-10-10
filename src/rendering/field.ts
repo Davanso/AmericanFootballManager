@@ -1,9 +1,13 @@
 import * as THREE from 'three';
+import { createAthletes } from './athletes';
+import type { PlayState } from '../simulation/play';
+import { createAdaptiveCamera } from './adaptiveCamera';
+import { createStadium, decorateField } from './stadium';
 
-/** Static first-run scene. Game rules will live independently of rendering. */
-export function createField(host: HTMLElement) {
+// Render the field independently of simulation rules.
+export function createField(host: HTMLElement, initial: PlayState) {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#102e3b');
+  scene.background = new THREE.Color('#8eb8bd');
   const camera = new THREE.OrthographicCamera(-80, 80, 55, -55, 0.1, 500);
   const renderer = new THREE.WebGLRenderer({ antialias: false });
   renderer.setPixelRatio(Math.min(window.devicePixelRatio, 2));
@@ -27,7 +31,7 @@ export function createField(host: HTMLElement) {
   rectangle(10, 53.33, '#183f52', -55, 0, 0.03);
   rectangle(10, 53.33, '#9d4c38', 55, 0, 0.03);
   for (let yard = -50; yard <= 50; yard += 5) {
-    rectangle(0.18, 53.33, '#e5e5bf', yard, 0, 0.04);
+    rectangle(yard % 10 === 0 ? 0.28 : 0.12, 53.33, '#e5e5bf', yard, 0, 0.04);
   }
   for (let yard = -49; yard < 50; yard++) {
     for (const z of [-23.5, -3, 3, 23.5]) rectangle(0.12, 0.65, '#e5e5bf', yard, z, 0.05);
@@ -52,22 +56,21 @@ export function createField(host: HTMLElement) {
     }
   }
 
+  decorateField(scene);
+  createStadium(scene);
+  const athletes = createAthletes(scene, initial);
+  const framing = createAdaptiveCamera(camera);
+  let aspect = 1;
+  let lastFrame = performance.now();
   function resize() {
     const width = Math.max(host.clientWidth, 1);
     const height = Math.max(host.clientHeight, 1);
-    const aspect = width / height;
-    const halfHeight = Math.max(48, 76 / aspect);
-    camera.left = -halfHeight * aspect;
-    camera.right = halfHeight * aspect;
-    camera.top = halfHeight;
-    camera.bottom = -halfHeight;
-    camera.updateProjectionMatrix();
+    aspect = width / height;
     renderer.setSize(width, height);
     renderer.render(scene, camera);
   }
   function resetCamera() {
-    camera.position.set(15, 100, 100);
-    camera.lookAt(0, 0, 0);
+    framing.update(initial, aspect, 1);
     resize();
   }
   const observer = new ResizeObserver(resize);
@@ -76,14 +79,32 @@ export function createField(host: HTMLElement) {
 
   return {
     resetCamera,
+    render(state: PlayState) {
+      const now = performance.now();
+      const dt = Math.min((now - lastFrame) / 1000, 0.1);
+      framing.update(state, aspect, dt);
+      lastFrame = now;
+      athletes.render(state, dt);
+      renderer.render(scene, camera);
+    },
     dispose() {
       observer.disconnect();
+      athletes.dispose();
       scene.traverse((object) => {
-        if (object instanceof THREE.Mesh) {
-          object.geometry.dispose();
-          const materials = Array.isArray(object.material) ? object.material : [object.material];
-          materials.forEach((material) => material.dispose());
-        }
+        if (
+          !(
+            object instanceof THREE.Mesh ||
+            object instanceof THREE.Line ||
+            object instanceof THREE.Sprite
+          )
+        )
+          return;
+        object.geometry.dispose();
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        materials.forEach((material) => {
+          if ('map' in material && material.map instanceof THREE.Texture) material.map.dispose();
+          material.dispose();
+        });
       });
       renderer.dispose();
       renderer.domElement.remove();

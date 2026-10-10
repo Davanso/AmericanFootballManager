@@ -189,3 +189,84 @@ button span {
     flex-direction: column;
   }
 }
+.actions {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 10px;
+}
+button kbd {
+  display: inline-grid;
+  place-items: center;
+  width: 26px;
+  height: 26px;
+  margin-right: 5px;
+  background: #102e3b;
+  color: var(--target-color, #ffe18b);
+  border: 2px solid var(--target-color, #ffe18b);
+  font: bold 16px monospace;
+}
+.play-controls {
+  align-items: flex-start;
+  gap: 20px;
+}
+.play-controls button {
+  padding: 12px 16px;
+}
+.intro h1 {
+  font-size: clamp(36px, 5vw, 58px);
+}
+.intro {
+  padding: 24px 0;
+}
+@media (max-width: 850px) {
+  .play-controls {
+    flex-direction: column;
+  }
+  .intro {
+    gap: 20px;
+  }
+}
+.playbook {
+  display: flex;
+  align-items: center;
+  gap: 24px;
+  margin-top: 24px;
+}
+.playbook > div > p:last-child {
+  color: var(--muted);
+  font-size: 14px;
+  line-height: 1.6;
+}
+.play-card {
+  margin: 0;
+  width: 210px;
+  flex-shrink: 0;
+  border: 2px solid var(--gold);
+  background: #143b32;
+  padding: 12px;
+}
+.play-card figcaption span {
+  display: block;
+  font: 9px monospace;
+  letter-spacing: 1px;
+  color: var(--gold);
+  margin-bottom: 5px;
+}
+.play-card strong {
+  font-size: 14px;
+}
+.play-card svg {
+  width: 100%;
+  margin-top: 12px;
+}
+.play-card p {
+  font: 10px monospace;
+  margin: 8px 0 0;
+  color: #eee5cc;
+}
+@media (max-width: 650px) {
+  .playbook {
+    align-items: flex-start;
+    flex-direction: column;
+  }
+}

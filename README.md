@@ -6,7 +6,7 @@
 
 Um jogo de futebol americano com gestão de elenco, decisões de quarterback e uma identidade visual em pixel art inspirada nas décadas de 80, 90 e 2000.
 
-![Status: setup inicial](https://img.shields.io/badge/status-setup_inicial-e9b44c)
+![Status: demo inicial](https://img.shields.io/badge/status-demo_inicial-e9b44c)
 ![Modo: offline](https://img.shields.io/badge/modo-offline-238636)
 ![Visual: pixel art](https://img.shields.io/badge/visual-pixel_art-8957e5)
 
@@ -73,11 +73,23 @@ Depois, o projeto evolui para um drive completo, partida offline, gestão de ele
 
 ## Estado atual
 
-O projeto está na fase de **setup inicial**, com a primeira aplicação executável: tela de pré-temporada, campo estático em Three.js, arquibancadas simplificadas e câmera ortográfica responsiva. Há um botão para restaurar o enquadramento da câmera.
+O projeto está na fase de **demo inicial**: treino de uma jogada de passe com 11 atletas por time, sprites humanos retrô provisórios e câmera ortográfica próxima e adaptativa. Uma carta mostra o desenho da jogada, com rotas coloridas e setas. As rotas desaparecem no snap, o QB recebe a bola e pode se movimentar ou passar para três recebedores. Bots correm rotas, acompanham recebedores e pressionam o QB. Toda a defesa começa a agir desde o snap.
 
-Ainda não há atletas, animações, jogadas, bots ou gestão implementados. Os elementos do campo são provisórios; a pixel art final será desenvolvida nas próximas etapas. A aplicação não depende de assets ou serviços externos durante a execução local.
+Há timer de cinco segundos, passe assistido para WR 1 ao esgotar a janela (se o QB estiver atrás da linha), recepção, passe incompleto, sack, tackle, saída de campo, touchdown e reinício. A pressão pode encerrar a jogada antes do timer. O treino tem limite de 15 segundos.
 
-O primeiro run foi verificado no navegador, e a checagem de TypeScript e o build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+**Limitações:** uma única jogada fixa, bloqueios aproximados por proximidade e resistência temporária; passe guiado até o recebedor em movimento; sem interceptações, atributos, animações completas de corrida/tackle, replay, downs, pontuação acumulada ou gestão. O placar é ilustrativo. Os elementos visuais são provisórios. A aplicação não depende de assets ou serviços externos durante a execução local.
+
+**Melhorias da demo:** quando o QB corre, o ataque troca rotas por apoio e distribui bloqueios. A defesa combina perseguição, antecipação e contenção de laterais, com separação entre companheiros para reduzir aglomeração. São heurísticas iniciais, ainda sem leitura tática e atributos individuais completos.
+
+Os atletas têm quatro poses de corrida, com movimento de braços e pernas apenas quando se deslocam. Tackle/sack mostram o portador caindo; passes incompletos mostram a bola caindo, quicando e parando. Essas animações continuam após o resultado sem reabrir a simulação.
+
+O campo ganhou números de jardas, marcações a cada dez jardas, linha de scrimmage azul e primeira descida amarela a dez jardas. A câmera tem maior inclinação e o estádio possui árvores, prédio de tijolos, torcida, publicidade e refletores em arte procedural local. **Aurora Wolves** e **Crimson Hawks** são os times fictícios, com nomes nas end zones.
+
+Variações de velocidade, aceleração e habilidade de passe curto/médio/longo por jogador estão previstas no plano; ainda não foram implementadas.
+
+**Controles:** espaço ou botão para snap; WASD/setas para mover o QB; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
+
+A demo foi verificada no navegador. Os treze testes de simulação, apoio à corrida e apresentação das animações, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -96,6 +108,7 @@ Abra o endereço mostrado pelo Vite, normalmente `http://127.0.0.1:5173`. O nave
 
 ```sh
 npm run typecheck  # Verificar TypeScript
+npm test           # Testar a simulação com Vitest
 npm run lint       # Validar regras de código (avisos também falham)
 npm run lint:fix   # Aplicar correções automáticas de lint
 npm run fmt        # Formatar antes de cada commit
@@ -111,6 +124,10 @@ src/
   main.ts              # Interface e inicialização
   style.css            # Apresentação da pré-temporada
   rendering/field.ts   # Campo, câmera e recursos do Three.js
+  rendering/athletes.ts # Sprites, bola e rotas
+  simulation/          # Estados e regras da jogada, com testes
+  ai/                  # Movimento dos bots
+  ui/                  # Controles e status da jogada
 docs/
   plan.md              # Plano central
   eras.md              # Referências das épocas

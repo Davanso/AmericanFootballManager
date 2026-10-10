@@ -55,6 +55,15 @@ O projeto usa Oxfmt (`oxfmt.config.mjs`) para formatação e Oxlint (`oxlint.con
 
 Sempre que o projeto for atualizado, revisar e atualizar o status no `README.md` para refletir o estado real do projeto. Manter coerentes o badge de status, a seção de estado atual, os marcos descritos e as instruções de execução quando existirem. Registrar funcionalidades concluídas e limitações relevantes sem apresentar itens planejados como implementados. Se a atualização não mudar a fase do projeto, preservar a fase e ajustar a descrição do estado atual conforme necessário.
 
+## Código legível — regra definida pelo usuário
+
+- Evitar `else` e preferir early returns (guard clauses) para tratar condições inválidas e casos especiais no início da função.
+- Evitar código espaguete: funções pequenas com uma responsabilidade clara, nomes descritivos e fluxo explícito.
+- Separar simulação, decisões dos bots, renderização e interface. Não colocar regras de jogo em handlers de DOM ou objetos do Three.js.
+- Evitar aninhamentos profundos e abstrações sem necessidade. Dividir módulos por responsabilidade quando a complexidade crescer.
+- Comentários claros e diretos, preferencialmente em uma única linha. Explicar intenção ou decisões que não são óbvias no código; evitar repetir o que o código já diz.
+- Manter a organização do projeto com pastas de nomes claros e descritivos. Quando um nome de pasta tiver mais de uma palavra, usar camelCase (ex.: `playSelection`, `playerAnimation`).
+
 ## Registro de novos padrões
 
 Quando o usuário definir um novo padrão, registrá-lo neste arquivo com contexto e exemplos quando necessário. Manter a documentação coerente com o estado real do projeto e atualizar `docs/plan.md` quando uma decisão alterar o plano.

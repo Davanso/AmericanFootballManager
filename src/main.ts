@@ -1,31 +1,80 @@
 import './style.css';
 import { createField } from './rendering/field';
+import { createPlay, RECEIVERS, startPlay, throwPass } from './simulation/play';
+import { updatePlay } from './simulation/update';
+import { createControls } from './ui/controls';
+import { createPlayStatus } from './ui/play-status';
+import { PASS_TARGETS } from './data/passTargets';
+import { playDiagram } from './ui/playDiagram';
 
 const app = document.querySelector<HTMLDivElement>('#app');
 if (!app) throw new Error('Elemento raiz não encontrado.');
-
 app.innerHTML = `
   <main class="clubhouse">
-    <header><a class="brand" href="/" aria-label="American Football Manager">AFM<span>AMERICAN FOOTBALL MANAGER</span></a><span class="era">EST. 1985 · TRAINING CAMP</span></header>
-    <section class="intro"><div><p class="eyebrow">PRÉ-TEMPORADA / ANOS 80</p><h1>Tudo começa<br>no campo.</h1></div><p class="description">Um time para construir.<br>Uma história para jogar.<br>Bem-vindo ao primeiro treino.</p></section>
-    <section class="stadium" aria-label="Prévia do campo de treinamento">
-      <div class="scoreboard"><span>HOME <b>00</b></span><span class="score-center">TRAINING CAMP<small>PRÉVIA DO ESTÁDIO</small></span><span><b>00</b> AWAY</span></div>
-      <div id="field" role="img" aria-label="Campo de futebol americano em perspectiva inclinada"></div>
+    <header><a class="brand" href="/" aria-label="American Football Manager">AFM<span>AMERICAN FOOTBALL MANAGER</span></a><span class="era">EST. 1985 · CAMPO DE TREINO</span></header>
+    <section class="intro"><div><p class="eyebrow">DEMO / PASSE CURTO</p><h1>Leia o campo.<br>Chame a jogada.</h1></div><p class="description">Espaço: snap · WASD ou setas: mover QB<br>J, K, L: passar para a tecla sobre o atleta<br>Após 5 segundos, passe assistido para Carter.</p></section>
+    <section class="stadium" aria-label="Campo de treinamento">
+      <div class="scoreboard"><span>WOLVES <b>00</b></span><span class="score-center">TREINO LIVRE<small id="play-info">ANTES DO SNAP</small></span><span><b>00</b> HAWKS</span></div>
+      <div id="field" role="img" aria-label="Campo com atletas e rotas da jogada"></div>
       <p id="render-status" role="status">Preparando o campo…</p>
     </section>
-    <footer><div><span class="tag">PRIMEIRO RUN</span><p>Campo aberto. O playbook vem a seguir.</p></div><button id="reset-camera" type="button">Restaurar câmera <span aria-hidden="true">↗</span></button></footer>
+    <footer class="play-controls"><div><span class="tag">JOGADA · PASSE CURTO</span><p id="result">Dê o snap e encontre um recebedor.</p></div><div class="actions"><button id="snap" type="button">Dar snap</button>${PASS_TARGETS.map((target, index) => `<button data-pass="${index}" type="button" aria-label="Passar para ${target.name}, tecla ${target.label}"><kbd style="--target-color:${target.color}">${target.label}</kbd> ${target.name}</button>`).join('')}<button id="restart" type="button">Reiniciar</button></div></footer>
+    <section class="playbook" aria-label="Desenho da jogada de treino">${playDiagram()}<div><p class="eyebrow">DO PLAYBOOK AO CAMPO</p><p>As cores e teclas do desenho acompanham seus recebedores.<br>Depois do snap, as rotas somem. Os alvos continuam identificados.</p></div></section>
   </main>`;
 
-const host = document.querySelector<HTMLDivElement>('#field')!;
-const status = document.querySelector<HTMLParagraphElement>('#render-status')!;
+function mountDemo() {
+  const host = document.querySelector<HTMLDivElement>('#field')!;
+  const updateStatus = createPlayStatus();
+  const snap = document.querySelector<HTMLButtonElement>('#snap')!;
+  const restart = document.querySelector<HTMLButtonElement>('#restart')!;
+  const passes = [...document.querySelectorAll<HTMLButtonElement>('[data-pass]')];
+  let state = createPlay();
+  const field = createField(host, state);
+  const onSnap = () => startPlay(state);
+  const onPass = (index: number) => throwPass(state, RECEIVERS[index]);
+  const controls = createControls(onSnap, onPass);
+  snap.addEventListener('click', onSnap);
+  const onRestart = () => {
+    state = createPlay();
+  };
+  restart.addEventListener('click', onRestart);
+  const passHandlers = passes.map((button, index) => {
+    const handler = () => onPass(index);
+    button.addEventListener('click', handler);
+    return handler;
+  });
+  let last = performance.now();
+  let accumulator = 0;
+  let frame = 0;
+  function tick(now: number) {
+    accumulator += Math.min((now - last) / 1000, 0.1);
+    last = now;
+    while (accumulator >= 1 / 60) {
+      updatePlay(state, controls.read(), 1 / 60);
+      accumulator -= 1 / 60;
+    }
+    field.render(state);
+    updateStatus(state);
+    frame = requestAnimationFrame(tick);
+  }
+  frame = requestAnimationFrame(tick);
+  return () => {
+    cancelAnimationFrame(frame);
+    controls.dispose();
+    field.dispose();
+    snap.removeEventListener('click', onSnap);
+    restart.removeEventListener('click', onRestart);
+    passes.forEach((button, index) => button.removeEventListener('click', passHandlers[index]));
+  };
+}
 try {
-  const field = createField(host);
-  status.textContent = 'Prévia estática · jogadas e atletas em desenvolvimento';
-  document.querySelector('#reset-camera')!.addEventListener('click', field.resetCamera);
-  if (import.meta.hot) import.meta.hot.dispose(field.dispose);
+  const dispose = mountDemo();
+  if (import.meta.hot) import.meta.hot.dispose(dispose);
 } catch (error) {
-  status.textContent =
-    'Não foi possível abrir o campo. Ative a aceleração gráfica do navegador e recarregue.';
-  document.querySelector<HTMLButtonElement>('#reset-camera')!.disabled = true;
+  document.querySelector('#render-status')!.textContent =
+    'Não foi possível abrir o campo. Ative a aceleração gráfica e recarregue.';
+  document.querySelectorAll<HTMLButtonElement>('button').forEach((button) => {
+    button.disabled = true;
+  });
   console.error(error);
 }
