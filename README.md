@@ -75,6 +75,8 @@ Depois, o projeto evolui para um drive completo, partida offline, gestão de ele
 
 O projeto está na fase de **planejamento**. Ainda não há implementação jogável, scripts de execução ou dependências configuradas.
 
+O plano inicial e as referências de épocas estão documentados. As instruções para agentes incluem a convenção de commits e a atualização obrigatória do status deste README a cada atualização do projeto.
+
 Este repositório também é um espaço de aprendizagem: cada etapa deve produzir algo pequeno, compreensível e jogável.
 
 ## Documentação

@@ -45,6 +45,10 @@ docs: documentar planejamento do jogo
 
 Escolher o tipo pela mudança efetiva. A regra se aplica aos novos commits; não reescrever o histórico existente para adequá-lo.
 
-## Manutenção das instruções
+## Status do README — regra definida pelo usuário
+
+Sempre que o projeto for atualizado, revisar e atualizar o status no `README.md` para refletir o estado real do projeto. Manter coerentes o badge de status, a seção de estado atual, os marcos descritos e as instruções de execução quando existirem. Registrar funcionalidades concluídas e limitações relevantes sem apresentar itens planejados como implementados. Se a atualização não mudar a fase do projeto, preservar a fase e ajustar a descrição do estado atual conforme necessário.
+
+## Registro de novos padrões
 
 Quando o usuário definir um novo padrão, registrá-lo neste arquivo com contexto e exemplos quando necessário. Manter a documentação coerente com o estado real do projeto e atualizar `docs/plan.md` quando uma decisão alterar o plano.
