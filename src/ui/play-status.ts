@@ -40,6 +40,9 @@ export function createPlayStatus() {
     const defenseSelect = document.querySelector<HTMLSelectElement>('#defense-plan')!;
     defenseSelect.disabled = state.phase !== 'ready';
     defenseSelect.value = state.defensePlan;
+    const sideSelect = document.querySelector<HTMLSelectElement>('#control-side')!;
+    sideSelect.disabled = state.phase !== 'ready';
+    sideSelect.value = state.controlSide;
     const between = state.phase === 'ready' || state.phase === 'finished';
     scenario.disabled = !between || pendingConversion || Boolean(state.drive.attempt);
     choices.forEach((button) => {
@@ -79,9 +82,13 @@ export function createPlayStatus() {
     next.textContent = state.drive.status === 'active' ? 'Próxima jogada →' : 'Novo drive →';
     touchdown.hidden = state.outcome !== 'touchdown' || Boolean(state.drive.attempt);
     startSpot.disabled = !between || pendingConversion || Boolean(state.drive.attempt);
-    snap.disabled = state.phase !== 'ready';
+    snap.disabled =
+      state.phase !== 'ready' && !(state.controlSide === 'defense' && state.phase === 'live');
+    snap.textContent =
+      state.controlSide === 'defense' && state.phase === 'live' ? 'Tentar tackle' : 'Dar snap';
     const qb = state.athletes.find((athlete) => athlete.id === 'qb')!;
     const canPass =
+      state.controlSide === 'offense' &&
       state.kind !== 'run' &&
       state.phase === 'live' &&
       state.carrier === 'qb' &&
@@ -117,6 +124,12 @@ export function createPlayStatus() {
             : state.drive.status === 'turnover'
               ? 'Quarta descida sem conversão · drive encerrado; inicie um novo drive de treino'
               : 'Jogada encerrada · avance para a próxima jogada';
+      return;
+    }
+    if (state.controlSide === 'defense' && state.kind !== 'kick') {
+      info.textContent = 'DEFESA · ' + state.selectedDefender.toUpperCase();
+      status.textContent =
+        'WASD/setas: mover defensor · E: trocar · Espaço: tackle · QB controlado pelo bot';
       return;
     }
     if (state.kind === 'run') {

@@ -27,6 +27,8 @@ export type Phase =
   | 'pass'
   | 'finished';
 export interface PlayState {
+  controlSide: 'offense' | 'defense';
+  selectedDefender: string;
   defensePlan: DefensivePlan;
   defenseReads: Record<string, number>;
   kind: PlayKind;
@@ -61,6 +63,7 @@ export function createPlay(
   gameSeconds = lateGame ? 20 : 120,
   defenseReads: Record<string, number> = {},
   defensePlan: DefensivePlan = 'man',
+  controlSide: 'offense' | 'defense' = 'offense',
 ): PlayState {
   const drive =
     previousDrive.status === 'active' ? { ...previousDrive } : createDrive(previousDrive.score);
@@ -138,6 +141,8 @@ export function createPlay(
   }
   athletes.forEach(containAthlete);
   return {
+    controlSide,
+    selectedDefender: 'zone0',
     defensePlan,
     defenseReads: { ...defenseReads },
     kind,

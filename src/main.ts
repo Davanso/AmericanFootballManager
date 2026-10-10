@@ -11,6 +11,7 @@ import type { PlayKind } from './simulation/play';
 import { chooseConversion, needsConversion } from './simulation/conversion';
 import { DEFENSIVE_PLANS } from './data/defensivePlans';
 import type { DefensivePlan } from './data/defensivePlans';
+import { switchDefender, attemptTackle } from './simulation/defenderControl';
 import { createDrive } from './simulation/drive';
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -18,7 +19,7 @@ if (!app) throw new Error('Elemento raiz não encontrado.');
 app.innerHTML = `
   <main class="clubhouse">
     <header><a class="brand" href="/" aria-label="American Football Manager">AFM<span>AMERICAN FOOTBALL MANAGER</span></a><span class="era">EST. 1985 · CAMPO DE TREINO</span></header>
-    <section class="intro"><div><p class="eyebrow">DEMO / PASSE CURTO</p><h1>Leia o campo.<br>Chame a jogada.</h1></div><p class="description">Espaço: snap · WASD ou setas: mover QB / RB<br>J, K, L: passar para a tecla sobre o atleta<br>Em passes: após 5 segundos, passe assistido para Carter.</p></section>
+    <section class="intro"><div><p class="eyebrow">DEMO / PASSE CURTO</p><h1>Leia o campo.<br>Chame a jogada.</h1></div><p class="description">Espaço: snap · WASD ou setas: mover QB / RB / defensor<br>E: trocar defensor · Espaço: tackle na defesa<br>J, K, L: passar para a tecla sobre o atleta<br>Em passes: após 5 segundos, passe assistido para Carter.</p></section>
     <section class="stadium" aria-label="Campo de treinamento">
       <div class="scoreboard"><span>WOLVES <b id="home-score">00</b></span><span class="score-center">DRIVE DE TREINO<small id="play-info">ANTES DO SNAP</small></span><span><b>00</b> HAWKS</span></div>
       <div class="field-stage"><div id="field" role="img" aria-label="Campo com atletas e rotas da jogada"></div><div id="touchdown" class="touchdown-banner" role="status" hidden><small>AURORA WOLVES</small><strong>TOUCHDOWN</strong><span>+6 PONTOS</span></div></div>
@@ -28,7 +29,9 @@ app.innerHTML = `
         DEFENSIVE_PLANS,
       )
         .map(([id, plan]) => `<option value="${id}">${plan.name}</option>`)
-        .join('')}</select></label>
+        .join(
+          '',
+        )}</select><select id="control-side" aria-label="Lado controlado"><option value="offense">Controlar ataque</option><option value="defense">Controlar defesa</option></select></label>
       <p id="render-status" role="status">Preparando o campo…</p>
     </section>
     <section id="kick-controls" hidden aria-label="Controle do chute"><div class="kick-direction"><span id="kick-arrow">↑</span></div><label>FORÇA <meter id="kick-meter" min="0" max="1" value="0.8"></meter></label><button id="kick-confirm" type="button">Fixar direção</button><p id="kick-hint">Espaço: fixar direção, depois força.</p></section><footer class="play-controls"><div><span class="tag" id="play-title">JOGADA · PASSE CURTO</span><p id="result">Dê o snap e encontre um recebedor.</p></div><div class="actions"><button id="snap" type="button">Dar snap</button>${PASS_TARGETS.map((target, index) => `<button data-pass="${index}" type="button" aria-label="Passar para ${target.name}, tecla ${target.label}"><kbd style="--target-color:${target.color}">${target.label}</kbd> ${target.name}</button>`).join('')}<button id="restart" type="button">Reiniciar</button></div></footer>
@@ -49,14 +52,18 @@ function mountDemo() {
   const chooseKick = document.querySelector<HTMLButtonElement>('#choose-kick')!;
   const playChoices = [...document.querySelectorAll<HTMLButtonElement>('[data-kind]')];
   const defensePlan = document.querySelector<HTMLSelectElement>('#defense-plan')!;
+  const controlSide = document.querySelector<HTMLSelectElement>('#control-side')!;
   let state = createPlay();
   const field = createField(host, state);
   const onSnap = () => {
+    if (state.controlSide === 'defense' && state.phase === 'live') return attemptTackle(state);
     if (state.phase.startsWith('kick')) return confirmKick(state);
     startPlay(state);
   };
-  const onPass = (index: number) => throwPass(state, RECEIVERS[index]);
-  const controls = createControls(onSnap, onPass);
+  const onPass = (index: number) => {
+    if (state.controlSide === 'offense') throwPass(state, RECEIVERS[index]);
+  };
+  const controls = createControls(onSnap, onPass, () => switchDefender(state));
   snap.addEventListener('click', onSnap);
   const onRestart = () => {
     state = createPlay();
@@ -64,6 +71,7 @@ function mountDemo() {
     scenario.value = 'normal';
     startSpot.value = '-19';
     defensePlan.value = 'man';
+    controlSide.value = 'offense';
   };
   restart.addEventListener('click', onRestart);
   const onNext = () => {
@@ -77,6 +85,7 @@ function mountDemo() {
       ended ? (state.lateGame ? 20 : 120) : state.gameSeconds,
       state.defenseReads,
       state.defensePlan,
+      state.controlSide,
     );
     if (ended) startSpot.value = '-19';
   };
@@ -91,6 +100,7 @@ function mountDemo() {
       undefined,
       {},
       defensePlan.value as DefensivePlan,
+      controlSide.value as 'offense' | 'defense',
     );
   };
   startSpot.addEventListener('change', onStartSpot);
@@ -111,6 +121,7 @@ function mountDemo() {
       state.gameSeconds,
       state.defenseReads,
       state.defensePlan,
+      state.controlSide,
     );
   };
   const kindHandlers = playChoices.map((button) => {
@@ -144,6 +155,10 @@ function mountDemo() {
     state.defensePlan = defensePlan.value as DefensivePlan;
   };
   defensePlan.addEventListener('change', onDefensePlan);
+  const onControlSide = () => {
+    if (state.phase === 'ready') state.controlSide = controlSide.value as 'offense' | 'defense';
+  };
+  controlSide.addEventListener('change', onControlSide);
   let last = performance.now();
   let accumulator = 0;
   let frame = 0;
@@ -164,6 +179,7 @@ function mountDemo() {
     conversionButtons.forEach((button, index) =>
       button.removeEventListener('click', conversionHandlers[index]),
     );
+    controlSide.removeEventListener('change', onControlSide);
     defensePlan.removeEventListener('change', onDefensePlan);
     controls.dispose();
     field.dispose();

@@ -17,5 +17,6 @@ export function chooseConversion(state: PlayState, attempt: 'extraPoint' | 'twoP
     120,
     state.defenseReads,
     state.defensePlan,
+    state.controlSide,
   );
 }

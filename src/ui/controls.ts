@@ -1,6 +1,10 @@
 import type { Input } from '../simulation/update';
 import { PASS_TARGETS } from '../data/passTargets';
-export function createControls(onSnap: () => void, onPass: (index: number) => void) {
+export function createControls(
+  onSnap: () => void,
+  onPass: (index: number) => void,
+  onSwitch: () => void = () => {},
+) {
   const keys = new Set<string>();
   function keydown(event: KeyboardEvent) {
     if (!(event.target instanceof HTMLElement)) return;
@@ -11,6 +15,7 @@ export function createControls(onSnap: () => void, onPass: (index: number) => vo
     keys.add(key);
     if (event.repeat) return;
     if (key === ' ') onSnap();
+    if (key === 'e') onSwitch();
     const target = PASS_TARGETS.findIndex((receiver) => receiver.key === key);
     if (target >= 0) onPass(target);
   }

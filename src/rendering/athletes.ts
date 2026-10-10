@@ -142,7 +142,11 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
     );
     ball.rotation.z =
       state.outcome === 'incomplete' ? Math.min(finishSeconds, 2) * 5 : state.flight * 6;
-    const carrier = state.athletes.find((athlete) => athlete.id === (state.carrier || 'qb'))!;
+    const carrier = state.athletes.find(
+      (athlete) =>
+        athlete.id ===
+        (state.controlSide === 'defense' ? state.selectedDefender : state.carrier || 'qb'),
+    )!;
     ring.position.set(carrier.x, 0.2, carrier.z);
   }
   render(initial);

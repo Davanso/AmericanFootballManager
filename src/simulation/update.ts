@@ -1,3 +1,5 @@
+import { attackInput } from '../ai/quarterback';
+import { moveDefender } from './defenderControl';
 import { containAthlete, ATHLETE_LIMIT } from './bounds';
 import { controlledCarrier, inputVelocity, updateHandoff } from './running';
 import { updateKick } from './kicking';
@@ -22,7 +24,9 @@ function followCarrier(state: PlayState) {
   if (carrier.x >= 50) return finishPlay(state, 'Touchdown! +6 pontos', 'touchdown');
   const tackled = state.athletes.some(
     (athlete) =>
-      athlete.team === 'away' && Math.hypot(athlete.x - carrier.x, athlete.z - carrier.z) < 1.5,
+      athlete.team === 'away' &&
+      !(state.controlSide === 'defense' && athlete.id === state.selectedDefender) &&
+      Math.hypot(athlete.x - carrier.x, athlete.z - carrier.z) < 1.5,
   );
   if (!tackled) return;
   if (carrier.id === 'qb' && carrier.x < state.lineOfScrimmage)
@@ -46,7 +50,9 @@ function updatePass(state: PlayState, dt: number) {
   if (t < 1) return;
   const covered = state.athletes.some(
     (athlete) =>
-      athlete.team === 'away' && Math.hypot(athlete.x - receiver.x, athlete.z - receiver.z) < 2.2,
+      athlete.team === 'away' &&
+      !(state.controlSide === 'defense' && athlete.id === state.selectedDefender) &&
+      Math.hypot(athlete.x - receiver.x, athlete.z - receiver.z) < 2.2,
   );
   if (covered)
     return finishPlay(state, 'Passe incompleto · cobertura próxima ao recebedor', 'incomplete');
@@ -55,6 +61,8 @@ function updatePass(state: PlayState, dt: number) {
 }
 export function updatePlay(state: PlayState, input: Input, dt: number) {
   if (state.phase === 'ready' || state.phase === 'finished') return;
+  moveDefender(state, input, dt);
+  if (state.controlSide === 'defense') input = attackInput(state);
   state.elapsed += dt;
   state.gameSeconds = Math.max(0, state.gameSeconds - dt);
   if (state.lateGame && state.gameSeconds === 0 && state.phase !== 'kickFlight') {

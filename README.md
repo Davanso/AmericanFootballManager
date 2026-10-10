@@ -93,7 +93,7 @@ Variações de velocidade, aceleração e habilidade de passe curto/médio/longo
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 53 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 56 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -180,3 +180,7 @@ O ataque distribui bloqueios desde a entrega, enquanto a defesa persegue e cont�
 ### Respostas defensivas
 
 O seletor **Plano defensivo** permite testar marcação individual, zona e blitz. A zona preserva setores e a blitz envia seis defensores à pressão, abrindo espaço em cobertura. A escolha fica travada durante a jogada e permanece entre descidas e conversões.
+
+### Treino de defesa
+
+Escolha **Lado controlado → Controlar defesa**. WASD/setas movem o defensor destacado, **E** troca para outro defensor perto da bola e **Espaço** tenta o tackle quando o portador está ao alcance. O QB adversário procura um recebedor livre e pode sair do pocket sob pressão. Os demais defensores continuam suas atribuições.

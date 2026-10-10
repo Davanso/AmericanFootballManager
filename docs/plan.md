@@ -414,3 +414,10 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Zona protege setores; blitz adiciona dois rushers à pressão e reduz cobertura.
 - [x] Preservar seleção entre descidas/conversões e impedir mudança em execução.
 - [x] Testes comparando pressão e movimentação nos três planos.
+
+## 24. Defesa controlável
+
+- [x] Treino defensivo com escolha de plano, controle de um defensor, troca por E e tackle por Espaço.
+- [x] QB bot escolhe recebedor pela separação observada e reage à pressão; corrida planejada também tem portador bot.
+- [x] Destaque acompanha o defensor selecionado; demais atletas seguem suas atribuições.
+- [x] Testes de entrada normalizada, troca, alcance do tackle e decisão automática de passe.

@@ -36,6 +36,7 @@ export function updateBots(state: PlayState, dt: number) {
       carrier.id !== 'qb');
   const assignments = running ? assignBlocks(state, carrier) : new Map<string, Athlete>();
   for (const athlete of state.athletes) {
+    if (state.controlSide === 'defense' && athlete.id === state.selectedDefender) continue;
     if (athlete.role === 'qb' && (state.kind !== 'run' || state.phase !== 'live')) continue;
     if (state.kind === 'run' && athlete.id === 'rb') continue;
     if (athlete.id === state.carrier) {

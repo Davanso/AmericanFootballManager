@@ -52,6 +52,8 @@ export function separateAthletes(state: PlayState, dt: number) {
     for (let j = i + 1; j < state.athletes.length; j++) {
       const a = state.athletes[i];
       const b = state.athletes[j];
+      if (state.controlSide === 'defense' && [a.id, b.id].includes(state.selectedDefender))
+        continue;
       if (a.team !== b.team || a.id === state.carrier || b.id === state.carrier) continue;
       const dx = a.x - b.x;
       const dz = a.z - b.z;
