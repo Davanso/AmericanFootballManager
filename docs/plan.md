@@ -431,3 +431,10 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Punt em arco, distância simplificada, sem retorno e com touchback.
 - [x] Testes de posse, pontuação, períodos, fim da partida, conversão final e punts.
 - [ ] Kickoff com retorno, prorrogação, timeouts e regras completas do relógio. A direção de ataque é normalizada para a direita nesta primeira demo.
+
+## 26. Placar de transmissão pixelizado
+
+- [x] Painel fixo no rodapé, visual quadrado retrô, pontos, posse, período, relógio, descida, distância, posição e estado.
+- [x] Layout compacto para telas estreitas e espaço final de rolagem para acessar controles.
+- [x] Testes de apresentação dos dados para treino, partida, conversão e resultado final.
+- [ ] Indicadores de timeouts quando a mecânica for implementada.

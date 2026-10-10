@@ -93,7 +93,7 @@ Variações de velocidade, aceleração e habilidade de passe curto/médio/longo
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 63 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 65 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -163,7 +163,7 @@ O seletor **Situação do treino → Fim de jogo · 20s** habilita um cenário d
 
 ### Próximos passos planejados
 
-Placar fixo no rodapé com visual quadrado e pixelizado de transmissão; controle da equipe de defesa; faltas/flags com pequena chance reproduzível (false start e facemask como primeiros exemplos). Esses itens ainda não foram implementados. Cada ajuste passa a exigir testes de regressão, conforme as instruções para agentes.
+O placar fixo no rodapé e o controle da defesa estão implementados. Faltas/flags com pequena chance reproduzível (false start e facemask como primeiros exemplos). As faltas ainda não foram implementadas. Cada ajuste passa a exigir testes de regressão, conforme as instruções para agentes.
 
 ### Conversões e cobertura defensiva
 
@@ -190,3 +190,7 @@ Escolha **Lado controlado → Controlar defesa**. WASD/setas movem o defensor de
 Escolha **Modo de jogo → Partida curta · 4 × 60s**. Você ataca com os Wolves e controla a defesa quando os Hawks têm a bola. Downs, touchdown/conversão, field goal, punt e quarta descida determinam a posse. O relógio corre durante a execução e pausa entre jogadas; uma conversão necessária após o último touchdown permanece disponível. O resultado final aceita empate nesta demo.
 
 Punt tem voo em arco, avanço fixo e touchback, ainda sem retorno. Após pontuação, o novo ataque começa na própria jarda 25, sem animação de kickoff. Para manter os controles consistentes nesta primeira versão, ambos os ataques são apresentados avançando para a direita. Reiniciar começa outra partida.
+
+### Placar de transmissão
+
+Painel fixo no rodapé com bordas quadradas, paleta retrô, pontos dos dois times, posse, período, relógio, descida/distância, posição e estado da jogada. A versão compacta reorganiza as informações em telas estreitas. Timeouts ainda não existem na simulação e não são apresentados como disponíveis.

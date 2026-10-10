@@ -473,3 +473,132 @@ button kbd {
   align-items: center;
   flex-wrap: wrap;
 }
+
+.clubhouse {
+  padding-bottom: 150px;
+}
+.session-mode {
+  display: flex;
+  gap: 12px;
+  justify-content: flex-end;
+  align-items: center;
+  font: 12px monospace;
+}
+.session-mode select {
+  padding: 10px;
+  color: #eee5cc;
+  background: #143b32;
+  border: 2px solid #456453;
+}
+.broadcast-scoreboard {
+  position: fixed;
+  bottom: 16px;
+  left: 50%;
+  transform: translateX(-50%);
+  z-index: 20;
+  width: min(950px, calc(100% - 28px));
+  display: grid;
+  grid-template-columns: 60px 1fr 1fr 90px 150px;
+  border: 3px solid #e4b446;
+  background: #102d36;
+  box-shadow:
+    5px 5px 0 #071a22,
+    -3px -3px 0 #365b57;
+  color: #f0e6c9;
+  font-family: monospace;
+  text-transform: uppercase;
+  image-rendering: pixelated;
+}
+.broadcast-scoreboard > div {
+  padding: 10px;
+  border-right: 2px solid #40584e;
+}
+.broadcast-brand {
+  background: #e4b446;
+  color: #143342;
+  font-size: 20px;
+  font-weight: 900;
+}
+.broadcast-brand small {
+  display: block;
+  font-size: 10px;
+}
+.broadcast-team {
+  display: grid;
+  grid-template-columns: 1fr auto;
+  align-items: center;
+  gap: 3px;
+}
+.broadcast-team span {
+  font-weight: 900;
+  letter-spacing: 2px;
+}
+.broadcast-team b {
+  font-size: 30px;
+  line-height: 1;
+}
+.broadcast-team small {
+  grid-column: 1 / -1;
+  height: 12px;
+  font-size: 10px;
+  color: #f3d173;
+}
+.broadcast-team.wolves {
+  background: #254742;
+}
+.broadcast-team.hawks {
+  background: #6c3832;
+}
+.broadcast-clock span,
+.broadcast-down span {
+  display: block;
+  font-size: 10px;
+  margin-bottom: 5px;
+}
+.broadcast-clock b {
+  font-size: 22px;
+  color: #f5d67e;
+}
+.broadcast-down b {
+  display: block;
+  font-size: 16px;
+  margin-bottom: 7px;
+}
+.broadcast-phase {
+  grid-column: 1 / -1;
+  font-size: 10px;
+  letter-spacing: 2px;
+  text-align: center;
+  background: #071f28;
+  padding: 5px !important;
+  border-top: 2px solid #40584e;
+}
+@media (max-width: 650px) {
+  .broadcast-scoreboard {
+    grid-template-columns: 44px 1fr 1fr 65px;
+    bottom: 8px;
+  }
+  .broadcast-scoreboard > div {
+    padding: 6px;
+  }
+  .broadcast-team span {
+    font-size: 10px;
+    letter-spacing: 0;
+  }
+  .broadcast-team b {
+    font-size: 24px;
+  }
+  .broadcast-brand {
+    font-size: 15px;
+  }
+  .broadcast-down {
+    grid-column: 1 / -1;
+    display: flex;
+    gap: 16px;
+    justify-content: center;
+  }
+  .broadcast-down b,
+  .broadcast-down span {
+    margin: 0;
+  }
+}
