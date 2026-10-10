@@ -1,3 +1,4 @@
+import { applyRoster } from '../data/playerAttributes';
 import { createDrive } from './drive';
 import { createPlay } from './play';
 import type { PlayState, PlayKind } from './play';
@@ -40,6 +41,8 @@ function matchPlay(session: MatchSession, drive: PlayState['drive'], kind: PlayK
     session.possession === 'wolves' ? 'offense' : 'defense',
   );
   state.matchPlay = true;
+  state.randomState = previous.randomState;
+  applyRoster(state, session.possession === 'wolves' ? (previous.qbProfile ?? 'balanced') : 'deep');
   return state;
 }
 export function tickMatch(session: MatchSession, input: Input, dt: number) {

@@ -77,7 +77,7 @@ O projeto está na fase de **partida curta e treino livre**: treino de corrida p
 
 Há timer de cinco segundos, passe assistido para WR 1 ao esgotar a janela (se o QB estiver atrás da linha), recepção, passe incompleto, sack, tackle, saída de campo, touchdown e reinício. A pressão pode encerrar a jogada antes do timer. O treino tem limite de 15 segundos.
 
-**Limitações:** uma corrida pelo meio, duas jogadas de passe e field goal simplificado, bloqueios aproximados por proximidade e resistência temporária; chute sem vento, atributos ou tentativa de bloqueio; passe guiado até o recebedor em movimento; sem interceptações, atributos, animações completas de corrida/tackle, replay ou gestão. A partida curta tem posse dos dois times e quatro períodos de 60 segundos. Kickoff com retorno, penalidades e safety ainda não estão implementados. No treino livre, o botão Novo drive continua iniciando outra série de treino. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
+**Limitações:** uma corrida pelo meio, duas jogadas de passe e field goal simplificado, bloqueios aproximados por proximidade e resistência temporária; chute sem vento, atributos ou tentativa de bloqueio; passe guiado até o recebedor em movimento; sem retorno de interceptação, animações completas de corrida/tackle, replay ou gestão. A partida curta tem posse dos dois times e quatro períodos de 60 segundos. Kickoff com retorno, penalidades e safety ainda não estão implementados. No treino livre, o botão Novo drive continua iniciando outra série de treino. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
 
 **Melhorias da demo:** quando o QB corre, o ataque troca rotas por apoio e distribui bloqueios. A defesa combina perseguição, antecipação e contenção de laterais, com separação entre companheiros para reduzir aglomeração. São heurísticas iniciais, ainda sem leitura tática e atributos individuais completos.
 
@@ -89,11 +89,11 @@ O painel abaixo do campo mostra **1st to 10**, **1st to GOAL** e as demais desci
 
 O seletor **Início do treino** permite começar na jarda 31 do Wolves, no meio do campo, na jarda 20 ou na jarda 5 do Hawks. Assim é possível experimentar goal-to-go sem precisar completar um drive inteiro.
 
-Variações de velocidade, aceleração e habilidade de passe curto/médio/longo por jogador estão previstas no plano; ainda não foram implementadas.
+Perfis de QB equilibrado, móvel e de profundidade já alteram velocidade e precisão; recebedores e corredores também têm atributos básicos. Aceleração, resistência e técnica detalhada ainda estão planejadas.
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 65 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 69 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -194,3 +194,7 @@ Punt tem voo em arco, avanço fixo e touchback, ainda sem retorno. Após pontua�
 ### Placar de transmissão
 
 Painel fixo no rodapé com bordas quadradas, paleta retrô, pontos dos dois times, posse, período, relógio, descida/distância, posição e estado da jogada. A versão compacta reorganiza as informações em telas estreitas. Timeouts ainda não existem na simulação e não são apresentados como disponíveis.
+
+### Atributos e interceptações
+
+A partida usa atributos individuais; no treino, escolha um perfil no seletor **Perfil do quarterback** para ativá-los. O QB móvel corre mais, o especialista de profundidade tem maior precisão longa. Velocidade e recepção variam no elenco. Pressão e movimento reduzem a chance de completar passes. Cobertura próxima pode gerar interceptação e troca de posse imediata, ainda sem retorno. Resultados usam aleatoriedade reproduzível por seed.

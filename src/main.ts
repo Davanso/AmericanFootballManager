@@ -16,6 +16,8 @@ import { createMatch, tickMatch, nextMatchPlay, matchConversion } from './simula
 import type { MatchSession } from './simulation/match';
 import { createMatchStatus } from './ui/matchStatus';
 import { broadcastMarkup, updateBroadcastScoreboard } from './ui/broadcastScoreboard';
+import { applyRoster, QB_PROFILES } from './data/playerAttributes';
+import type { QBProfile } from './data/playerAttributes';
 import { createDrive } from './simulation/drive';
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -23,7 +25,13 @@ if (!app) throw new Error('Elemento raiz não encontrado.');
 app.innerHTML = `
   <main class="clubhouse">
     <header><a class="brand" href="/" aria-label="American Football Manager">AFM<span>AMERICAN FOOTBALL MANAGER</span></a><span class="era">EST. 1985 · CAMPO DE TREINO</span></header>
-    <label class="session-mode">MODO <select id="session-mode" aria-label="Modo de jogo"><option value="training">Treino livre</option><option value="match">Partida curta · 4 × 60s</option></select></label><section class="intro"><div><p class="eyebrow">DEMO / PASSE CURTO</p><h1>Leia o campo.<br>Chame a jogada.</h1></div><p class="description">Espaço: snap · WASD ou setas: mover QB / RB / defensor<br>E: trocar defensor · Espaço: tackle na defesa<br>J, K, L: passar para a tecla sobre o atleta<br>Em passes: após 5 segundos, passe assistido para Carter.</p></section>
+    <label class="session-mode">MODO <select id="session-mode" aria-label="Modo de jogo"><option value="training">Treino livre</option><option value="match">Partida curta · 4 × 60s</option></select><select id="qb-profile" aria-label="Perfil do quarterback"><option value="base">Base de treino</option>${Object.entries(
+      QB_PROFILES,
+    )
+      .map(([id, profile]) => `<option value="${id}">${profile.name}</option>`)
+      .join(
+        '',
+      )}</select></label><section class="intro"><div><p class="eyebrow">DEMO / PASSE CURTO</p><h1>Leia o campo.<br>Chame a jogada.</h1></div><p class="description">Espaço: snap · WASD ou setas: mover QB / RB / defensor<br>E: trocar defensor · Espaço: tackle na defesa<br>J, K, L: passar para a tecla sobre o atleta<br>Em passes: após 5 segundos, passe assistido para Carter.</p></section>
     <section class="stadium" aria-label="Campo de treinamento">
       <div class="scoreboard"><span>WOLVES <b id="home-score">00</b></span><span class="score-center">DRIVE DE TREINO<small id="play-info">ANTES DO SNAP</small></span><span><b id="away-score">00</b> HAWKS</span></div>
       <div class="field-stage"><div id="field" role="img" aria-label="Campo com atletas e rotas da jogada"></div><div id="touchdown" class="touchdown-banner" role="status" hidden><small>AURORA WOLVES</small><strong>TOUCHDOWN</strong><span>+6 PONTOS</span></div></div>
@@ -60,6 +68,7 @@ function mountDemo() {
   const sessionMode = document.querySelector<HTMLSelectElement>('#session-mode')!;
   const updateMatchStatus = createMatchStatus();
   let match: MatchSession | undefined;
+  const qbProfile = document.querySelector<HTMLSelectElement>('#qb-profile')!;
   let state = createPlay();
   const field = createField(host, state);
   const onSnap = () => {
@@ -193,6 +202,19 @@ function mountDemo() {
   const puntButton = document.querySelector<HTMLButtonElement>('#choose-punt')!;
   const onPunt = () => selectKind('punt');
   puntButton.addEventListener('click', onPunt);
+  const onQBProfile = () => {
+    if (state.phase !== 'ready') return;
+    if (qbProfile.value === 'base') {
+      state.qbProfile = undefined;
+      state.athletes.forEach((p) => {
+        p.attributes = undefined;
+        p.speed = 7;
+      });
+      return;
+    }
+    applyRoster(state, qbProfile.value as QBProfile);
+  };
+  qbProfile.addEventListener('change', onQBProfile);
   let last = performance.now();
   let accumulator = 0;
   let frame = 0;
@@ -209,6 +231,13 @@ function mountDemo() {
       accumulator -= 1 / 60;
     }
     field.render(state);
+    if (
+      state.phase === 'ready' &&
+      !match &&
+      qbProfile.value !== 'base' &&
+      state.qbProfile !== qbProfile.value
+    )
+      applyRoster(state, qbProfile.value as QBProfile);
     updateStatus(state);
     updateMatchStatus(match, state);
     updateBroadcastScoreboard(match, state);
@@ -222,6 +251,7 @@ function mountDemo() {
     );
     controlSide.removeEventListener('change', onControlSide);
     defensePlan.removeEventListener('change', onDefensePlan);
+    qbProfile.removeEventListener('change', onQBProfile);
     sessionMode.removeEventListener('change', onSessionMode);
     puntButton.removeEventListener('click', onPunt);
     controls.dispose();

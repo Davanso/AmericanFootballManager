@@ -438,3 +438,11 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Layout compacto para telas estreitas e espaço final de rolagem para acessar controles.
 - [x] Testes de apresentação dos dados para treino, partida, conversão e resultado final.
 - [ ] Indicadores de timeouts quando a mecânica for implementada.
+
+## 27. Atributos básicos e interceptações
+
+- [x] Perfis de QB equilibrado, móvel e especialista em profundidade; velocidade e precisão curta/longa afetam o jogo.
+- [x] Velocidade e recepção individuais para o elenco; atributos ativos na partida e opcionais no treino.
+- [x] Pressão/movimento reduzem precisão; cobertura próxima pode interceptar, com troca de posse sem retorno nesta etapa.
+- [x] RNG com seed e testes de reprodução, diferença entre perfis e interceptação sem pontos ofensivos.
+- [ ] Aceleração, resistência, precisão média independente, técnica de bloqueio e retorno da interceptação.

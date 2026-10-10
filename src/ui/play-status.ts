@@ -45,6 +45,9 @@ export function createPlayStatus() {
     const sideSelect = document.querySelector<HTMLSelectElement>('#control-side')!;
     sideSelect.disabled = state.phase !== 'ready';
     sideSelect.value = state.controlSide;
+    const qbSelect = document.querySelector<HTMLSelectElement>('#qb-profile')!;
+    qbSelect.disabled = state.phase !== 'ready';
+    if (state.matchPlay) qbSelect.value = state.qbProfile ?? 'balanced';
     const between = state.phase === 'ready' || state.phase === 'finished';
     scenario.disabled = !between || pendingConversion || Boolean(state.drive.attempt);
     choices.forEach((button) => {

@@ -1,3 +1,4 @@
+import type { QBProfile, PlayerAttributes } from '../data/playerAttributes';
 import { advanceDrive, createDrive } from './drive';
 import type { Drive } from './drive';
 import type { DefensivePlan } from '../data/defensivePlans';
@@ -14,6 +15,7 @@ export interface Athlete extends Position {
   route: Position[];
   waypoint: number;
   speed: number;
+  attributes?: PlayerAttributes;
 }
 export type PlayKind = 'short' | 'deep' | 'run' | 'kick' | 'punt';
 export type Phase =
@@ -28,6 +30,8 @@ export type Phase =
   | 'pass'
   | 'finished';
 export interface PlayState {
+  qbProfile?: QBProfile;
+  randomState: number;
   matchPlay?: boolean;
   controlSide: 'offense' | 'defense';
   selectedDefender: string;
@@ -52,7 +56,7 @@ export interface PlayState {
   result: string;
   scrambling: boolean;
   velocity: Position;
-  outcome: 'none' | 'tackle' | 'incomplete' | 'touchdown' | 'fieldGoal' | 'other';
+  outcome: 'none' | 'tackle' | 'incomplete' | 'touchdown' | 'fieldGoal' | 'interception' | 'other';
   fallen: string;
 }
 export const RECEIVERS = ['wr1', 'wr2', 'wr3'];
@@ -143,6 +147,7 @@ export function createPlay(
   }
   athletes.forEach(containAthlete);
   return {
+    randomState: 0x12345678,
     controlSide,
     selectedDefender: 'zone0',
     defensePlan,

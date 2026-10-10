@@ -1,3 +1,4 @@
+import { resolvePass } from './passResolution';
 import { updatePunt } from './punting';
 import { attackInput } from '../ai/quarterback';
 import { moveDefender } from './defenderControl';
@@ -49,16 +50,7 @@ function updatePass(state: PlayState, dt: number) {
     height: 1.5 + Math.sin(t * Math.PI) * 7,
   };
   if (t < 1) return;
-  const covered = state.athletes.some(
-    (athlete) =>
-      athlete.team === 'away' &&
-      !(state.controlSide === 'defense' && athlete.id === state.selectedDefender) &&
-      Math.hypot(athlete.x - receiver.x, athlete.z - receiver.z) < 2.2,
-  );
-  if (covered)
-    return finishPlay(state, 'Passe incompleto · cobertura próxima ao recebedor', 'incomplete');
-  state.carrier = receiver.id;
-  state.phase = 'live';
+  resolvePass(state, receiver);
 }
 export function updatePlay(state: PlayState, input: Input, dt: number) {
   if (state.phase === 'ready' || state.phase === 'finished') return;
@@ -98,7 +90,10 @@ export function updatePlay(state: PlayState, input: Input, dt: number) {
     const magnitude = Math.hypot(input.x, input.z);
     state.velocity =
       magnitude > 0
-        ? { x: (input.x / magnitude) * 7, z: (input.z / magnitude) * 7 }
+        ? {
+            x: (input.x / magnitude) * state.athletes.find((p) => p.id === 'qb')!.speed,
+            z: (input.z / magnitude) * state.athletes.find((p) => p.id === 'qb')!.speed,
+          }
         : { x: 0, z: 0 };
     if (qbCommittedToRun(state)) state.scrambling = true;
   }
@@ -130,8 +125,8 @@ export function updatePlay(state: PlayState, input: Input, dt: number) {
   if (state.carrier === 'qb') {
     const magnitude = Math.hypot(input.x, input.z);
     if (magnitude > 0) {
-      qb.x += (input.x / magnitude) * 7 * dt;
-      qb.z += (input.z / magnitude) * 7 * dt;
+      qb.x += (input.x / magnitude) * state.athletes.find((p) => p.id === 'qb')!.speed * dt;
+      qb.z += (input.z / magnitude) * state.athletes.find((p) => p.id === 'qb')!.speed * dt;
     }
     state.decision = Math.max(0, state.decision - dt);
     if (state.decision === 0 && qb.x < state.lineOfScrimmage) throwPass(state, 'wr1');
