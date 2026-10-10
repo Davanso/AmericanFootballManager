@@ -1,0 +1,50 @@
+# Instruções para agentes
+
+Este documento reúne os padrões do repositório para Codex e outros agentes. Atualizar conforme novos padrões forem acordados com o usuário. Não apresentar sugestões ainda não aprovadas como regras estabelecidas.
+
+## Contexto do projeto
+
+American Football Manager é um jogo offline de futebol americano, com gestão, decisões do quarterback, bots e visual pixelizado. O projeto está em planejamento.
+
+Antes de trabalhar, consultar:
+
+- `README.md`: apresentação e estado do projeto.
+- `docs/plan.md`: plano central, requisitos e decisões pendentes.
+- `docs/eras.md`: referências por época; informações históricas ainda precisam ser validadas antes de virar mecânicas.
+
+## Commits — regra definida pelo usuário
+
+Todos os novos commits devem seguir o formato:
+
+```text
+tipo: descrição
+```
+
+Usar um prefixo em minúsculas, seguido de dois-pontos, espaço e uma descrição clara da mudança.
+
+| Tipo | Uso |
+|---|---|
+| `feat` | Nova funcionalidade |
+| `fix` | Correção de erro |
+| `docs` | Documentação |
+| `refactor` | Reorganização de código sem nova funcionalidade ou correção |
+| `test` | Testes |
+| `style` | Formatação de código sem mudança de comportamento |
+| `perf` | Melhoria de desempenho |
+| `build` | Dependências e configuração de build |
+| `ci` | Integração contínua |
+| `chore` | Manutenção que não se enquadra nos demais tipos |
+
+Exemplos:
+
+```text
+feat: adicionar controle do quarterback
+fix: ocultar linhas das rotas após o snap
+docs: documentar planejamento do jogo
+```
+
+Escolher o tipo pela mudança efetiva. A regra se aplica aos novos commits; não reescrever o histórico existente para adequá-lo.
+
+## Manutenção das instruções
+
+Quando o usuário definir um novo padrão, registrá-lo neste arquivo com contexto e exemplos quando necessário. Manter a documentação coerente com o estado real do projeto e atualizar `docs/plan.md` quando uma decisão alterar o plano.
