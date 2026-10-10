@@ -1,7 +1,7 @@
 import { describe, expect, it } from 'vitest';
-import { createPlay, startPlay } from '../simulation/play';
-import { updatePlay } from '../simulation/update';
-import { assignBlocks, defensiveRunTarget } from './runSupport';
+import { createPlay, startPlay } from '../../simulation/play';
+import { updatePlay } from '../../simulation/update';
+import { assignBlocks, defensiveRunTarget } from '../../ai/runSupport';
 
 describe('run support', () => {
   it('assigns different defenders to offensive support players', () => {

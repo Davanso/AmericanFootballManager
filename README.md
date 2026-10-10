@@ -93,6 +93,8 @@ A demo foi verificada no navegador. Os treze testes de simulação, apoio à cor
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
+Os testes ficam em `src/tests/`, espelhando os módulos de produção e usando `.spec.ts`. O Vitest descobre apenas testes nesse padrão.
+
 Este repositório também é um espaço de aprendizagem: cada etapa deve produzir algo pequeno, compreensível e jogável.
 
 ## Como executar

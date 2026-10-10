@@ -66,4 +66,14 @@ Sempre que o projeto for atualizado, revisar e atualizar o status no `README.md`
 
 ## Registro de novos padrões
 
+## Organização dos testes — regra definida pelo usuário
+
+- Manter testes separados do código de produção, em `src/tests/`.
+- Espelhar o caminho do arquivo testado: `src/rendering/field.ts` → `src/tests/rendering/field.spec.ts`.
+- Usar sempre o sufixo `.spec.ts` (ou `.spec.tsx` quando aplicável), nunca `.test`.
+- Exemplo adicional: `src/ai/runSupport.ts` → `src/tests/ai/runSupport.spec.ts`.
+- Ao mover ou renomear um módulo, atualizar o caminho do teste e seus imports.
+
+## Evolução dos padrões
+
 Quando o usuário definir um novo padrão, registrá-lo neste arquivo com contexto e exemplos quando necessário. Manter a documentação coerente com o estado real do projeto e atualizar `docs/plan.md` quando uma decisão alterar o plano.

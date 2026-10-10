@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createPlay, startPlay, throwPass } from './play';
-import { updatePlay } from './update';
+import { createPlay, startPlay, throwPass } from '../../simulation/play';
+import { updatePlay } from '../../simulation/update';
 
 function advance(state: ReturnType<typeof createPlay>, seconds: number, input = { x: 0, z: 0 }) {
   for (let i = 0; i < seconds * 60; i++) updatePlay(state, input, 1 / 60);

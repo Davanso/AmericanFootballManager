@@ -1,6 +1,6 @@
 import { describe, expect, it } from 'vitest';
-import { createPlay, finishPlay } from '../simulation/play';
-import { ballPresentation, fallPresentation } from './finishAnimation';
+import { createPlay, finishPlay } from '../../simulation/play';
+import { ballPresentation, fallPresentation } from '../../rendering/finishAnimation';
 
 describe('end-of-play presentation', () => {
   it('bounces an incomplete ball and settles without changing simulation state', () => {
