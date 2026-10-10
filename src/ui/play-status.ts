@@ -4,7 +4,10 @@ import { PASS_TARGETS } from '../data/passTargets';
 import { needsConversion } from '../simulation/conversion';
 import { downLabel } from '../simulation/drive';
 
-export function createPlayStatus() {
+export function createPlayStatus(
+  targets: ReadonlyArray<{ label: string; name: string }> = PASS_TARGETS,
+  runningBack = { name: 'RB', number: 34 },
+) {
   const status = document.querySelector<HTMLElement>('#render-status')!;
   const info = document.querySelector<HTMLElement>('#play-info')!;
   const result = document.querySelector<HTMLElement>('#result')!;
@@ -111,8 +114,8 @@ export function createPlayStatus() {
     result.textContent =
       state.result ||
       (state.kind === 'run'
-        ? 'Entrega ao RB #34 · depois, WASD ou setas para correr'
-        : PASS_TARGETS.map((target) => `${target.label} · ${target.name}`).join(' / '));
+        ? `Entrega ao ${runningBack.name} #${runningBack.number} · depois, WASD ou setas para correr`
+        : targets.map((target) => `${target.label} · ${target.name}`).join(' / '));
     if (penalty) {
       snap.disabled = true;
       next.disabled = true;
@@ -163,10 +166,13 @@ export function createPlayStatus() {
       return;
     }
     if (state.kind === 'run') {
-      info.textContent = state.phase === 'live' ? 'RB #34 · EM JOGO' : 'SNAP / ENTREGA AO RB';
+      info.textContent =
+        state.phase === 'live'
+          ? `${runningBack.name} #${runningBack.number} · EM JOGO`
+          : 'SNAP / ENTREGA AO RB';
       status.textContent =
         state.phase === 'live'
-          ? 'Você controla o RB #34 · WASD ou setas · ataque avança para a direita'
+          ? `Você controla ${runningBack.name} #${runningBack.number} · WASD ou setas · ataque avança para a direita`
           : 'Aguarde a entrega do QB ao RB';
       return;
     }

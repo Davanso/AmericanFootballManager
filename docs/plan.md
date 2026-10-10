@@ -507,3 +507,8 @@ Configurações permite exportar um JSON com elenco, treino, preferências, camp
 ### Primeiras variações visuais por época
 
 Configurações oferece anos 80, 90 e 2000. Anos 80 preservam a direção inicial; anos 90 mudam detalhes do uniforme e publicidade do estádio; anos 2000 acrescentam visor/luvas e painel com detalhes luminosos. Ano, tonalidade do fundo e apresentação do placar acompanham a seleção. São variações procedurais sobre a arte atual, não estádios finais diferentes. A época é preservada no save da partida. Regras e estilos históricos ainda não variam.
+
+
+### Revisão de integração da gestão
+
+Nomes dos recebedores e número/nome do running back nas instruções de decisão acompanham a escalação. Relógios usam o mesmo arredondamento e controles de jogada ficam desabilitados durante pausa.

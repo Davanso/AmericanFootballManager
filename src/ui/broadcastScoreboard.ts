@@ -1,3 +1,4 @@
+import { gameClock } from './gameClock';
 import type { MatchSession } from '../simulation/match';
 import { matchResult } from '../simulation/match';
 import type { PlayState } from '../simulation/play';
@@ -11,7 +12,7 @@ export function scoreboardView(match: MatchSession | undefined, state: PlayState
     wolves: String(match?.scores.wolves ?? state.drive.score).padStart(2, '0'),
     hawks: String(match?.scores.hawks ?? 0).padStart(2, '0'),
     possession,
-    clock: `${Math.floor(seconds / 60)}:${String(seconds % 60).padStart(2, '0')}`,
+    clock: gameClock(seconds),
     period: match ? `Q${match.quarter}` : 'TREINO',
     down: state.drive.attempt
       ? state.drive.attempt === 'extraPoint'

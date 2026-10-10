@@ -1,3 +1,4 @@
+import { gameClock } from './gameClock';
 import type { MatchSession } from '../simulation/match';
 import { matchResult } from '../simulation/match';
 import type { PlayState } from '../simulation/play';
@@ -28,7 +29,7 @@ export function createMatchStatus() {
       '#play-info',
       match.finished
         ? matchResult(match)
-        : `Q${match.quarter} · ${Math.floor(match.remaining / 60)}:${String(Math.floor(match.remaining % 60)).padStart(2, '0')} · ${match.possession.toUpperCase()}`,
+        : `Q${match.quarter} · ${gameClock(match.remaining)} · ${match.possession.toUpperCase()}`,
     );
     disable('#start-spot', true);
     disable('#scenario', true);

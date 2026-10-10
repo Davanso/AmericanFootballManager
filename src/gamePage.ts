@@ -1,3 +1,4 @@
+import { setPausedControls } from './ui/pauseControls';
 import { ERAS } from './data/eras';
 import {
   loadCampaign,
@@ -72,7 +73,7 @@ app.innerHTML = `
 
 function mountDemo() {
   const host = document.querySelector<HTMLDivElement>('#field')!;
-  const updateStatus = createPlayStatus();
+  const updateStatus = createPlayStatus(clubTargets, selectedPlayer(displayClub.lineup, 'rb'));
   const snap = document.querySelector<HTMLButtonElement>('#snap')!;
   const restart = document.querySelector<HTMLButtonElement>('#restart')!;
   const next = document.querySelector<HTMLButtonElement>('#next-play')!;
@@ -363,10 +364,16 @@ function mountDemo() {
       applyRoster(state, qbProfile.value as QBProfile);
     updateStatus(state);
     updateMatchStatus(match, state);
+    setPausedControls(paused, [...conversionButtons, ...penaltyButtons, kickConfirm]);
     updateBroadcastScoreboard(match, state);
     replayButton.disabled = !replay.canPlay() || replay.playing;
     stopReplay.hidden = !replay.playing;
     if (paused) {
+      document
+        .querySelectorAll<HTMLButtonElement | HTMLSelectElement>(
+          '#kick-confirm,#choose-kick,#choose-punt,[data-kind],#extra-point,#two-point,#accept-penalty,#decline-penalty,#defense-plan',
+        )
+        .forEach((control) => (control.disabled = true));
       snap.disabled = true;
       next.disabled = true;
       passes.forEach((button) => (button.disabled = true));

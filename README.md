@@ -93,7 +93,7 @@ Perfis de QB equilibrado, móvel e de profundidade já alteram velocidade e prec
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 121 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 125 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -239,3 +239,8 @@ Configurações permite exportar um JSON com elenco, treino, preferências, camp
 ### Primeiras variações visuais por época
 
 Configurações oferece anos 80, 90 e 2000. Anos 80 preservam a direção inicial; anos 90 mudam detalhes do uniforme e publicidade do estádio; anos 2000 acrescentam visor/luvas e painel com detalhes luminosos. Ano, tonalidade do fundo e apresentação do placar acompanham a seleção. São variações procedurais sobre a arte atual, não estádios finais diferentes. A época é preservada no save da partida. Regras e estilos históricos ainda não variam.
+
+
+### Revisão de integração da gestão
+
+Nomes dos recebedores e número/nome do running back nas instruções de decisão acompanham a escalação. Relógios usam o mesmo arredondamento e controles de jogada ficam desabilitados durante pausa.

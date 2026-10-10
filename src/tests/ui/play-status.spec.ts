@@ -54,3 +54,26 @@ it('shows RB controls without a passing countdown during a run', () => {
   expect(node('#play-info').textContent).toContain('RB #34');
   expect(node('#render-status').textContent).toContain('WASD');
 });
+
+it('uses the selected receiver and running back identities in rapid decision text', () => {
+  const nodes = new Map<
+    string,
+    { hidden: boolean; disabled: boolean; textContent: string; style: object; value: number }
+  >();
+  const node = (id: string) => {
+    if (!nodes.has(id))
+      nodes.set(id, { hidden: false, disabled: false, textContent: '', style: {}, value: 0 });
+    return nodes.get(id)!;
+  };
+  vi.stubGlobal('document', { querySelector: node, querySelectorAll: () => [] });
+  const targets = [{ id: 'wr1', name: 'Calvin Carter', label: 'J', color: '#fff' }];
+  const status = createPlayStatus(targets, { name: 'Calvin Carter', number: 39 });
+  status(createPlay());
+  expect(node('#result').textContent).toContain('J · Calvin Carter');
+  const run = createPlay(undefined, 'run');
+  status(run);
+  expect(node('#result').textContent).toContain('#39');
+  run.phase = 'live';
+  status(run);
+  expect(node('#play-info').textContent).toContain('#39');
+});
