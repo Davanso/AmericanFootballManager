@@ -3,6 +3,7 @@ export function navigation(active: string) {
     ['game', '/', 'Partida'],
     ['roster', '/elenco', 'Elenco'],
     ['training', '/treino', 'Treino'],
+    ['campaign', '/campanha', 'Campanha'],
     ['config', '/config', 'Configurações'],
   ]
     .map(

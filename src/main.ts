@@ -1,7 +1,12 @@
+import { mountCampaign } from './ui/campaignPage';
 import { mountTraining } from './ui/trainingPage';
 import './style.css';
 import { mountManagement } from './ui/managementPages';
 function boot() {
+  if (location.pathname === '/campanha') {
+    mountCampaign();
+    return;
+  }
   if (location.pathname === '/treino') {
     mountTraining();
     return;

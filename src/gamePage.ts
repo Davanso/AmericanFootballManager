@@ -1,3 +1,9 @@
+import {
+  loadCampaign,
+  saveCampaign,
+  startCampaignMatch,
+  captureMatch,
+} from './management/campaign';
 import { applyTraining } from './management/training';
 import { applyLineup, lineupAppearance, selectedPlayer } from './management/roster';
 import { playerAppearance } from './data/playerAppearance';
@@ -27,16 +33,17 @@ import { resolvePenalty } from './simulation/penalties';
 import { createReplay } from './simulation/replay';
 import { createDrive } from './simulation/drive';
 
+const displayClub = loadCampaign().active?.club ?? loadClub();
 const clubTargets = PASS_TARGETS.map((target) => ({
   ...target,
-  name: selectedPlayer(loadClub().lineup, target.id).name,
+  name: selectedPlayer(displayClub.lineup, target.id).name,
 }));
 const app = document.querySelector<HTMLDivElement>('#app');
 if (!app) throw new Error('Elemento raiz não encontrado.');
 app.innerHTML = `
   <main class="clubhouse">
     <header><a class="brand" href="/" aria-label="American Football Manager">AFM<span>AMERICAN FOOTBALL MANAGER</span></a><span class="era">EST. 1985 · CAMPO DE TREINO</span></header>
-    ${navigation('game')}<p class="starter-caption">QB TITULAR · ${startingQB(loadClub()).name} · #${startingQB(loadClub()).number} · <a href="/elenco">Alterar escalação</a></p><label class="session-mode">MODO <select id="session-mode" aria-label="Modo de jogo"><option value="training">Treino livre</option><option value="match">Partida curta · 4 × ${loadClub().periodSeconds}s</option></select><select id="qb-profile" aria-label="Perfil do quarterback"><option value="base">Base de treino</option>${Object.entries(
+    ${navigation('game')}<section class="campaign-controls" aria-label="Partida salva"><button id="pause-match" disabled>Pausar partida</button><span id="campaign-status" role="status">Partidas são salvas automaticamente. Treino livre não é salvo.</span></section><p class="starter-caption">QB TITULAR · ${startingQB(displayClub).name} · #${startingQB(displayClub).number} · <a href="/elenco">Alterar escalação</a></p><label class="session-mode">MODO <select id="session-mode" aria-label="Modo de jogo"><option value="training">Treino livre</option><option value="match">Partida curta · 4 × ${displayClub.periodSeconds}s</option></select><select id="qb-profile" aria-label="Perfil do quarterback"><option value="base">Base de treino</option>${Object.entries(
       QB_PROFILES,
     )
       .map(([id, profile]) => `<option value="${id}">${profile.name}</option>`)
@@ -80,29 +87,62 @@ function mountDemo() {
   const updateMatchStatus = createMatchStatus();
   let match: MatchSession | undefined;
   const qbProfile = document.querySelector<HTMLSelectElement>('#qb-profile')!;
-  const club = loadClub();
+  let campaign = loadCampaign();
+  const club = campaign.active?.club ?? loadClub();
+  let paused = Boolean(campaign.active);
   qbProfile.value = startingQB(club).profile;
   const clubMatch = () => createMatch(club.periodSeconds, startingQB(club).profile);
-  let state = createPlay();
-  applyRoster(state, startingQB(club).profile);
+  match = campaign.active?.session;
+  if (match) sessionMode.value = 'match';
+  let state = match?.play ?? createPlay();
+  if (!match) applyRoster(state, startingQB(club).profile);
   const starter = startingQB(club);
   const field = createField(host, state, {
     ...lineupAppearance(club.lineup),
     qb: { ...playerAppearance(starter.id, 'home'), number: starter.number },
   });
   const replay = createReplay();
+  const pauseButton = document.querySelector<HTMLButtonElement>('#pause-match')!;
+  const saveStatus = document.querySelector<HTMLElement>('#campaign-status')!;
+  let saveElapsed = 0;
+  const persist = () => {
+    if (!match) return;
+    match.play = state;
+    campaign = captureMatch(campaign, match);
+    saveStatus.textContent = saveCampaign(campaign)
+      ? paused
+        ? 'Partida pausada e salva. Clique em Continuar partida.'
+        : 'Partida salva automaticamente.'
+      : 'Não foi possível salvar a partida. Verifique o armazenamento do navegador.';
+  };
+  const onPause = () => {
+    if (!match || match.finished) return;
+    paused = !paused;
+    persist();
+  };
+  pauseButton.addEventListener('click', onPause);
+  window.addEventListener('pagehide', persist);
+  const onVisibility = () => {
+    if (document.hidden && match) {
+      paused = true;
+      persist();
+    }
+  };
+  document.addEventListener('visibilitychange', onVisibility);
+
   const onSnap = () => {
+    if (paused) return;
     if (state.phase === 'ready' && !replay.playing) {
       applyLineup(state, club.lineup);
       applyTraining(state, club);
     }
-    if (replay.playing) return;
+    if (replay.playing || paused) return;
     if (state.controlSide === 'defense' && state.phase === 'live') return attemptTackle(state);
     if (state.phase.startsWith('kick')) return confirmKick(state);
     startPlay(state);
   };
   const onPass = (index: number) => {
-    if (state.controlSide === 'offense') throwPass(state, RECEIVERS[index]);
+    if (!paused && state.controlSide === 'offense') throwPass(state, RECEIVERS[index]);
   };
   const controls = createControls(onSnap, onPass, () => switchDefender(state));
   snap.addEventListener('click', onSnap);
@@ -110,6 +150,8 @@ function mountDemo() {
     replay.stop();
     if (match) {
       match = clubMatch();
+      paused = false;
+      campaign = startCampaignMatch(campaign, match, club);
       state = match.play;
       kind = state.kind;
       return;
@@ -146,7 +188,7 @@ function mountDemo() {
   };
   next.addEventListener('click', onNext);
   const onStartSpot = () => {
-    if (replay.playing) return;
+    if (replay.playing || paused) return;
     if (match) return;
     if (needsConversion(state) || state.drive.attempt) return;
     if (state.phase !== 'ready' && state.phase !== 'finished') return;
@@ -163,7 +205,7 @@ function mountDemo() {
   startSpot.addEventListener('change', onStartSpot);
   scenario.addEventListener('change', onStartSpot);
   const selectKind = (value: PlayKind) => {
-    if (replay.playing) return;
+    if (replay.playing || paused) return;
     if (state.pendingPenalty) return;
     if (match && state.controlSide === 'defense') return;
     if (
@@ -190,7 +232,9 @@ function mountDemo() {
     return handler;
   });
   const onChooseKick = () => selectKind('kick');
-  const onKickConfirm = () => confirmKick(state);
+  const onKickConfirm = () => {
+    if (!paused) confirmKick(state);
+  };
   chooseKick.addEventListener('click', onChooseKick);
   kickConfirm.addEventListener('click', onKickConfirm);
   const passHandlers = passes.map((button, index) => {
@@ -204,7 +248,7 @@ function mountDemo() {
   ];
   const conversionHandlers = conversionButtons.map((button, index) => {
     const handler = () => {
-      if (replay.playing) return;
+      if (replay.playing || paused) return;
       if (match) {
         matchConversion(match, index === 0 ? 'extraPoint' : 'twoPoint');
         state = match.play;
@@ -226,7 +270,10 @@ function mountDemo() {
   controlSide.addEventListener('change', onControlSide);
   const onSessionMode = () => {
     replay.stop();
-    match = sessionMode.value === 'match' ? clubMatch() : undefined;
+    persist();
+    match = sessionMode.value === 'match' ? (campaign.active?.session ?? clubMatch()) : undefined;
+    paused = false;
+    if (match && !campaign.active) campaign = startCampaignMatch(campaign, match, club);
     state = match?.play ?? createPlay();
     kind = state.kind;
   };
@@ -235,6 +282,7 @@ function mountDemo() {
   const onPunt = () => selectKind('punt');
   puntButton.addEventListener('click', onPunt);
   const onQBProfile = () => {
+    if (match) return;
     if (state.phase !== 'ready') return;
     if (qbProfile.value === 'base') {
       state.qbProfile = undefined;
@@ -253,6 +301,7 @@ function mountDemo() {
   ];
   const penaltyHandlers = penaltyButtons.map((button, index) => {
     const handler = () => {
+      if (paused) return;
       state = resolvePenalty(state, index === 0);
       if (match) match.play = state;
     };
@@ -275,7 +324,7 @@ function mountDemo() {
     accumulator += frameDelta;
     last = now;
     while (accumulator >= 1 / 60) {
-      if (replay.playing) {
+      if (replay.playing || paused) {
         accumulator -= 1 / 60;
         continue;
       }
@@ -288,6 +337,14 @@ function mountDemo() {
       replay.record(state, 1 / 60);
       accumulator -= 1 / 60;
     }
+    saveElapsed += frameDelta;
+    if (match && (saveElapsed >= 1 || (match.finished && campaign.active))) {
+      persist();
+      saveElapsed = 0;
+    }
+    qbProfile.disabled = Boolean(match);
+    pauseButton.disabled = !match || match.finished;
+    pauseButton.textContent = paused ? 'Continuar partida' : 'Pausar partida';
     const replayFrame = replay.sample(frameDelta, Number(replaySpeed.value));
     field.render(replayFrame ?? state);
     if (
@@ -302,6 +359,12 @@ function mountDemo() {
     updateBroadcastScoreboard(match, state);
     replayButton.disabled = !replay.canPlay() || replay.playing;
     stopReplay.hidden = !replay.playing;
+    if (paused) {
+      snap.disabled = true;
+      next.disabled = true;
+      passes.forEach((button) => (button.disabled = true));
+      document.querySelector('#broadcast-phase')!.textContent = 'PAUSADO';
+    }
     if (replay.playing) {
       next.disabled = true;
       snap.disabled = true;
@@ -312,6 +375,10 @@ function mountDemo() {
   }
   frame = requestAnimationFrame(tick);
   return () => {
+    persist();
+    window.removeEventListener('pagehide', persist);
+    document.removeEventListener('visibilitychange', onVisibility);
+    pauseButton.removeEventListener('click', onPause);
     cancelAnimationFrame(frame);
     conversionButtons.forEach((button, index) =>
       button.removeEventListener('click', conversionHandlers[index]),

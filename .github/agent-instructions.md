@@ -79,4 +79,4 @@ Quando o usuário definir um novo padrão, registrá-lo neste arquivo com contex
 
 ## Navegação e páginas — decisão definida pelo usuário
 
-O projeto pode ter páginas separadas para partida, gestão de elenco, configurações e outras áreas. Organizar cada área por responsabilidade, com navegação clara; não concentrar todas as funcionalidades na página do campo. Atualmente, sair da partida reinicia a sessão; escalação e preferências ficam salvas no navegador.
+O projeto pode ter páginas separadas para partida, gestão de elenco, configurações e outras áreas. Organizar cada área por responsabilidade, com navegação clara; não concentrar todas as funcionalidades na página do campo. Partidas têm autosave e retomada pausada; escalação, treino e preferências ficam salvos no navegador. Preservar a independência entre o elenco de uma partida salva e alterações destinadas à próxima partida.

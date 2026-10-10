@@ -737,3 +737,15 @@ button kbd {
   font-family: monospace;
   color: #f1d575;
 }
+
+.campaign-controls {
+  display: flex;
+  gap: 20px;
+  align-items: center;
+  flex-wrap: wrap;
+  margin-bottom: 20px;
+}
+.campaign-controls span {
+  font-size: 13px;
+  color: #e9dcb7;
+}

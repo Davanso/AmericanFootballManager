@@ -468,7 +468,7 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 
 - Implementado: navegação entre partida (`/`), elenco (`/elenco`) e configurações (`/config`).
 - Três QBs fictícios com identidade, número e perfis diferentes; escolher titular altera atributos e aparência na próxima visita ao campo.
-- Escalação, duração dos quartos e velocidade padrão de replay salvas no navegador, com versão e recuperação de dados inválidos. A partida em andamento não é salva.
+- Escalação, duração dos quartos e velocidade padrão de replay salvas no navegador, com versão e recuperação de dados inválidos. A partida em andamento é salva automaticamente; ver seção Campanha offline.
 - Próximas entregas: elenco das demais posições, treino, evolução e salvamento da campanha.
 
 
@@ -480,3 +480,16 @@ Escalação das 22 posições, com três QBs e 42 atletas de linha, recepção, 
 ### Treino e evolução semanal
 
 Página `/treino` com três sessões por semana, escolha de atleta e habilidade e relatório de evolução. Velocidade cresce 0.1 e habilidades 0.5 ponto percentual por sessão, com limites. Passe é exclusivo dos QBs. A evolução fica salva e afeta o próximo snap. Avançar semana recupera sessões; calendário ainda independente das partidas. Salvamento da campanha é a próxima etapa.
+
+
+### Campanha offline e retomada
+
+Página `/campanha` com resultado dos últimos 20 jogos e partida salva. Autosave a cada segundo, ao pausar e sair da página. Ao voltar, a partida abre pausada com posse, relógio, descida, atributos, RNG, flags e posições preservados. O elenco da partida fica congelado no save; alterações de gestão entram numa nova partida pelo botão da campanha. Resultados são registrados uma única vez. Replay e treino livre não são salvos. Saves passam por validação antes de retornar à simulação. Não há calendário de adversários, liga ou temporada completa ainda.
+
+
+## Marcos da gestão — estado consolidado
+
+- [x] Elenco de ataque/defesa e escalação sem duplicação.
+- [x] Treino semanal e evolução persistente que afetam a simulação.
+- [x] Campanha offline, autosave, pausa/retomada e resultados únicos.
+- [ ] Próximo marco: backup/importação do progresso, seguido por expansão das épocas visuais.
