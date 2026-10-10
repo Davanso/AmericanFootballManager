@@ -1,0 +1,44 @@
+import type { Athlete, PlayState, Position } from '../simulation/play';
+
+function routeLead(receiver: Athlete): Position {
+  const point = receiver.route[receiver.waypoint];
+  if (!point) return receiver;
+  const distance = Math.max(0.01, Math.hypot(point.x - receiver.x, point.z - receiver.z));
+  return {
+    x: receiver.x + ((point.x - receiver.x) / distance) * 1.4,
+    z: receiver.z + ((point.z - receiver.z) / distance) * 1.4,
+  };
+}
+
+export function coverageTarget(defender: Athlete, state: PlayState) {
+  const receivers = state.athletes.filter((player) => player.role === 'receiver');
+  if (defender.id.startsWith('cover')) {
+    const receiver = receivers[Number(defender.id.slice(-1))];
+    const lead = routeLead(receiver);
+    const previous = Math.max(
+      0,
+      (state.defenseReads[receiver.id] ?? 0) - (state.target === receiver.id ? 1 : 0),
+    );
+    return { x: lead.x + Math.max(0.4, 2.2 - previous * 0.9), z: lead.z + 0.4 };
+  }
+  const index = Number(defender.id.slice(-1));
+  const anchor = {
+    x: Math.min(49, state.lineOfScrimmage + (index < 2 ? 10 : 22)),
+    z: index % 2 === 0 ? -12 : 12,
+  };
+  const threat = receivers
+    .filter(
+      (receiver) =>
+        receiver.x > state.lineOfScrimmage + 5 &&
+        Math.abs(receiver.z - anchor.z) < 13 &&
+        Math.abs(receiver.x - anchor.x) < 15,
+    )
+    .sort((a, b) => {
+      const priority = (receiver: Athlete) =>
+        Math.hypot(receiver.x - anchor.x, receiver.z - anchor.z) -
+        Math.min(3, state.defenseReads[receiver.id] ?? 0) * 2;
+      return priority(a) - priority(b);
+    })[0];
+  if (!threat) return anchor;
+  return routeLead(threat);
+}

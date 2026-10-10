@@ -1,3 +1,4 @@
+import { coverageTarget } from './passCoverage';
 import type { Athlete, Position, PlayState } from '../simulation/play';
 import {
   assignBlocks,
@@ -22,12 +23,20 @@ function runRoute(athlete: Athlete, dt: number) {
   if (Math.hypot(point.x - athlete.x, point.z - athlete.z) < 0.1) athlete.waypoint++;
 }
 export function updateBots(state: PlayState, dt: number) {
-  const carrier = state.athletes.find((athlete) => athlete.id === state.carrier);
+  const carrier = state.athletes.find(
+    (athlete) =>
+      athlete.id === (state.kind === 'run' && state.phase === 'handoff' ? 'rb' : state.carrier),
+  );
   const qb = state.athletes.find((athlete) => athlete.id === 'qb')!;
-  const running = carrier && (state.scrambling || carrier.id !== 'qb');
+  const running =
+    carrier &&
+    ((state.kind === 'run' && state.phase === 'handoff') ||
+      state.scrambling ||
+      carrier.id !== 'qb');
   const assignments = running ? assignBlocks(state, carrier) : new Map<string, Athlete>();
   for (const athlete of state.athletes) {
-    if (athlete.role === 'qb') continue;
+    if (athlete.role === 'qb' && (state.kind !== 'run' || state.phase !== 'live')) continue;
+    if (state.kind === 'run' && athlete.id === 'rb') continue;
     if (athlete.id === state.carrier) {
       moveToward(athlete, { x: 55, z: athlete.z }, 8, dt);
       continue;
@@ -76,25 +85,10 @@ export function updateBots(state: PlayState, dt: number) {
       moveToward(athlete, qb, blocked ? 1.1 : 4.2, dt);
       continue;
     }
-    if (athlete.id.startsWith('cover')) {
-      const receiver = state.athletes.find(
-        (player) => player.id === `wr${Number(athlete.id.slice(-1)) + 1}`,
-      )!;
-      moveToward(athlete, { x: receiver.x + 2.5, z: receiver.z + 1.5 }, 5.4, dt);
-      continue;
-    }
-    if (carrier && carrier.x > state.lineOfScrimmage) {
-      moveToward(athlete, carrier, 6, dt);
-      continue;
-    }
-    const index = Number(athlete.id.slice(-1));
     moveToward(
       athlete,
-      {
-        x: Math.min(57, state.lineOfScrimmage + (index < 2 ? 19 : 31)),
-        z: index % 2 === 0 ? -12 : 12,
-      },
-      4.5,
+      coverageTarget(athlete, state),
+      athlete.id.startsWith('cover') ? 7.1 : 6.7,
       dt,
     );
   }

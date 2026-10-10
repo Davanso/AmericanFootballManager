@@ -1,4 +1,5 @@
 import * as THREE from 'three';
+import { createGoalPosts } from './goalPost';
 
 function textPlane(text: string, width: number, height: number, color = '#eee5cc') {
   const canvas = document.createElement('canvas');
@@ -24,6 +25,16 @@ function textPlane(text: string, width: number, height: number, color = '#eee5cc
 }
 
 export function decorateField(scene: THREE.Scene) {
+  for (let yard = -50; yard <= 50; yard += 10) {
+    const stripe = new THREE.Mesh(
+      new THREE.PlaneGeometry(0.22, 53.33),
+      new THREE.MeshBasicMaterial({ color: '#eee5cc' }),
+    );
+    stripe.name = 'yardLine';
+    stripe.rotation.x = -Math.PI / 2;
+    stripe.position.set(yard, 0.06, 0);
+    scene.add(stripe);
+  }
   for (let yard = -40; yard <= 40; yard += 10) {
     const value = 50 - Math.abs(yard);
     for (const side of [-1, 1]) {
@@ -42,30 +53,24 @@ export function decorateField(scene: THREE.Scene) {
     label.position.set(x, 0.07, 0);
     scene.add(label);
   }
-  const markers = ['#63cde1', '#f4d575'].map((color) => {
-    const line = new THREE.Mesh(
-      new THREE.PlaneGeometry(0.24, 53.33),
-      new THREE.MeshBasicMaterial({ color }),
-    );
-    line.rotation.x = -Math.PI / 2;
-    line.position.y = 0.085;
-    scene.add(line);
-    return line;
-  });
-  return (lineOfScrimmage: number, target: number) => {
-    markers[0].position.x = lineOfScrimmage;
-    markers[1].position.x = target;
-  };
-}
-
-export function createStadium(scene: THREE.Scene) {
-  const map = new THREE.TextureLoader().load(`${import.meta.env.BASE_URL}assets/stadium1985.png`);
-  map.colorSpace = THREE.SRGBColorSpace;
-  map.magFilter = THREE.LinearFilter;
-  const backdrop = new THREE.Mesh(
-    new THREE.PlaneGeometry(190, 27),
-    new THREE.MeshBasicMaterial({ map }),
+  const line = new THREE.Mesh(
+    new THREE.PlaneGeometry(0.36, 53.33),
+    new THREE.MeshBasicMaterial({ color: '#f4d575' }),
   );
-  backdrop.position.set(0, 13.5, -28.2);
-  scene.add(backdrop);
+  line.rotation.x = -Math.PI / 2;
+  line.position.y = 0.2;
+  scene.add(line);
+  const targetLine = line.clone();
+  targetLine.material = new THREE.MeshBasicMaterial({
+    color: '#d3e6ee',
+    transparent: true,
+    opacity: 0.8,
+  });
+  targetLine.position.x = 17;
+  scene.add(targetLine);
+  createGoalPosts(scene);
+  return (_lineOfScrimmage: number, target: number, showTarget = false) => {
+    line.position.x = target;
+    targetLine.visible = showTarget;
+  };
 }

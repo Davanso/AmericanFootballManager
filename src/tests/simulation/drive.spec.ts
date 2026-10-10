@@ -68,6 +68,11 @@ describe('drive progression', () => {
 
   it('scores a touchdown through a goal-line pass and never awards it twice', () => {
     const state = createPlay(createDrive(0, 45));
+    state.athletes
+      .filter((player) => player.team === 'away')
+      .forEach((player) => {
+        player.x = -30;
+      });
     startPlay(state);
     for (let i = 0; i < 25; i++) updatePlay(state, { x: 0, z: 0 }, 1 / 60);
     throwPass(state, 'wr1');

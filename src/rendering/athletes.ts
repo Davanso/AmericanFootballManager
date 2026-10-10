@@ -6,8 +6,12 @@ import { createRoute } from './routeDrawing';
 import { ballPresentation, fallPresentation } from './finishAnimation';
 
 export function createAthletes(scene: THREE.Scene, initial: PlayState) {
-  const home = Array.from({ length: 4 }, (_, frame) => createPlayerTexture('home', frame));
-  const away = Array.from({ length: 4 }, (_, frame) => createPlayerTexture('away', frame));
+  const textures = new Map(
+    initial.athletes.map((athlete) => [
+      athlete.id,
+      Array.from({ length: 8 }, (_, frame) => createPlayerTexture(athlete.team, frame, athlete.id)),
+    ]),
+  );
   const group = new THREE.Group();
   const routes = new THREE.Group();
   const sprites = new Map<string, THREE.Sprite>();
@@ -15,7 +19,7 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
   const badges = new Map<string, THREE.Sprite>();
   for (const athlete of initial.athletes) {
     const sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: athlete.team === 'home' ? home[0] : away[0] }),
+      new THREE.SpriteMaterial({ map: textures.get(athlete.id)![0] }),
     );
     sprite.scale.set(4.4, 5.5, 1);
     group.add(sprite);
@@ -70,22 +74,41 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
         materials.forEach((material) => material.dispose());
       });
       routes.clear();
-      for (const target of PASS_TARGETS) {
+      const routeTargets = state.kind === 'run' ? [{ id: 'rb', color: '#b7ef8c' }] : PASS_TARGETS;
+      for (const target of routeTargets) {
         const receiver = state.athletes.find((athlete) => athlete.id === target.id)!;
-        routes.add(createRoute([receiver, ...receiver.route], target.color));
+        const route = createRoute([receiver, ...receiver.route], target.color);
+        route.name = `route:${target.id}`;
+        routes.add(route);
       }
       routeState = state;
       finishSeconds = 0;
     }
     finishSeconds = state.phase === 'finished' ? finishSeconds + dt : 0;
-    routes.visible = state.phase === 'ready';
+    routes.visible = state.phase === 'ready' && state.kind !== 'kick';
     for (const athlete of state.athletes) {
       const sprite = sprites.get(athlete.id)!;
       const moving =
         Math.hypot(sprite.position.x - athlete.x, sprite.position.z - athlete.z) > 0.001;
       const active = moving && !['ready', 'finished'].includes(state.phase);
-      const animation = active ? Math.floor(state.elapsed * 10 + athlete.id.charCodeAt(0)) % 4 : 0;
-      sprite.material.map = athlete.team === 'home' ? home[animation] : away[animation];
+      let animation = active ? Math.floor(state.elapsed * 10 + athlete.id.charCodeAt(0)) % 4 : 0;
+      if (athlete.id === 'ol2' && state.phase === 'snap') animation = 4;
+      if (
+        athlete.id === 'qb' &&
+        (state.carrier === 'qb' || (state.phase === 'snap' && state.elapsed > 0.2))
+      )
+        animation = 5;
+      if (athlete.id === state.carrier && athlete.id !== 'qb') animation = 5;
+      if (athlete.id === 'qb' && state.phase === 'handoff') animation = 5;
+      if (athlete.id === 'qb' && state.phase === 'pass' && state.flight < 0.3) animation = 6;
+      if (
+        athlete.id === 'rb' &&
+        state.kind === 'kick' &&
+        state.phase === 'kickFlight' &&
+        state.flight > 0.12
+      )
+        animation = 7;
+      sprite.material.map = textures.get(athlete.id)![animation];
       sprite.material.rotation = 0;
       sprite.material.depthTest = state.fallen !== athlete.id;
       sprite.renderOrder = state.fallen === athlete.id ? 6 : 0;
@@ -106,12 +129,17 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
       if (!badge) continue;
       badge.position.set(athlete.x, 7.7, athlete.z);
       badge.visible =
-        state.phase === 'ready' ||
-        state.phase === 'snap' ||
-        (state.phase === 'live' && state.carrier === 'qb');
+        state.kind !== 'run' &&
+        (state.phase === 'ready' ||
+          state.phase === 'snap' ||
+          (state.phase === 'live' && state.carrier === 'qb'));
     }
     const displayedBall = ballPresentation(state, finishSeconds);
-    ball.position.set(displayedBall.x, displayedBall.height, displayedBall.z);
+    ball.position.set(
+      displayedBall.x,
+      displayedBall.height + (state.carrier ? 1 : 0),
+      displayedBall.z,
+    );
     ball.rotation.z =
       state.outcome === 'incomplete' ? Math.min(finishSeconds, 2) * 5 : state.flight * 6;
     const carrier = state.athletes.find((athlete) => athlete.id === (state.carrier || 'qb'))!;
@@ -121,7 +149,7 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
   return {
     render,
     dispose() {
-      [...home, ...away].forEach((map) => map.dispose());
+      textures.forEach((frames) => frames.forEach((map) => map.dispose()));
     },
   };
 }

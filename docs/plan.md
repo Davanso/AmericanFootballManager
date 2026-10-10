@@ -179,9 +179,9 @@ Adicionar bloqueios, marcação, pressão ao QB, recepção e tackle. Integrar t
 - [x] Downs e distância para primeira descida, incluindo goal-to-go.
 - [x] Atualização da posição da bola e formação da próxima jogada no ponto final.
 - [x] Touchdown, seis pontos acumulados e animação de celebração.
-- [ ] Corrida pelo meio, passe curto e passe longo.
+- [x] Corrida pelo meio, passe curto e passe longo.
 - [ ] Pelo menos duas respostas defensivas.
-- [ ] Seleção de jogadas entre snaps.
+- [x] Seleção de jogadas entre snaps.
 - [ ] Replay; velocidade de reprodução a avaliar.
 
 ### Etapa 6 — Partida offline
@@ -262,7 +262,7 @@ Implementada uma jogada de treino com simulação em passos de 1/60 segundo, mó
 
 O timer começa após o snap. O QB pode passar enquanto estiver atrás da linha, ou correr. Passe assistido após cinco segundos; defesa pode provocar sack antes disso. Recebedor avança por bot após receber. Resultados encerram e congelam a jogada; Reiniciar restaura a formação e as rotas.
 
-Limitações: bloqueios aproximados por proximidade e resistência temporária, cobertura aproximada, passe guiado e uma jogada fixa. O item de bots com bloqueios completos permanece pendente. Há drive de treino com downs e distância; ainda não há partida completa, replay, temporada ou gestão.
+Limitações: bloqueios aproximados por proximidade e resistência temporária, cobertura aproximada, passe guiado e duas jogadas de passe, além do field goal simplificado. O item de bots com bloqueios completos permanece pendente. Há drive de treino com downs e distância; ainda não há partida completa, replay, temporada ou gestão.
 
 Próxima etapa: refinar bloqueios e percepção defensiva, animações e legibilidade dos recebedores; depois adicionar seleção entre corrida, passe curto e passe longo, além de posse adversária e regras de partida completa.
 
@@ -348,7 +348,7 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 
 - [x] Fundo de estádio detalhado em pixel art, com humanos, arquibancadas, árvores, academia de tijolos e refletores; asset local e prompt registrados em `docs/assets.md`.
 - [x] Gramado mais próximo da paleta da referência, faixas de corte, borda estreita e enquadramento mais próximo da ação, sem a moldura larga anterior.
-- [x] Somente linhas principais a cada dez jardas: retirar linhas intermediárias de cinco jardas e hash marks. Manter números e indicadores táticos de scrimmage/primeira descida.
+- [x] Linha tática de primeira descida/goal, números e linhas brancas a cada dez jardas; retirar scrimmage azul e hash marks. Rotas da jogada selecionada apenas antes do snap.
 - [x] Painel inferior com `1st to 10`, `1st to GOAL`, demais descidas, posição da bola e botão Próxima jogada.
 - [x] Iniciar a próxima jogada no ponto final: traduzir atletas, rotas, bola, snap, cobertura de zona e limite do passe para a nova linha de scrimmage.
 - [x] Ganhos curtos/perdas mantêm a linha a conquistar; passe incompleto volta ao ponto do snap; conversão reinicia as descidas com dez jardas ou goal-to-go.
@@ -357,4 +357,53 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Seletor de posição inicial para testar meio de campo, red zone e goal-to-go. Alterações somente entre jogadas; Reiniciar zera posição e placar.
 - [x] Testes de regressão para perdas, incompletos, conversão, goal-to-go após perda, quarta descida, reposicionamento, snap, limite do passe e touchdown real por recepção.
 - [ ] Refinar arte dos atletas para combinar com o novo estádio e validar enquadramento em todas as dimensões.
-- [ ] Posse adversária, safety, extra point, kickoff, punt, field goal, relógio de partida e penalidades. O drive atual é um treino ofensivo, sem troca real de ataque/defesa.
+- [ ] Posse adversária, safety, kickoff, punt, field goal completo, relógio de partida e penalidades. O drive atual é um treino ofensivo, sem troca real de ataque/defesa.
+
+## 19. Correções visuais, limites e field goal
+
+- [x] Remover rotação lateral da câmera: limites horizontais e números alinhados.
+- [x] Integrar o estádio à cena, ancorado na lateral distante do campo e preservando a proporção original de 3:1 durante zoom e movimento.
+- [x] Preservar as marcações brancas a cada dez jardas e a linha dourada necessária para primeira descida/goal. Rotas e setas na cor do recebedor correspondente, somente antes do snap, e cartas com diagramas próprios.
+- [x] Conter todos os atletas nos limites do campo, incluindo bots, formações perto das end zones e separação entre jogadores. Margem visual considera o tamanho do sprite.
+- [x] Revisar silhuetas humanas, capacetes de perfil, poses de snap, posse, lançamento e chute.
+- [x] Snap do center ao QB/holder com movimento da bola; kicker aproxima-se e chuta com voo em arco.
+- [x] Traves ilustradas para leitura frontal na apresentação 2D; resultado do chute usa distância, altura e abertura entre postes.
+- [x] Field goal disponível dentro do alcance simplificado de 50 jardas. Fixar direção da seta oscilante, depois força oscilante, por botão ou Espaço; marcar três pontos somente uma vez.
+- [x] Cenário explícito de fim de jogo com 20 segundos; linha branca de alcance apenas nos últimos 30 segundos, a partir do meio de campo. Treino normal não mostra esse indicador.
+- [x] Passe longo selecionável, com carta, rotas e execução diferentes do passe curto.
+- [ ] Vento, atributos do kicker, bloqueio de chute, snap impreciso e regras completas de relógio/posse.
+- [ ] Sprite sheets finais direcionais e animações completas de center, holder, QB e kicker; as poses atuais são procedurais e provisórias.
+
+## 20. Retorno à pixel art e evolução futura
+
+- [x] Restaurar linhas brancas a cada dez jardas, separadas dos indicadores táticos.
+- [x] Sprites de pixels definidos com diversidade de pele, números de camisa e chuteiras; ombreiras largas, meias altas, bigodes e mullets para os anos 80.
+- [x] Traves verticais 2D com textura pixelizada.
+- [x] Rotas e pontas das setas seguem a cor do recebedor; somem no snap.
+- [x] Estádio e campo unidos na mesma cena, sem faixa vazia; proporção do asset preservada.
+- [x] Testes de regressão para todos esses ajustes e regra registrada nas instruções dos agentes.
+- [ ] Placar fixo na parte inferior da tela, quadrado e bem pixelizado, inspirado em transmissão real. Mostrar times, pontos, quarto, relógio, posse, down/distância, posição e timeouts; desenhar versão compacta responsiva sem cobrir a ação.
+- [ ] Projetar o jogo com a equipe de defesa: seleção de formação/cobertura/blitz, atleta controlado, troca de defensor, movimentação e tackle; bots mantêm as demais atribuições. Primeiro validar uma jogada defensiva antes de ligar à alternância de posse.
+- [ ] Faltas e flags: eventos raros com aleatoriedade reproduzível por seed. Primeiros exemplos: false start antes do snap e facemask defensivo durante contato. Definir momento, equipe infratora, interrupção, jardas, repetição da descida ou first down, aceitação/recusa e aviso visual. Ajustar probabilidades em testes para evitar punições arbitrárias frequentes; validar regras por época antes de implementar.
+
+## 21. Conversões e revisão dos bots
+
+- [x] Escolha obrigatória após touchdown: chute de um ponto ou jogada de dois pontos.
+- [x] Formação na linha de duas jardas para a época inicial; uma tentativa, sem quatro descidas e sem somar outro touchdown de seis pontos.
+- [x] Chute com direção/força e animação; erro preserva os seis pontos. Conversão de dois permite passe curto/longo ou corrida do QB.
+- [x] Ajustes no pocket preservam rotas; apoio à corrida ao cruzar a linha ou sair lateralmente do pocket. Separação não empurra recebedores para fora das rotas.
+- [x] Cobertura individual antecipa movimento observado; zonas reagem a ameaças próximas; repetição de passes aumenta atenção defensiva no treino.
+- [x] Testes de pontuação única, tentativas frustradas, interface durante conversão, preservação de rotas e defesa contra passe repetido.
+- [ ] Interceptações, disputas com atributos, disfarce de cobertura, coordenador defensivo e calibração de dificuldade em sessões de jogo.
+- [ ] Retorno defensivo em conversões e posição do extra point configurável por época.
+
+## 22. Corrida pelo meio com RB controlável
+
+- [x] Carta com formação, entrega e rota do RB #34, verde e visível somente antes do snap.
+- [x] Formação traduzida para a posição atual do drive; QB recebe o snap e entrega a bola ao RB em uma fase própria.
+- [x] Controle do RB por WASD/setas depois da entrega, com velocidade normalizada nas diagonais; sem entrada, o corredor para. QB e bots não controlam o portador nessa jogada.
+- [x] Ataque distribui bloqueios durante a entrega; defesa persegue e contém o corredor.
+- [x] Passe desabilitado, sem passe assistido ou timer de decisão de passe nessa jogada.
+- [x] Tackle, lateral, progressão do drive, touchdown e corrida numa tentativa de dois pontos.
+- [x] Testes de posse, entrega, controle, diagonal, lateral, reposicionamento, tackle, touchdown único, conversão e apresentação da carta/rota/interface.
+- [ ] Próximo marco: respostas defensivas distintas (man, zone e blitz) e calibração dos bloqueios contra corrida.

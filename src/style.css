@@ -382,3 +382,94 @@ button kbd {
   outline: 2px solid var(--gold);
   outline-offset: 3px;
 }
+
+#field {
+  height: clamp(440px, 52vw, 620px);
+}
+.playChoices {
+  display: flex;
+  align-items: center;
+  flex-wrap: wrap;
+  gap: 12px;
+}
+.play-choice {
+  padding: 0;
+  background: transparent;
+  box-shadow: none;
+  text-align: left;
+  color: #eee5cc;
+}
+.play-choice .play-card {
+  border-color: #456453;
+}
+.play-choice.selected .play-card {
+  border-color: var(--gold);
+}
+#kick-controls {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 20px;
+  padding: 18px;
+  border: 1px solid #8e804c;
+  background: #122e29;
+}
+#kick-controls[hidden] {
+  display: none;
+}
+.kick-direction {
+  width: 70px;
+  height: 60px;
+  text-align: center;
+}
+#kick-arrow {
+  display: inline-block;
+  font: bold 55px monospace;
+  color: #f6d174;
+  transform-origin: bottom center;
+}
+#kick-controls label {
+  font: 11px monospace;
+}
+#kick-meter {
+  width: 120px;
+  height: 20px;
+}
+.practice-start {
+  flex-wrap: wrap;
+}
+@media (max-width: 650px) {
+  #kick-controls {
+    flex-wrap: wrap;
+  }
+  .playbook {
+    flex-direction: column;
+    align-items: start;
+  }
+}
+#choose-kick {
+  background: #143b32;
+  color: #eee5cc;
+  border: 2px solid #456453;
+  box-shadow: none;
+  padding: 12px;
+}
+#choose-kick svg {
+  display: block;
+  margin-top: 8px;
+}
+#choose-kick span {
+  margin: 0;
+}
+
+#conversion-choice {
+  padding: 18px;
+  background: #193c32;
+  border: 2px solid #e4b446;
+}
+#conversion-choice:not([hidden]) {
+  display: flex;
+  gap: 16px;
+  align-items: center;
+  flex-wrap: wrap;
+}

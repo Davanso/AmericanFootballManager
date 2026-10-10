@@ -1,4 +1,5 @@
 export interface Drive {
+  attempt?: 'extraPoint' | 'twoPoint';
   spot: number;
   target: number;
   down: number;
@@ -12,6 +13,12 @@ export function createDrive(score = 0, spot = -19): Drive {
 
 export function advanceDrive(drive: Drive, ballSpot: number, incomplete: boolean): Drive {
   if (drive.status !== 'active') return drive;
+  if (drive.attempt)
+    return {
+      ...drive,
+      score: drive.score + (!incomplete && ballSpot >= 50 ? 2 : 0),
+      status: 'turnover',
+    };
   const spot = incomplete ? drive.spot : Math.max(-49, Math.min(50, ballSpot));
   if (spot >= 50) return { ...drive, spot: 50, score: drive.score + 6, status: 'touchdown' };
   if (spot >= drive.target) return createDrive(drive.score, spot);

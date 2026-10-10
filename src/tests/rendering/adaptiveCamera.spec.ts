@@ -15,7 +15,7 @@ describe('field camera', () => {
       const left = new Vector3(-40, 0, 0).project(camera);
       const right = new Vector3(40, 0, 0).project(camera);
       const slope = Math.abs((right.y - left.y) / ((right.x - left.x) * aspect));
-      expect(slope).toBeLessThan(0.03);
+      expect(slope).toBeLessThan(0.000001);
     }
   });
 });

@@ -64,10 +64,9 @@ Sempre que o projeto for atualizado, revisar e atualizar o status no `README.md`
 - Comentários claros e diretos, preferencialmente em uma única linha. Explicar intenção ou decisões que não são óbvias no código; evitar repetir o que o código já diz.
 - Manter a organização do projeto com pastas de nomes claros e descritivos. Quando um nome de pasta tiver mais de uma palavra, usar camelCase (ex.: `playSelection`, `playerAnimation`).
 
-## Registro de novos padrões
-
 ## Organização dos testes — regra definida pelo usuário
 
+- Para todo ajuste ou correção, adicionar ou atualizar testes de regressão que verifiquem o comportamento esperado e impeçam a repetição do problema. Ajustes visuais também exigem testes de geometria, cores, enquadramento ou composição pertinentes, além de inspeção no navegador.
 - Manter testes separados do código de produção, em `src/tests/`.
 - Espelhar o caminho do arquivo testado: `src/rendering/field.ts` → `src/tests/rendering/field.spec.ts`.
 - Usar sempre o sufixo `.spec.ts` (ou `.spec.tsx` quando aplicável), nunca `.test`.

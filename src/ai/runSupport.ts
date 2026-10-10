@@ -57,13 +57,21 @@ export function separateAthletes(state: PlayState, dt: number) {
       const dz = a.z - b.z;
       const length = Math.hypot(dx, dz);
       if (length >= 2.8) continue;
+      // Receivers retain their routes; only the teammate yields during the pass concept.
+      const aRoute = a.role === 'receiver' && !state.scrambling && !state.carrier.startsWith('wr');
+      const bRoute = b.role === 'receiver' && !state.scrambling && !state.carrier.startsWith('wr');
+      if (aRoute && bRoute) continue;
       const push = Math.min((2.8 - length) * 0.5, dt * 3);
       const nx = length > 0.01 ? dx / length : 0;
       const nz = length > 0.01 ? dz / length : 1;
-      a.x += nx * push;
-      a.z += nz * push;
-      b.x -= nx * push;
-      b.z -= nz * push;
+      if (!aRoute) {
+        a.x += nx * push;
+        a.z += nz * push;
+      }
+      if (!bRoute) {
+        b.x -= nx * push;
+        b.z -= nz * push;
+      }
     }
   }
 }

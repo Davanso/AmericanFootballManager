@@ -2,14 +2,20 @@ import * as THREE from 'three';
 import { createAthletes } from './athletes';
 import type { PlayState } from '../simulation/play';
 import { createAdaptiveCamera } from './adaptiveCamera';
-import { createStadium, decorateField } from './stadium';
+import { decorateField } from './stadium';
 import { createTurfTexture } from './turfTexture';
+import { showKickTarget } from '../simulation/kicking';
+import { createStadiumBackdrop } from './stadiumBackdrop';
 import { createTouchdownEffect } from './touchdownEffect';
 
 // Render the field independently of simulation rules.
 export function createField(host: HTMLElement, initial: PlayState) {
   const scene = new THREE.Scene();
-  scene.background = new THREE.Color('#8eb8bd');
+  scene.background = new THREE.Color('#35583c');
+  const updateBackdrop = createStadiumBackdrop(
+    scene,
+    new THREE.TextureLoader().load('/assets/stadium1985.png'),
+  );
   const camera = new THREE.OrthographicCamera(-80, 80, 55, -55, 0.1, 500);
   const renderer = new THREE.WebGLRenderer({ antialias: true });
   renderer.setPixelRatio(Math.min(Math.max(window.devicePixelRatio, 1.5), 2));
@@ -25,7 +31,6 @@ export function createField(host: HTMLElement, initial: PlayState) {
     scene.add(mesh);
   }
 
-  rectangle(180, 110, '#35583c', 0, 0, -0.03);
   rectangle(121, 54.1, '#ede7c5');
   const turf = new THREE.Mesh(
     new THREE.PlaneGeometry(120, 53.33),
@@ -36,14 +41,11 @@ export function createField(host: HTMLElement, initial: PlayState) {
   scene.add(turf);
   rectangle(10, 53.33, '#183f52', -55, 0, 0.03);
   rectangle(10, 53.33, '#9d4c38', 55, 0, 0.03);
-  for (let yard = -50; yard <= 50; yard += 10) {
-    rectangle(0.2, 53.33, '#eee9ca', yard, 0, 0.04);
-  }
   for (const z of [-26.65, 26.65]) rectangle(120, 0.35, '#e5e5bf', 0, z, 0.05);
 
   const updateMarkers = decorateField(scene);
   updateMarkers(initial.lineOfScrimmage, initial.firstDownLine);
-  createStadium(scene);
+
   const athletes = createAthletes(scene, initial);
   const framing = createAdaptiveCamera(camera);
   const touchdown = createTouchdownEffect(scene);
@@ -54,6 +56,7 @@ export function createField(host: HTMLElement, initial: PlayState) {
     const height = Math.max(host.clientHeight, 1);
     aspect = width / height;
     renderer.setSize(width, height);
+    updateBackdrop(camera);
     renderer.render(scene, camera);
   }
   function resetCamera() {
@@ -72,8 +75,9 @@ export function createField(host: HTMLElement, initial: PlayState) {
       framing.update(state, aspect, dt);
       lastFrame = now;
       athletes.render(state, dt);
-      updateMarkers(state.lineOfScrimmage, state.firstDownLine);
+      updateMarkers(state.lineOfScrimmage, state.firstDownLine, showKickTarget(state));
       touchdown(state, dt);
+      updateBackdrop(camera);
       renderer.render(scene, camera);
     },
     dispose() {

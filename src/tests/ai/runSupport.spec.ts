@@ -26,6 +26,7 @@ describe('run support', () => {
     startPlay(state);
     for (let i = 0; i < 30; i++) updatePlay(state, { x: 0, z: 0 }, 1 / 60);
     const receiver = state.athletes.find((athlete) => athlete.id === 'wr1')!;
+    state.athletes.find((player) => player.id === 'qb')!.z = -8;
     const x = receiver.x;
     updatePlay(state, { x: 0, z: -1 }, 1 / 60);
     expect(state.scrambling).toBe(true);
