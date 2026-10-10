@@ -147,3 +147,4 @@ Usamos mensagens no formato `tipo: descrição`, como `feat: adicionar seleção
 
 Consulte as [instruções do repositório](.github/agent-instructions.md) antes de contribuir.
 
+A nova arte pixel art do estádio de 1985 está disponível em public/assets/stadium1985.png, com prompt e origem registrados em [Assets visuais](docs/assets.md). A integração ao campo será feita na próxima atualização da demo.
