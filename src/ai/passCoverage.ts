@@ -1,3 +1,4 @@
+import { zoneAnchor } from './defensivePlan';
 import type { Athlete, PlayState, Position } from '../simulation/play';
 
 function routeLead(receiver: Athlete): Position {
@@ -12,7 +13,7 @@ function routeLead(receiver: Athlete): Position {
 
 export function coverageTarget(defender: Athlete, state: PlayState) {
   const receivers = state.athletes.filter((player) => player.role === 'receiver');
-  if (defender.id.startsWith('cover')) {
+  if (defender.id.startsWith('cover') && state.defensePlan !== 'zone') {
     const receiver = receivers[Number(defender.id.slice(-1))];
     const lead = routeLead(receiver);
     const previous = Math.max(
@@ -21,11 +22,7 @@ export function coverageTarget(defender: Athlete, state: PlayState) {
     );
     return { x: lead.x + Math.max(0.4, 2.2 - previous * 0.9), z: lead.z + 0.4 };
   }
-  const index = Number(defender.id.slice(-1));
-  const anchor = {
-    x: Math.min(49, state.lineOfScrimmage + (index < 2 ? 10 : 22)),
-    z: index % 2 === 0 ? -12 : 12,
-  };
+  const anchor = zoneAnchor(defender, state);
   const threat = receivers
     .filter(
       (receiver) =>
@@ -40,5 +37,11 @@ export function coverageTarget(defender: Athlete, state: PlayState) {
       return priority(a) - priority(b);
     })[0];
   if (!threat) return anchor;
-  return routeLead(threat);
+  const lead = routeLead(threat);
+  return state.defensePlan === 'zone'
+    ? {
+        x: Math.max(anchor.x - 7, Math.min(anchor.x + 7, lead.x)),
+        z: Math.max(anchor.z - 7, Math.min(anchor.z + 7, lead.z)),
+      }
+    : lead;
 }

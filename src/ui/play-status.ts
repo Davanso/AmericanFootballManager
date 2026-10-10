@@ -1,4 +1,5 @@
 import type { PlayState } from '../simulation/play';
+import { DEFENSIVE_PLANS } from '../data/defensivePlans';
 import { PASS_TARGETS } from '../data/passTargets';
 import { needsConversion } from '../simulation/conversion';
 import { downLabel } from '../simulation/drive';
@@ -36,6 +37,9 @@ export function createPlayStatus() {
             : 'JOGADA · PASSE CURTO';
     const pendingConversion = needsConversion(state);
     document.querySelector<HTMLElement>('#conversion-choice')!.hidden = !pendingConversion;
+    const defenseSelect = document.querySelector<HTMLSelectElement>('#defense-plan')!;
+    defenseSelect.disabled = state.phase !== 'ready';
+    defenseSelect.value = state.defensePlan;
     const between = state.phase === 'ready' || state.phase === 'finished';
     scenario.disabled = !between || pendingConversion || Boolean(state.drive.attempt);
     choices.forEach((button) => {
@@ -95,9 +99,11 @@ export function createPlayStatus() {
         ? 'FIM DE JOGO · ' + state.gameSeconds.toFixed(1) + 's'
         : 'ANTES DO SNAP';
       status.textContent =
-        state.lateGame && state.lineOfScrimmage >= 0
+        DEFENSIVE_PLANS[state.defensePlan].name +
+        ' · ' +
+        (state.lateGame && state.lineOfScrimmage >= 0
           ? 'Linha branca: alcance de field goal de 50 jardas · cenário de fim de jogo'
-          : 'Linha dourada: primeira descida ou goal · escolha a jogada e dê o snap';
+          : 'Linha dourada: primeira descida ou goal · escolha a jogada e dê o snap');
       return;
     }
     if (state.phase === 'finished') {

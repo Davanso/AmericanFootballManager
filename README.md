@@ -93,7 +93,7 @@ Variações de velocidade, aceleração e habilidade de passe curto/médio/longo
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 50 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 53 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -176,3 +176,7 @@ Pequenos ajustes do QB no pocket preservam as rotas. Os recebedores passam a blo
 A carta **Corrida pelo meio** mostra a entrega e a rota verde do RB #34. Após o snap, o QB recebe a bola e a entrega ao corredor em uma animação curta. Depois, **WASD ou setas controlam o RB**; sem pressionar uma direção, ele para. Os botões de passe ficam desabilitados nessa jogada e não há passe automático ao fim do timer.
 
 O ataque distribui bloqueios desde a entrega, enquanto a defesa persegue e contém o corredor. Tackle, lateral, first down e touchdown seguem a progressão do drive. A corrida também pode ser selecionada numa tentativa de dois pontos. Os bloqueios ainda são aproximações; novas formações e respostas defensivas serão o próximo marco.
+
+### Respostas defensivas
+
+O seletor **Plano defensivo** permite testar marcação individual, zona e blitz. A zona preserva setores e a blitz envia seis defensores à pressão, abrindo espaço em cobertura. A escolha fica travada durante a jogada e permanece entre descidas e conversões.

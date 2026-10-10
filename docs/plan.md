@@ -180,7 +180,7 @@ Adicionar bloqueios, marcação, pressão ao QB, recepção e tackle. Integrar t
 - [x] Atualização da posição da bola e formação da próxima jogada no ponto final.
 - [x] Touchdown, seis pontos acumulados e animação de celebração.
 - [x] Corrida pelo meio, passe curto e passe longo.
-- [ ] Pelo menos duas respostas defensivas.
+- [x] Pelo menos duas respostas defensivas.
 - [x] Seleção de jogadas entre snaps.
 - [ ] Replay; velocidade de reprodução a avaliar.
 
@@ -407,3 +407,10 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Tackle, lateral, progressão do drive, touchdown e corrida numa tentativa de dois pontos.
 - [x] Testes de posse, entrega, controle, diagonal, lateral, reposicionamento, tackle, touchdown único, conversão e apresentação da carta/rota/interface.
 - [ ] Próximo marco: respostas defensivas distintas (man, zone e blitz) e calibração dos bloqueios contra corrida.
+
+## 23. Respostas defensivas
+
+- [x] Seleção entre marcação individual, zona e blitz antes do snap.
+- [x] Zona protege setores; blitz adiciona dois rushers à pressão e reduz cobertura.
+- [x] Preservar seleção entre descidas/conversões e impedir mudança em execução.
+- [x] Testes comparando pressão e movimentação nos três planos.

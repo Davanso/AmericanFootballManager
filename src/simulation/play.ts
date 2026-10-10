@@ -1,5 +1,6 @@
 import { advanceDrive, createDrive } from './drive';
 import type { Drive } from './drive';
+import type { DefensivePlan } from '../data/defensivePlans';
 import { containAthlete } from './bounds';
 
 export interface Position {
@@ -26,6 +27,7 @@ export type Phase =
   | 'pass'
   | 'finished';
 export interface PlayState {
+  defensePlan: DefensivePlan;
   defenseReads: Record<string, number>;
   kind: PlayKind;
   lateGame: boolean;
@@ -58,6 +60,7 @@ export function createPlay(
   lateGame = false,
   gameSeconds = lateGame ? 20 : 120,
   defenseReads: Record<string, number> = {},
+  defensePlan: DefensivePlan = 'man',
 ): PlayState {
   const drive =
     previousDrive.status === 'active' ? { ...previousDrive } : createDrive(previousDrive.score);
@@ -135,6 +138,7 @@ export function createPlay(
   }
   athletes.forEach(containAthlete);
   return {
+    defensePlan,
     defenseReads: { ...defenseReads },
     kind,
     lateGame,

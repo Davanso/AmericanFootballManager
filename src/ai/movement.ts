@@ -1,3 +1,4 @@
+import { isPassRusher } from './defensivePlan';
 import { coverageTarget } from './passCoverage';
 import type { Athlete, Position, PlayState } from '../simulation/play';
 import {
@@ -63,7 +64,7 @@ export function updateBots(state: PlayState, dt: number) {
       continue;
     }
     if (athlete.role === 'blocker') {
-      const rushers = state.athletes.filter((player) => player.id.startsWith('rush'));
+      const rushers = state.athletes.filter((player) => isPassRusher(player, state));
       const nearest = rushers.reduce((best, player) =>
         Math.hypot(player.x - athlete.x, player.z - athlete.z) <
         Math.hypot(best.x - athlete.x, best.z - athlete.z)
@@ -73,7 +74,7 @@ export function updateBots(state: PlayState, dt: number) {
       if (state.elapsed < 2.8) moveToward(athlete, screeningPosition(nearest, qb), 1.2, dt);
       continue;
     }
-    if (athlete.id.startsWith('rush')) {
+    if (isPassRusher(athlete, state)) {
       // Blocking slows pressure without stopping the defense after the snap.
       const blocked =
         state.elapsed < 2.8 &&
@@ -82,7 +83,7 @@ export function updateBots(state: PlayState, dt: number) {
             player.role === 'blocker' &&
             Math.hypot(player.x - athlete.x, player.z - athlete.z) < 2.8,
         );
-      moveToward(athlete, qb, blocked ? 1.1 : 4.2, dt);
+      moveToward(athlete, qb, blocked ? 1.1 : state.defensePlan === 'blitz' ? 5.2 : 4.2, dt);
       continue;
     }
     moveToward(

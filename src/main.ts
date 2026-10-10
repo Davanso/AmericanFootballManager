@@ -9,6 +9,8 @@ import { playDiagram } from './ui/playDiagram';
 import { confirmKick } from './simulation/kicking';
 import type { PlayKind } from './simulation/play';
 import { chooseConversion, needsConversion } from './simulation/conversion';
+import { DEFENSIVE_PLANS } from './data/defensivePlans';
+import type { DefensivePlan } from './data/defensivePlans';
 import { createDrive } from './simulation/drive';
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -22,7 +24,11 @@ app.innerHTML = `
       <div class="field-stage"><div id="field" role="img" aria-label="Campo com atletas e rotas da jogada"></div><div id="touchdown" class="touchdown-banner" role="status" hidden><small>AURORA WOLVES</small><strong>TOUCHDOWN</strong><span>+6 PONTOS</span></div></div>
       <div class="drive-board" aria-label="Descida e distância"><div><small id="down-caption">DESCIDA ATUAL</small><strong id="down-distance">1st to 10</strong></div><span id="ball-spot">BOLA · WOLVES 31</span><button id="next-play" type="button" disabled>Próxima jogada →</button></div>
       <section id="conversion-choice" hidden aria-label="Tentativa após touchdown"><strong>TOUCHDOWN · Escolha a conversão</strong><button id="extra-point" type="button">Extra point · +1</button><button id="two-point" type="button">Conversão de dois pontos · +2</button></section>
-      <label class="practice-start">INÍCIO DO TREINO <select id="start-spot"><option value="-19">Wolves · jarda 31</option><option value="0">Meio do campo</option><option value="30">Hawks · jarda 20</option><option value="45">Hawks · jarda 5 · goal</option></select><select id="scenario" aria-label="Situação do treino"><option value="normal">Treino normal</option><option value="late">Fim de jogo · 20s</option></select></label>
+      <label class="practice-start">INÍCIO DO TREINO <select id="start-spot"><option value="-19">Wolves · jarda 31</option><option value="0">Meio do campo</option><option value="30">Hawks · jarda 20</option><option value="45">Hawks · jarda 5 · goal</option></select><select id="scenario" aria-label="Situação do treino"><option value="normal">Treino normal</option><option value="late">Fim de jogo · 20s</option></select><select id="defense-plan" aria-label="Plano defensivo">${Object.entries(
+        DEFENSIVE_PLANS,
+      )
+        .map(([id, plan]) => `<option value="${id}">${plan.name}</option>`)
+        .join('')}</select></label>
       <p id="render-status" role="status">Preparando o campo…</p>
     </section>
     <section id="kick-controls" hidden aria-label="Controle do chute"><div class="kick-direction"><span id="kick-arrow">↑</span></div><label>FORÇA <meter id="kick-meter" min="0" max="1" value="0.8"></meter></label><button id="kick-confirm" type="button">Fixar direção</button><p id="kick-hint">Espaço: fixar direção, depois força.</p></section><footer class="play-controls"><div><span class="tag" id="play-title">JOGADA · PASSE CURTO</span><p id="result">Dê o snap e encontre um recebedor.</p></div><div class="actions"><button id="snap" type="button">Dar snap</button>${PASS_TARGETS.map((target, index) => `<button data-pass="${index}" type="button" aria-label="Passar para ${target.name}, tecla ${target.label}"><kbd style="--target-color:${target.color}">${target.label}</kbd> ${target.name}</button>`).join('')}<button id="restart" type="button">Reiniciar</button></div></footer>
@@ -42,6 +48,7 @@ function mountDemo() {
   const kickConfirm = document.querySelector<HTMLButtonElement>('#kick-confirm')!;
   const chooseKick = document.querySelector<HTMLButtonElement>('#choose-kick')!;
   const playChoices = [...document.querySelectorAll<HTMLButtonElement>('[data-kind]')];
+  const defensePlan = document.querySelector<HTMLSelectElement>('#defense-plan')!;
   let state = createPlay();
   const field = createField(host, state);
   const onSnap = () => {
@@ -56,6 +63,7 @@ function mountDemo() {
     kind = 'short';
     scenario.value = 'normal';
     startSpot.value = '-19';
+    defensePlan.value = 'man';
   };
   restart.addEventListener('click', onRestart);
   const onNext = () => {
@@ -68,6 +76,7 @@ function mountDemo() {
       state.lateGame,
       ended ? (state.lateGame ? 20 : 120) : state.gameSeconds,
       state.defenseReads,
+      state.defensePlan,
     );
     if (ended) startSpot.value = '-19';
   };
@@ -79,6 +88,9 @@ function mountDemo() {
       createDrive(state.drive.score, Number(startSpot.value)),
       kind,
       scenario.value === 'late',
+      undefined,
+      {},
+      defensePlan.value as DefensivePlan,
     );
   };
   startSpot.addEventListener('change', onStartSpot);
@@ -92,7 +104,14 @@ function mountDemo() {
       return;
     if (state.phase !== 'ready' && state.phase !== 'finished') return;
     kind = value;
-    state = createPlay(state.drive, kind, state.lateGame, state.gameSeconds, state.defenseReads);
+    state = createPlay(
+      state.drive,
+      kind,
+      state.lateGame,
+      state.gameSeconds,
+      state.defenseReads,
+      state.defensePlan,
+    );
   };
   const kindHandlers = playChoices.map((button) => {
     const handler = () => selectKind(button.dataset.kind as PlayKind);
@@ -120,6 +139,11 @@ function mountDemo() {
     button.addEventListener('click', handler);
     return handler;
   });
+  const onDefensePlan = () => {
+    if (state.phase !== 'ready' || needsConversion(state)) return;
+    state.defensePlan = defensePlan.value as DefensivePlan;
+  };
+  defensePlan.addEventListener('change', onDefensePlan);
   let last = performance.now();
   let accumulator = 0;
   let frame = 0;
@@ -140,6 +164,7 @@ function mountDemo() {
     conversionButtons.forEach((button, index) =>
       button.removeEventListener('click', conversionHandlers[index]),
     );
+    defensePlan.removeEventListener('change', onDefensePlan);
     controls.dispose();
     field.dispose();
     snap.removeEventListener('click', onSnap);
