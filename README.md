@@ -6,7 +6,7 @@
 
 Um jogo de futebol americano com gestão de elenco, decisões de quarterback e uma identidade visual em pixel art inspirada nas décadas de 80, 90 e 2000.
 
-![Status: demo de drive](https://img.shields.io/badge/status-partida_curta-e9b44c)
+![Status: demo de drive](https://img.shields.io/badge/status-gestao_inicial-e9b44c)
 ![Modo: offline](https://img.shields.io/badge/modo-offline-238636)
 ![Visual: pixel art](https://img.shields.io/badge/visual-pixel_art-8957e5)
 
@@ -93,7 +93,7 @@ Perfis de QB equilibrado, móvel e de profundidade já alteram velocidade e prec
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 79 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 86 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -206,3 +206,11 @@ Na partida curta há pequena chance de false start antes do snap e facemask num 
 ### Replay da última jogada
 
 Após o resultado, **Replay da última jogada** reproduz posições e bola em 0.5×, 1× ou 2×. **Parar replay** retorna à cena atual. O relógio, o placar e a simulação ficam preservados durante a reprodução. A gravação é temporária e substituída pela próxima jogada; exportação e arquivo de replays ainda não existem.
+
+
+## Gestão inicial e páginas separadas
+
+- Implementado: navegação entre partida (`/`), elenco (`/elenco`) e configurações (`/config`).
+- Três QBs fictícios com identidade, número e perfis diferentes; escolher titular altera atributos e aparência na próxima visita ao campo.
+- Escalação, duração dos quartos e velocidade padrão de replay salvas no navegador, com versão e recuperação de dados inválidos. A partida em andamento não é salva.
+- Próximas entregas: elenco das demais posições, treino, evolução e salvamento da campanha.

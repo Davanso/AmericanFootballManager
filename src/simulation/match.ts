@@ -18,9 +18,9 @@ export interface MatchSession {
   play: PlayState;
   series: number;
 }
-export function createMatch(periodSeconds = 60): MatchSession {
+export function createMatch(periodSeconds = 60, profile: QBProfile = 'balanced'): MatchSession {
   const session: MatchSession = {
-    wolvesProfile: 'balanced',
+    wolvesProfile: profile,
     reads: { wolves: {}, hawks: {} },
     quarter: 1,
     remaining: periodSeconds,

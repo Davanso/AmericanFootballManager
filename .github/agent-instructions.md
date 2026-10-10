@@ -76,3 +76,7 @@ Sempre que o projeto for atualizado, revisar e atualizar o status no `README.md`
 ## Evolução dos padrões
 
 Quando o usuário definir um novo padrão, registrá-lo neste arquivo com contexto e exemplos quando necessário. Manter a documentação coerente com o estado real do projeto e atualizar `docs/plan.md` quando uma decisão alterar o plano.
+
+## Navegação e páginas — decisão definida pelo usuário
+
+O projeto pode ter páginas separadas para partida, gestão de elenco, configurações e outras áreas. Organizar cada área por responsabilidade, com navegação clara; não concentrar todas as funcionalidades na página do campo. Atualmente, sair da partida reinicia a sessão; escalação e preferências ficam salvas no navegador.

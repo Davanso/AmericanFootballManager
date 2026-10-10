@@ -1,3 +1,4 @@
+import { playerAppearance } from '../../data/playerAppearance';
 import { afterEach, expect, it, vi } from 'vitest';
 import { NearestFilter } from 'three';
 import { createPlayerTexture } from '../../rendering/playerSprite';
@@ -17,4 +18,11 @@ it('renders hard pixels for all poses with distinct movement and player identiti
   expect(canvases[0].calls).not.toEqual(canvases[1].calls);
   expect(canvases[0].calls).not.toEqual(canvases[8].calls);
   expect(canvases[5].calls).not.toEqual(canvases[6].calls);
+});
+
+it('renders the selected quarterback appearance without changing opposing uniforms', () => {
+  const canvases = mockCanvas();
+  createPlayerTexture('home', 0, 'qb');
+  createPlayerTexture('home', 0, 'qb', { ...playerAppearance('reyes', 'home'), number: 7 });
+  expect(canvases[0].calls).not.toEqual(canvases[1].calls);
 });

@@ -462,3 +462,11 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Separar perfil do QB e histórico de passes dos dois times; aguardar decisão de flag na última jogada.
 - [x] Testes de independência dos snapshots, velocidade, parada, descarte, labels das end zones, perfis e flags no fim da partida.
 - [ ] Próxima fase de produto: gestão de elenco (escalação, treino, evolução e salvamento), seguida por estética de outras épocas. Regras históricas continuam exigindo validação antes de implementação.
+
+
+## Gestão inicial e páginas separadas
+
+- Implementado: navegação entre partida (`/`), elenco (`/elenco`) e configurações (`/config`).
+- Três QBs fictícios com identidade, número e perfis diferentes; escolher titular altera atributos e aparência na próxima visita ao campo.
+- Escalação, duração dos quartos e velocidade padrão de replay salvas no navegador, com versão e recuperação de dados inválidos. A partida em andamento não é salva.
+- Próximas entregas: elenco das demais posições, treino, evolução e salvamento da campanha.

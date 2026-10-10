@@ -1,3 +1,4 @@
+import type { playerAppearance } from '../data/playerAppearance';
 import * as THREE from 'three';
 import { createAthletes } from './athletes';
 import type { PlayState } from '../simulation/play';
@@ -9,7 +10,11 @@ import { createStadiumBackdrop } from './stadiumBackdrop';
 import { createTouchdownEffect } from './touchdownEffect';
 
 // Render the field independently of simulation rules.
-export function createField(host: HTMLElement, initial: PlayState) {
+export function createField(
+  host: HTMLElement,
+  initial: PlayState,
+  qbAppearance?: ReturnType<typeof playerAppearance>,
+) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#35583c');
   const updateBackdrop = createStadiumBackdrop(
@@ -47,7 +52,7 @@ export function createField(host: HTMLElement, initial: PlayState) {
   const updateMarkers = decorateField(scene);
   updateMarkers(initial.lineOfScrimmage, initial.firstDownLine);
 
-  const athletes = createAthletes(scene, initial);
+  const athletes = createAthletes(scene, initial, qbAppearance);
   const framing = createAdaptiveCamera(camera);
   const touchdown = createTouchdownEffect(scene);
   let aspect = 1;

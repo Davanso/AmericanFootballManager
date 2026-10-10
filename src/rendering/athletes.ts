@@ -1,3 +1,4 @@
+import type { playerAppearance } from '../data/playerAppearance';
 import * as THREE from 'three';
 import type { PlayState } from '../simulation/play';
 import { PASS_TARGETS } from '../data/passTargets';
@@ -5,14 +6,25 @@ import { createPlayerTexture, createKeyTexture } from './playerSprite';
 import { createRoute } from './routeDrawing';
 import { ballPresentation, fallPresentation } from './finishAnimation';
 
-export function createAthletes(scene: THREE.Scene, initial: PlayState) {
+export function createAthletes(
+  scene: THREE.Scene,
+  initial: PlayState,
+  qbAppearance?: ReturnType<typeof playerAppearance>,
+) {
   const textures = new Map(
     initial.athletes.flatMap((athlete) =>
       (['home', 'away'] as const).map(
         (team) =>
           [
             `${athlete.id}:${team}`,
-            Array.from({ length: 8 }, (_, frame) => createPlayerTexture(team, frame, athlete.id)),
+            Array.from({ length: 8 }, (_, frame) =>
+              createPlayerTexture(
+                team,
+                frame,
+                athlete.id,
+                athlete.id === 'qb' && team === 'home' ? qbAppearance : undefined,
+              ),
+            ),
           ] as const,
       ),
     ),

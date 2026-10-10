@@ -14,12 +14,17 @@ const DIGITS = [
   '111101111001111',
 ];
 
-export function createPlayerTexture(team: 'home' | 'away', frame: number, id = 'qb') {
+export function createPlayerTexture(
+  team: 'home' | 'away',
+  frame: number,
+  id = 'qb',
+  customAppearance?: ReturnType<typeof playerAppearance>,
+) {
   const canvas = document.createElement('canvas');
   canvas.width = 32;
   canvas.height = 40;
   const ctx = canvas.getContext('2d')!;
-  const appearance = playerAppearance(id, team);
+  const appearance = customAppearance ?? playerAppearance(id, team);
   const primary = team === 'home' ? '#e4b446' : '#b94f42';
   const dark = team === 'home' ? '#99792f' : '#733932';
   const stride = frame < 4 ? [0, 2, 0, -2][frame] : 0;
