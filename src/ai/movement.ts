@@ -13,14 +13,15 @@ export function moveToward(athlete: Athlete, target: Position, speed: number, dt
   const dz = target.z - athlete.z;
   const distance = Math.hypot(dx, dz);
   if (distance < 0.01) return;
-  const step = Math.min(speed * dt, distance);
+  const factor = athlete.attributes ? athlete.speed / 7 : 1;
+  const step = Math.min(speed * factor * dt, distance);
   athlete.x += (dx / distance) * step;
   athlete.z += (dz / distance) * step;
 }
 function runRoute(athlete: Athlete, dt: number) {
   const point = athlete.route[athlete.waypoint];
   if (!point) return;
-  moveToward(athlete, point, athlete.speed, dt);
+  moveToward(athlete, point, 7, dt);
   if (Math.hypot(point.x - athlete.x, point.z - athlete.z) < 0.1) athlete.waypoint++;
 }
 export function updateBots(state: PlayState, dt: number) {

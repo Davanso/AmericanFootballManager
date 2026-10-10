@@ -9,7 +9,7 @@ import { ballPresentation, fallPresentation } from './finishAnimation';
 export function createAthletes(
   scene: THREE.Scene,
   initial: PlayState,
-  qbAppearance?: ReturnType<typeof playerAppearance>,
+  appearances?: Record<string, ReturnType<typeof playerAppearance>>,
 ) {
   const textures = new Map(
     initial.athletes.flatMap((athlete) =>
@@ -22,7 +22,7 @@ export function createAthletes(
                 team,
                 frame,
                 athlete.id,
-                athlete.id === 'qb' && team === 'home' ? qbAppearance : undefined,
+                team === 'home' ? appearances?.[athlete.id] : undefined,
               ),
             ),
           ] as const,

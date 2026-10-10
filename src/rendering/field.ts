@@ -13,7 +13,7 @@ import { createTouchdownEffect } from './touchdownEffect';
 export function createField(
   host: HTMLElement,
   initial: PlayState,
-  qbAppearance?: ReturnType<typeof playerAppearance>,
+  appearances?: Record<string, ReturnType<typeof playerAppearance>>,
 ) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#35583c');
@@ -52,7 +52,7 @@ export function createField(
   const updateMarkers = decorateField(scene);
   updateMarkers(initial.lineOfScrimmage, initial.firstDownLine);
 
-  const athletes = createAthletes(scene, initial, qbAppearance);
+  const athletes = createAthletes(scene, initial, appearances);
   const framing = createAdaptiveCamera(camera);
   const touchdown = createTouchdownEffect(scene);
   let aspect = 1;

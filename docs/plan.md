@@ -470,3 +470,8 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - Três QBs fictícios com identidade, número e perfis diferentes; escolher titular altera atributos e aparência na próxima visita ao campo.
 - Escalação, duração dos quartos e velocidade padrão de replay salvas no navegador, com versão e recuperação de dados inválidos. A partida em andamento não é salva.
 - Próximas entregas: elenco das demais posições, treino, evolução e salvamento da campanha.
+
+
+### Elenco de ataque e defesa
+
+Escalação das 22 posições, com três QBs e 42 atletas de linha, recepção, corrida e defesa. Trocas respeitam posição e não duplicam titulares. Número, aparência, velocidade e recepção acompanham a seleção. A escalação é aplicada no snap para a unidade dos Wolves. Bots também consideram a velocidade individual. Treino e campanha permanecem como próximas etapas.

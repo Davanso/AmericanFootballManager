@@ -1,3 +1,4 @@
+import { defaultLineup, decodeLineup } from './roster';
 import type { QBProfile } from '../data/playerAttributes';
 export const QUARTERBACKS: { id: string; name: string; number: number; profile: QBProfile }[] = [
   { id: 'miller', name: 'Jack Miller', number: 12, profile: 'balanced' },
@@ -5,6 +6,7 @@ export const QUARTERBACKS: { id: string; name: string; number: number; profile: 
   { id: 'walker', name: 'Dean Walker', number: 16, profile: 'deep' },
 ];
 export interface ClubSave {
+  lineup: Record<string, string>;
   version: 1;
   starter: string;
   periodSeconds: number;
@@ -12,7 +14,13 @@ export interface ClubSave {
 }
 export const SAVE_KEY = 'afm.club.v1';
 export function defaultClub(): ClubSave {
-  return { version: 1, starter: 'miller', periodSeconds: 60, replaySpeed: 1 };
+  return {
+    lineup: defaultLineup(),
+    version: 1,
+    starter: 'miller',
+    periodSeconds: 60,
+    replaySpeed: 1,
+  };
 }
 export function decodeClub(raw: string | null): ClubSave {
   if (!raw) return defaultClub();
@@ -20,6 +28,7 @@ export function decodeClub(raw: string | null): ClubSave {
     const value = JSON.parse(raw);
     if (!value || value.version !== 1) return defaultClub();
     return {
+      lineup: decodeLineup(value.lineup),
       version: 1,
       starter: QUARTERBACKS.some((p) => p.id === value.starter) ? value.starter : 'miller',
       periodSeconds: [60, 120, 180].includes(value.periodSeconds) ? value.periodSeconds : 60,
