@@ -45,7 +45,6 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
     badge.renderOrder = 5;
     group.add(badge);
     badges.set(athlete.id, badge);
-    routes.add(createRoute([athlete, ...athlete.route], target.color));
   }
   const ball = new THREE.Mesh(
     new THREE.SphereGeometry(0.65, 8, 6),
@@ -60,7 +59,24 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
   group.add(ball, ring, routes);
   scene.add(group);
   let finishSeconds = 0;
+  const reducedMotion = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+  let routeState: PlayState | undefined;
   function render(state: PlayState, dt = 0) {
+    if (routeState !== state) {
+      routes.traverse((object) => {
+        if (!(object instanceof THREE.Mesh)) return;
+        object.geometry.dispose();
+        const materials = Array.isArray(object.material) ? object.material : [object.material];
+        materials.forEach((material) => material.dispose());
+      });
+      routes.clear();
+      for (const target of PASS_TARGETS) {
+        const receiver = state.athletes.find((athlete) => athlete.id === target.id)!;
+        routes.add(createRoute([receiver, ...receiver.route], target.color));
+      }
+      routeState = state;
+      finishSeconds = 0;
+    }
     finishSeconds = state.phase === 'finished' ? finishSeconds + dt : 0;
     routes.visible = state.phase === 'ready';
     for (const athlete of state.athletes) {
@@ -76,6 +92,9 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
       sprite.scale.set(4.4, 5.5, 1);
       const bounce = active ? Math.abs(Math.sin(state.elapsed * 20)) * 0.3 : 0;
       sprite.position.set(athlete.x, 3.1 + bounce, athlete.z);
+      if (state.outcome === 'touchdown' && athlete.id === state.carrier && !reducedMotion) {
+        sprite.position.y += Math.abs(Math.sin(Math.min(finishSeconds, 3) * Math.PI * 2)) * 1.8;
+      }
       if (state.fallen === athlete.id) {
         const fall = fallPresentation(finishSeconds);
         sprite.material.rotation = fall.rotation;

@@ -6,7 +6,7 @@
 
 Um jogo de futebol americano com gestão de elenco, decisões de quarterback e uma identidade visual em pixel art inspirada nas décadas de 80, 90 e 2000.
 
-![Status: demo inicial](https://img.shields.io/badge/status-demo_inicial-e9b44c)
+![Status: demo de drive](https://img.shields.io/badge/status-demo_de_drive-e9b44c)
 ![Modo: offline](https://img.shields.io/badge/modo-offline-238636)
 ![Visual: pixel art](https://img.shields.io/badge/visual-pixel_art-8957e5)
 
@@ -69,27 +69,31 @@ Um campo, dois times e uma jogada de passe com três opções de recebedor. O pr
 
 O primeiro marco é simples: **sentir a tensão da decisão e compreender o resultado olhando para o campo**.
 
-Depois, o projeto evolui para um drive completo, partida offline, gestão de elenco e novas épocas.
+A demo já permite encadear descidas em um drive de treino. Os próximos marcos incluem múltiplas jogadas, partida offline, gestão de elenco e novas épocas.
 
 ## Estado atual
 
-O projeto está na fase de **demo inicial**: treino de uma jogada de passe com 11 atletas por time, sprites humanos retrô provisórios e câmera ortográfica próxima e adaptativa. Uma carta mostra o desenho da jogada, com rotas coloridas e setas. As rotas desaparecem no snap, o QB recebe a bola e pode se movimentar ou passar para três recebedores. Bots correm rotas, acompanham recebedores e pressionam o QB. Toda a defesa começa a agir desde o snap.
+O projeto está na fase de **demo de drive**: treino de uma jogada de passe com 11 atletas por time, sprites humanos retrô provisórios e câmera ortográfica próxima e adaptativa. Uma carta mostra o desenho da jogada, com rotas coloridas e setas. As rotas desaparecem no snap, o QB recebe a bola e pode se movimentar ou passar para três recebedores. Bots correm rotas, acompanham recebedores e pressionam o QB. Toda a defesa começa a agir desde o snap.
 
 Há timer de cinco segundos, passe assistido para WR 1 ao esgotar a janela (se o QB estiver atrás da linha), recepção, passe incompleto, sack, tackle, saída de campo, touchdown e reinício. A pressão pode encerrar a jogada antes do timer. O treino tem limite de 15 segundos.
 
-**Limitações:** uma única jogada fixa, bloqueios aproximados por proximidade e resistência temporária; passe guiado até o recebedor em movimento; sem interceptações, atributos, animações completas de corrida/tackle, replay, downs, pontuação acumulada ou gestão. O placar é ilustrativo. Os elementos visuais são provisórios. A aplicação não depende de assets ou serviços externos durante a execução local.
+**Limitações:** uma única jogada fixa, bloqueios aproximados por proximidade e resistência temporária; passe guiado até o recebedor em movimento; sem interceptações, atributos, animações completas de corrida/tackle, replay ou gestão. Ainda não há partida completa, ataque adversário, extra point, kickoff, punt, field goal, penalidades ou safety. Após touchdown ou quarta descida sem conversão, inicia-se outro drive do Wolves; o Hawks ainda não joga no ataque. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
 
 **Melhorias da demo:** quando o QB corre, o ataque troca rotas por apoio e distribui bloqueios. A defesa combina perseguição, antecipação e contenção de laterais, com separação entre companheiros para reduzir aglomeração. São heurísticas iniciais, ainda sem leitura tática e atributos individuais completos.
 
 Os atletas têm quatro poses de corrida, com movimento de braços e pernas apenas quando se deslocam. Tackle/sack mostram o portador caindo; passes incompletos mostram a bola caindo, quicando e parando. Essas animações continuam após o resultado sem reabrir a simulação.
 
-O campo ganhou números de jardas, marcações a cada dez jardas, linha de scrimmage azul e primeira descida amarela a dez jardas. A câmera usa uma inclinação lateral discreta, com campo quase horizontal, suavização de bordas e renderização em até 2× a resolução CSS. O gramado tem textura procedural de 2048×1024 e o estádio possui árvores, prédio de tijolos, torcida, publicidade e refletores em arte procedural local. **Aurora Wolves** e **Crimson Hawks** são os times fictícios, com nomes nas end zones.
+O campo ganhou números de jardas, marcações a cada dez jardas, sem linhas intermediárias de cinco jardas ou hash marks. A linha de scrimmage azul e a linha amarela de primeira descida acompanham o drive; a amarela fica na linha de gol em situações de goal-to-go. A câmera usa uma inclinação lateral discreta, com campo quase horizontal, suavização de bordas e renderização em até 2× a resolução CSS. O gramado tem textura procedural de 2048×1024 e o estádio usa uma nova ilustração pixel art detalhada com árvores, academia de tijolos, arquibancadas, refletores e jogadores humanos nas laterais, inspirada na referência. A arte gerada e seu prompt estão documentados em [Assets visuais](docs/assets.md). **Aurora Wolves** e **Crimson Hawks** são os times fictícios, com nomes nas end zones.
+
+O painel abaixo do campo mostra **1st to 10**, **1st to GOAL** e as demais descidas, além da posição da bola. **Próxima jogada** reposiciona formação, rotas e snap no ponto final da anterior. Passe incompleto mantém o ponto do snap; perdas aumentam a distância; uma conversão renova as quatro descidas. Touchdowns somam seis pontos, com salto do portador, confetes e faixa de celebração. Reiniciar zera o treino e o placar.
+
+O seletor **Início do treino** permite começar na jarda 31 do Wolves, no meio do campo, na jarda 20 ou na jarda 5 do Hawks. Assim é possível experimentar goal-to-go sem precisar completar um drive inteiro.
 
 Variações de velocidade, aceleração e habilidade de passe curto/médio/longo por jogador estão previstas no plano; ainda não foram implementadas.
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os quatorze testes de simulação, apoio à corrida, apresentação das animações e alinhamento da câmera, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 22 testes de simulação, apoio à corrida, apresentação das animações, alinhamento da câmera e progressão do drive, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -146,5 +150,3 @@ docs/
 Usamos mensagens no formato `tipo: descrição`, como `feat: adicionar seleção de jogadas` ou `fix: ocultar rotas após o snap`.
 
 Consulte as [instruções do repositório](.github/agent-instructions.md) antes de contribuir.
-
-A nova arte pixel art do estádio de 1985 está disponível em public/assets/stadium1985.png, com prompt e origem registrados em [Assets visuais](docs/assets.md). A integração ao campo será feita na próxima atualização da demo.

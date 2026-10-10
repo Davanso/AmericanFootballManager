@@ -1,3 +1,6 @@
+import { advanceDrive, createDrive } from './drive';
+import type { Drive } from './drive';
+
 export interface Position {
   x: number;
   z: number;
@@ -12,6 +15,9 @@ export interface Athlete extends Position {
 }
 export type Phase = 'ready' | 'snap' | 'live' | 'pass' | 'finished';
 export interface PlayState {
+  drive: Drive;
+  lineOfScrimmage: number;
+  firstDownLine: number;
   phase: Phase;
   elapsed: number;
   decision: number;
@@ -24,13 +30,16 @@ export interface PlayState {
   result: string;
   scrambling: boolean;
   velocity: Position;
-  outcome: 'none' | 'tackle' | 'incomplete' | 'other';
+  outcome: 'none' | 'tackle' | 'incomplete' | 'touchdown' | 'other';
   fallen: string;
 }
 export const RECEIVERS = ['wr1', 'wr2', 'wr3'];
 export const DECISION_SECONDS = 5;
 
-export function createPlay(): PlayState {
+export function createPlay(previousDrive = createDrive()): PlayState {
+  const drive =
+    previousDrive.status === 'active' ? { ...previousDrive } : createDrive(previousDrive.score);
+  const offset = drive.spot + 19;
   const athletes: Athlete[] = [];
   const add = (
     id: string,
@@ -40,7 +49,16 @@ export function createPlay(): PlayState {
     z: number,
     route: Position[] = [],
   ) => {
-    athletes.push({ id, team, role, x, z, route, waypoint: 0, speed: 7 });
+    athletes.push({
+      id,
+      team,
+      role,
+      x: Math.min(58, x + offset),
+      z,
+      route: route.map((point) => ({ x: Math.min(53, point.x + offset), z: point.z })),
+      waypoint: 0,
+      speed: 7,
+    });
   };
   add('qb', 'home', 'qb', -24, 0);
   for (let i = 0; i < 5; i++) add(`ol${i}`, 'home', 'blocker', -19, (i - 2) * 3);
@@ -63,11 +81,14 @@ export function createPlay(): PlayState {
   for (let i = 0; i < 4; i++)
     add(`zone${i}`, 'away', 'defender', i < 2 ? -7 : 6, (i % 2 === 0 ? -1 : 1) * 8);
   return {
+    drive,
+    lineOfScrimmage: drive.spot,
+    firstDownLine: drive.target,
     phase: 'ready',
     elapsed: 0,
     decision: DECISION_SECONDS,
     athletes,
-    ball: { x: -19, z: 0, height: 1 },
+    ball: { x: drive.spot, z: 0, height: 1 },
     carrier: '',
     target: '',
     flight: 0,
@@ -95,11 +116,12 @@ export function finishPlay(
   state.result = result;
   state.outcome = outcome;
   state.fallen = fallen;
+  state.drive = advanceDrive(state.drive, state.ball.x, outcome === 'incomplete');
 }
 export function throwPass(state: PlayState, target: string) {
   if (state.phase !== 'live' || state.carrier !== 'qb') return;
   const qb = state.athletes.find((athlete) => athlete.id === 'qb')!;
-  if (qb.x >= -19) return;
+  if (qb.x >= state.lineOfScrimmage) return;
   if (!RECEIVERS.includes(target)) return;
   state.phase = 'pass';
   state.target = target;

@@ -11,17 +11,17 @@ function followCarrier(state: PlayState) {
   if (!carrier) return;
   state.ball = { x: carrier.x, z: carrier.z, height: 1.5 };
   if (Math.abs(carrier.z) >= 26) return finishPlay(state, 'Fora de campo');
-  if (carrier.x >= 50) return finishPlay(state, 'Touchdown!');
+  if (carrier.x >= 50) return finishPlay(state, 'Touchdown! +6 pontos', 'touchdown');
   const tackled = state.athletes.some(
     (athlete) =>
       athlete.team === 'away' && Math.hypot(athlete.x - carrier.x, athlete.z - carrier.z) < 1.5,
   );
   if (!tackled) return;
-  if (carrier.id === 'qb' && carrier.x < -19)
+  if (carrier.id === 'qb' && carrier.x < state.lineOfScrimmage)
     return finishPlay(state, 'Sack! A defesa chegou ao quarterback.', 'tackle', carrier.id);
   finishPlay(
     state,
-    `Tackle · avanço de ${Math.round(carrier.x + 19)} jardas`,
+    `Tackle · avanço de ${Math.round(carrier.x - state.lineOfScrimmage)} jardas`,
     'tackle',
     carrier.id,
   );
@@ -61,7 +61,7 @@ export function updatePlay(state: PlayState, input: Input, dt: number) {
   updateBots(state, dt);
   if (state.phase === 'snap') {
     const t = Math.min(1, state.elapsed / 0.4);
-    state.ball.x = -19 + (qb.x + 19) * t;
+    state.ball.x = state.lineOfScrimmage + (qb.x - state.lineOfScrimmage) * t;
     if (t < 1) return;
     state.carrier = 'qb';
     state.phase = 'live';
@@ -75,7 +75,7 @@ export function updatePlay(state: PlayState, input: Input, dt: number) {
       qb.z += (input.z / magnitude) * 7 * dt;
     }
     state.decision = Math.max(0, state.decision - dt);
-    if (state.decision === 0 && qb.x < -19) throwPass(state, 'wr1');
+    if (state.decision === 0 && qb.x < state.lineOfScrimmage) throwPass(state, 'wr1');
   }
   followCarrier(state);
   if (state.elapsed > 15) finishPlay(state, 'Treino encerrado · limite de 15 segundos');

@@ -176,9 +176,9 @@ Adicionar bloqueios, marcação, pressão ao QB, recepção e tackle. Integrar t
 
 ### Etapa 5 — Drive jogável
 
-- [ ] Downs e distância para primeira descida.
-- [ ] Atualização da posição da bola.
-- [ ] Touchdown e pontuação básica.
+- [x] Downs e distância para primeira descida, incluindo goal-to-go.
+- [x] Atualização da posição da bola e formação da próxima jogada no ponto final.
+- [x] Touchdown, seis pontos acumulados e animação de celebração.
 - [ ] Corrida pelo meio, passe curto e passe longo.
 - [ ] Pelo menos duas respostas defensivas.
 - [ ] Seleção de jogadas entre snaps.
@@ -262,9 +262,9 @@ Implementada uma jogada de treino com simulação em passos de 1/60 segundo, mó
 
 O timer começa após o snap. O QB pode passar enquanto estiver atrás da linha, ou correr. Passe assistido após cinco segundos; defesa pode provocar sack antes disso. Recebedor avança por bot após receber. Resultados encerram e congelam a jogada; Reiniciar restaura a formação e as rotas.
 
-Limitações: bloqueios aproximados por proximidade e resistência temporária, cobertura aproximada, passe guiado e uma jogada fixa. O item de bots com bloqueios completos permanece pendente. Não há drive, replay, temporada ou gestão.
+Limitações: bloqueios aproximados por proximidade e resistência temporária, cobertura aproximada, passe guiado e uma jogada fixa. O item de bots com bloqueios completos permanece pendente. Há drive de treino com downs e distância; ainda não há partida completa, replay, temporada ou gestão.
 
-Próxima etapa: refinar bloqueios e percepção defensiva, animações e legibilidade dos recebedores; depois adicionar seleção entre corrida, passe curto e passe longo, downs e distância.
+Próxima etapa: refinar bloqueios e percepção defensiva, animações e legibilidade dos recebedores; depois adicionar seleção entre corrida, passe curto e passe longo, além de posse adversária e regras de partida completa.
 
 ## 16. Leitura visual, câmera e tradução — requisitos do usuário
 
@@ -319,7 +319,7 @@ Português é requisito do jogo: menus, cartas, controles, resultados, erros, aj
 - [x] Tackle e sack com queda do portador e manutenção da pose no gramado.
 - [x] Passe incompleto com queda, quique e repouso da bola. A animação é de apresentação; não muda o resultado encerrado.
 - [ ] Animação coordenada de contato entre defensor e portador, orientações e sprite sheets finais.
-- [x] Números de jardas, marcações reforçadas a cada dez jardas, linha de scrimmage e linha de primeira descida a dez jardas.
+- [x] Números de jardas e apenas marcações a cada dez jardas, linha de scrimmage e linha de primeira descida a dez jardas.
 - [x] Câmera com leve inclinação lateral, gramado de alta resolução, antialiasing e estádio procedural com prédio de tijolos, árvores, torcida, publicidade e refletores, inspirado na composição da referência.
 - [x] Times fictícios Aurora Wolves e Crimson Hawks identificados no placar e nas end zones.
 - [ ] Novos assets e refinamento de profundidade, estádio e câmera por época.
@@ -339,7 +339,22 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 ### Correção visual do campo
 
 - [x] Manter linhas quase horizontais com inclinação discreta no eixo Y; evitar campo girado na diagonal.
-- [x] Suavizar linhas e textos sem perder os sprites pixelizados; textura do gramado 2048×1024 e estádio 2048×512.
+- [x] Suavizar linhas e textos sem perder os sprites pixelizados; textura do gramado 2048×1024 e estádio ilustrado de 2172×724.
 - [x] Remover arquibancadas planas soltas e reduzir a faixa ao redor do gramado.
 - [ ] Arte final do estádio e iluminação por época; a arte atual continua procedural e provisória.
 
+
+## 18. Drive de treino e campo baseado na referência
+
+- [x] Fundo de estádio detalhado em pixel art, com humanos, arquibancadas, árvores, academia de tijolos e refletores; asset local e prompt registrados em `docs/assets.md`.
+- [x] Gramado mais próximo da paleta da referência, faixas de corte, borda estreita e enquadramento mais próximo da ação, sem a moldura larga anterior.
+- [x] Somente linhas principais a cada dez jardas: retirar linhas intermediárias de cinco jardas e hash marks. Manter números e indicadores táticos de scrimmage/primeira descida.
+- [x] Painel inferior com `1st to 10`, `1st to GOAL`, demais descidas, posição da bola e botão Próxima jogada.
+- [x] Iniciar a próxima jogada no ponto final: traduzir atletas, rotas, bola, snap, cobertura de zona e limite do passe para a nova linha de scrimmage.
+- [x] Ganhos curtos/perdas mantêm a linha a conquistar; passe incompleto volta ao ponto do snap; conversão reinicia as descidas com dez jardas ou goal-to-go.
+- [x] Quarta descida sem conversão encerra o drive. O botão Novo drive começa outro ataque de treino, preservando pontos acumulados.
+- [x] Touchdown soma seis pontos uma única vez e exibe celebração com faixa, salto do portador e confetes; respeitar preferência por movimento reduzido.
+- [x] Seletor de posição inicial para testar meio de campo, red zone e goal-to-go. Alterações somente entre jogadas; Reiniciar zera posição e placar.
+- [x] Testes de regressão para perdas, incompletos, conversão, goal-to-go após perda, quarta descida, reposicionamento, snap, limite do passe e touchdown real por recepção.
+- [ ] Refinar arte dos atletas para combinar com o novo estádio e validar enquadramento em todas as dimensões.
+- [ ] Posse adversária, safety, extra point, kickoff, punt, field goal, relógio de partida e penalidades. O drive atual é um treino ofensivo, sem troca real de ataque/defesa.

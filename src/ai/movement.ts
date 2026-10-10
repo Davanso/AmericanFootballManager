@@ -83,12 +83,20 @@ export function updateBots(state: PlayState, dt: number) {
       moveToward(athlete, { x: receiver.x + 2.5, z: receiver.z + 1.5 }, 5.4, dt);
       continue;
     }
-    if (carrier && carrier.x > -19) {
+    if (carrier && carrier.x > state.lineOfScrimmage) {
       moveToward(athlete, carrier, 6, dt);
       continue;
     }
     const index = Number(athlete.id.slice(-1));
-    moveToward(athlete, { x: index < 2 ? 0 : 12, z: index % 2 === 0 ? -12 : 12 }, 4.5, dt);
+    moveToward(
+      athlete,
+      {
+        x: Math.min(57, state.lineOfScrimmage + (index < 2 ? 19 : 31)),
+        z: index % 2 === 0 ? -12 : 12,
+      },
+      4.5,
+      dt,
+    );
   }
   separateAthletes(state, dt);
 }

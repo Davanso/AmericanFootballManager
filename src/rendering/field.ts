@@ -4,6 +4,7 @@ import type { PlayState } from '../simulation/play';
 import { createAdaptiveCamera } from './adaptiveCamera';
 import { createStadium, decorateField } from './stadium';
 import { createTurfTexture } from './turfTexture';
+import { createTouchdownEffect } from './touchdownEffect';
 
 // Render the field independently of simulation rules.
 export function createField(host: HTMLElement, initial: PlayState) {
@@ -25,7 +26,7 @@ export function createField(host: HTMLElement, initial: PlayState) {
   }
 
   rectangle(180, 110, '#35583c', 0, 0, -0.03);
-  rectangle(128, 60, '#d1cfb9');
+  rectangle(121, 54.1, '#ede7c5');
   const turf = new THREE.Mesh(
     new THREE.PlaneGeometry(120, 53.33),
     new THREE.MeshBasicMaterial({ map: createTurfTexture() }),
@@ -35,18 +36,17 @@ export function createField(host: HTMLElement, initial: PlayState) {
   scene.add(turf);
   rectangle(10, 53.33, '#183f52', -55, 0, 0.03);
   rectangle(10, 53.33, '#9d4c38', 55, 0, 0.03);
-  for (let yard = -50; yard <= 50; yard += 5) {
-    rectangle(yard % 10 === 0 ? 0.28 : 0.12, 53.33, '#e5e5bf', yard, 0, 0.04);
-  }
-  for (let yard = -49; yard < 50; yard++) {
-    for (const z of [-23.5, -3, 3, 23.5]) rectangle(0.12, 0.65, '#e5e5bf', yard, z, 0.05);
+  for (let yard = -50; yard <= 50; yard += 10) {
+    rectangle(0.2, 53.33, '#eee9ca', yard, 0, 0.04);
   }
   for (const z of [-26.65, 26.65]) rectangle(120, 0.35, '#e5e5bf', 0, z, 0.05);
 
-  decorateField(scene);
+  const updateMarkers = decorateField(scene);
+  updateMarkers(initial.lineOfScrimmage, initial.firstDownLine);
   createStadium(scene);
   const athletes = createAthletes(scene, initial);
   const framing = createAdaptiveCamera(camera);
+  const touchdown = createTouchdownEffect(scene);
   let aspect = 1;
   let lastFrame = performance.now();
   function resize() {
@@ -72,6 +72,8 @@ export function createField(host: HTMLElement, initial: PlayState) {
       framing.update(state, aspect, dt);
       lastFrame = now;
       athletes.render(state, dt);
+      updateMarkers(state.lineOfScrimmage, state.firstDownLine);
+      touchdown(state, dt);
       renderer.render(scene, camera);
     },
     dispose() {
