@@ -93,7 +93,7 @@ Perfis de QB equilibrado, móvel e de profundidade já alteram velocidade e prec
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 93 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 100 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -219,3 +219,8 @@ Após o resultado, **Replay da última jogada** reproduz posições e bola em 0.
 ### Elenco de ataque e defesa
 
 Escalação das 22 posições, com três QBs e 42 atletas de linha, recepção, corrida e defesa. Trocas respeitam posição e não duplicam titulares. Número, aparência, velocidade e recepção acompanham a seleção. A escalação é aplicada no snap para a unidade dos Wolves. Bots também consideram a velocidade individual. Treino e campanha permanecem como próximas etapas.
+
+
+### Treino e evolução semanal
+
+Página `/treino` com três sessões por semana, escolha de atleta e habilidade e relatório de evolução. Velocidade cresce 0.1 e habilidades 0.5 ponto percentual por sessão, com limites. Passe é exclusivo dos QBs. A evolução fica salva e afeta o próximo snap. Avançar semana recupera sessões; calendário ainda independente das partidas. Salvamento da campanha é a próxima etapa.

@@ -1,3 +1,4 @@
+import { applyTraining } from './management/training';
 import { applyLineup, lineupAppearance, selectedPlayer } from './management/roster';
 import { playerAppearance } from './data/playerAppearance';
 import './style.css';
@@ -91,7 +92,10 @@ function mountDemo() {
   });
   const replay = createReplay();
   const onSnap = () => {
-    if (state.phase === 'ready') applyLineup(state, club.lineup);
+    if (state.phase === 'ready' && !replay.playing) {
+      applyLineup(state, club.lineup);
+      applyTraining(state, club);
+    }
     if (replay.playing) return;
     if (state.controlSide === 'defense' && state.phase === 'live') return attemptTackle(state);
     if (state.phase.startsWith('kick')) return confirmKick(state);

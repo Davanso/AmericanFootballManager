@@ -475,3 +475,8 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 ### Elenco de ataque e defesa
 
 Escalação das 22 posições, com três QBs e 42 atletas de linha, recepção, corrida e defesa. Trocas respeitam posição e não duplicam titulares. Número, aparência, velocidade e recepção acompanham a seleção. A escalação é aplicada no snap para a unidade dos Wolves. Bots também consideram a velocidade individual. Treino e campanha permanecem como próximas etapas.
+
+
+### Treino e evolução semanal
+
+Página `/treino` com três sessões por semana, escolha de atleta e habilidade e relatório de evolução. Velocidade cresce 0.1 e habilidades 0.5 ponto percentual por sessão, com limites. Passe é exclusivo dos QBs. A evolução fica salva e afeta o próximo snap. Avançar semana recupera sessões; calendário ainda independente das partidas. Salvamento da campanha é a próxima etapa.

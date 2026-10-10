@@ -724,3 +724,16 @@ button kbd {
     grid-template-columns: 1fr;
   }
 }
+
+.training-report {
+  display: flex;
+  justify-content: space-between;
+  gap: 20px;
+  padding: 16px;
+  border-bottom: 1px solid #49675c;
+  flex-wrap: wrap;
+}
+.training-report span {
+  font-family: monospace;
+  color: #f1d575;
+}
