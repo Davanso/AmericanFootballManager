@@ -10,7 +10,10 @@ export function createField(host: HTMLElement) {
   host.append(renderer.domElement);
 
   function rectangle(width: number, depth: number, color: string, x = 0, z = 0, y = 0) {
-    const mesh = new THREE.Mesh(new THREE.PlaneGeometry(width, depth), new THREE.MeshBasicMaterial({ color }));
+    const mesh = new THREE.Mesh(
+      new THREE.PlaneGeometry(width, depth),
+      new THREE.MeshBasicMaterial({ color }),
+    );
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.set(x, y, z);
     scene.add(mesh);
@@ -37,7 +40,14 @@ export function createField(host: HTMLElement) {
       rectangle(125, 2.5, '#254957', 0, side * (39 + row * 3), 1 + row);
       for (let seat = 0; seat < 62; seat++) {
         const colors = ['#d6bb78', '#bb654b', '#678b91', '#ece0b7'];
-        rectangle(0.9, 0.9, colors[(seat + row) % colors.length], -60 + seat * 2, side * (39 + row * 3), 1.1 + row);
+        rectangle(
+          0.9,
+          0.9,
+          colors[(seat + row) % colors.length],
+          -60 + seat * 2,
+          side * (39 + row * 3),
+          1.1 + row,
+        );
       }
     }
   }

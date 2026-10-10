@@ -1,189 +1,191 @@
-:root{
-  font-family:Arial,Helvetica,sans-serif;
-  color:#eee5cc;
-  background:#102e3b;
-  font-synthesis:none;
-  --gold:#e4b95e;
-  --muted:#a4b7b9
+:root {
+  font-family: Arial, Helvetica, sans-serif;
+  color: #eee5cc;
+  background: #102e3b;
+  font-synthesis: none;
+  --gold: #e4b95e;
+  --muted: #a4b7b9;
 }
-*{
-  box-sizing:border-box
+* {
+  box-sizing: border-box;
 }
-body{
-  margin:0
+body {
+  margin: 0;
 }
-.clubhouse{
-  max-width:1280px;
-  margin:auto;
-  padding:30px 42px
+.clubhouse {
+  max-width: 1280px;
+  margin: auto;
+  padding: 30px 42px;
 }
-header{
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-  border-bottom:1px solid #43606a;
-  padding-bottom:22px
+header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  border-bottom: 1px solid #43606a;
+  padding-bottom: 22px;
 }
-.brand{
-  display:flex;
-  align-items:center;
-  gap:15px;
-  font-family:Impact,'Arial Narrow',sans-serif;
-  font-size:40px;
-  color:var(--gold);
-  text-decoration:none
+.brand {
+  display: flex;
+  align-items: center;
+  gap: 15px;
+  font-family: Impact, 'Arial Narrow', sans-serif;
+  font-size: 40px;
+  color: var(--gold);
+  text-decoration: none;
 }
-.brand span{
-  font:700 10px/1.5 monospace;
-  max-width:125px;
-  letter-spacing:2px
+.brand span {
+  font: 700 10px/1.5 monospace;
+  max-width: 125px;
+  letter-spacing: 2px;
 }
-.era,.eyebrow,.tag{
-  font:12px monospace;
-  letter-spacing:2px
+.era,
+.eyebrow,
+.tag {
+  font: 12px monospace;
+  letter-spacing: 2px;
 }
-.era{
-  color:var(--muted)
+.era {
+  color: var(--muted);
 }
-.intro{
-  display:flex;
-  justify-content:space-between;
-  align-items:flex-end;
-  padding:36px 0 26px
+.intro {
+  display: flex;
+  justify-content: space-between;
+  align-items: flex-end;
+  padding: 36px 0 26px;
 }
-.eyebrow{
-  color:var(--gold);
-  margin:0 0 12px
+.eyebrow {
+  color: var(--gold);
+  margin: 0 0 12px;
 }
-h1{
-  font-family:Impact,'Arial Narrow',sans-serif;
-  font-weight:400;
-  font-size:clamp(42px,6vw,76px);
-  line-height:1;
-  letter-spacing:1px;
-  text-transform:uppercase;
-  margin:0
+h1 {
+  font-family: Impact, 'Arial Narrow', sans-serif;
+  font-weight: 400;
+  font-size: clamp(42px, 6vw, 76px);
+  line-height: 1;
+  letter-spacing: 1px;
+  text-transform: uppercase;
+  margin: 0;
 }
-.description{
-  font-size:15px;
-  line-height:1.7;
-  color:var(--muted);
-  margin:0 0 5px
+.description {
+  font-size: 15px;
+  line-height: 1.7;
+  color: var(--muted);
+  margin: 0 0 5px;
 }
-.stadium{
-  border:1px solid #547078;
-  background:#0b242d;
-  box-shadow:8px 8px 0 #09212b
+.stadium {
+  border: 1px solid #547078;
+  background: #0b242d;
+  box-shadow: 8px 8px 0 #09212b;
 }
-.scoreboard{
-  display:flex;
-  align-items:center;
-  justify-content:center;
-  gap:50px;
-  padding:16px;
-  border-bottom:1px solid #547078;
-  font:14px monospace;
-  letter-spacing:2px
+.scoreboard {
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  gap: 50px;
+  padding: 16px;
+  border-bottom: 1px solid #547078;
+  font: 14px monospace;
+  letter-spacing: 2px;
 }
-.scoreboard b{
-  font-size:30px;
-  color:var(--gold);
-  vertical-align:middle;
-  margin:0 10px
+.scoreboard b {
+  font-size: 30px;
+  color: var(--gold);
+  vertical-align: middle;
+  margin: 0 10px;
 }
-.score-center{
-  text-align:center
+.score-center {
+  text-align: center;
 }
-.score-center small{
-  display:block;
-  font-size:9px;
-  color:var(--muted);
-  margin-top:5px
+.score-center small {
+  display: block;
+  font-size: 9px;
+  color: var(--muted);
+  margin-top: 5px;
 }
-#field{
-  height:clamp(260px,40vw,460px);
-  width:100%;
-  overflow:hidden
+#field {
+  height: clamp(260px, 40vw, 460px);
+  width: 100%;
+  overflow: hidden;
 }
-canvas{
-  display:block;
-  image-rendering:pixelated
+canvas {
+  display: block;
+  image-rendering: pixelated;
 }
-#render-status{
-  margin:0;
-  padding:12px 18px;
-  color:var(--muted);
-  font:11px/1.5 monospace;
-  border-top:1px solid #43606a
+#render-status {
+  margin: 0;
+  padding: 12px 18px;
+  color: var(--muted);
+  font: 11px/1.5 monospace;
+  border-top: 1px solid #43606a;
 }
-footer{
-  display:flex;
-  align-items:center;
-  justify-content:space-between;
-  padding:28px 0
+footer {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  padding: 28px 0;
 }
-.tag{
-  color:var(--gold);
-  font-size:10px
+.tag {
+  color: var(--gold);
+  font-size: 10px;
 }
-footer p{
-  font-size:14px;
-  margin:8px 0;
-  color:var(--muted)
+footer p {
+  font-size: 14px;
+  margin: 8px 0;
+  color: var(--muted);
 }
-button{
-  background:var(--gold);
-  color:#102e3b;
-  border:0;
-  padding:15px 22px;
-  font-weight:700;
-  cursor:pointer;
-  box-shadow:3px 3px 0 #806638
+button {
+  background: var(--gold);
+  color: #102e3b;
+  border: 0;
+  padding: 15px 22px;
+  font-weight: 700;
+  cursor: pointer;
+  box-shadow: 3px 3px 0 #806638;
 }
-button:hover{
-  background:#f2ce86
+button:hover {
+  background: #f2ce86;
 }
-button:focus-visible,a:focus-visible{
-  outline:3px solid #fff;
-  outline-offset:5px
+button:focus-visible,
+a:focus-visible {
+  outline: 3px solid #fff;
+  outline-offset: 5px;
 }
-button:disabled{
-  opacity:.5;
-  cursor:default
+button:disabled {
+  opacity: 0.5;
+  cursor: default;
 }
-button span{
-  margin-left:20px
+button span {
+  margin-left: 20px;
 }
-@media(max-width:650px){
-  .clubhouse{
-  padding:20px 16px
-}
-.era{
-  display:none
-}
-.intro{
-  display:block;
-  padding-top:28px
-}
-.description{
-  margin-top:20px
-}
-.scoreboard{
-  gap:12px;
-  font-size:10px;
-  letter-spacing:1px
-}
-.scoreboard b{
-  font-size:24px;
-  margin:0 4px
-}
-.score-center{
-  font-size:9px
-}
-footer{
-  align-items:flex-start;
-  gap:15px;
-  flex-direction:column
-}
-
+@media (max-width: 650px) {
+  .clubhouse {
+    padding: 20px 16px;
+  }
+  .era {
+    display: none;
+  }
+  .intro {
+    display: block;
+    padding-top: 28px;
+  }
+  .description {
+    margin-top: 20px;
+  }
+  .scoreboard {
+    gap: 12px;
+    font-size: 10px;
+    letter-spacing: 1px;
+  }
+  .scoreboard b {
+    font-size: 24px;
+    margin: 0 4px;
+  }
+  .score-center {
+    font-size: 9px;
+  }
+  footer {
+    align-items: flex-start;
+    gap: 15px;
+    flex-direction: column;
+  }
 }

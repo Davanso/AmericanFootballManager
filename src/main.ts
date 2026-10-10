@@ -24,7 +24,8 @@ try {
   document.querySelector('#reset-camera')!.addEventListener('click', field.resetCamera);
   if (import.meta.hot) import.meta.hot.dispose(field.dispose);
 } catch (error) {
-  status.textContent = 'Não foi possível abrir o campo. Ative a aceleração gráfica do navegador e recarregue.';
+  status.textContent =
+    'Não foi possível abrir o campo. Ative a aceleração gráfica do navegador e recarregue.';
   document.querySelector<HTMLButtonElement>('#reset-camera')!.disabled = true;
   console.error(error);
 }

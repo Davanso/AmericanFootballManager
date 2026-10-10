@@ -79,6 +79,8 @@ Ainda não há atletas, animações, jogadas, bots ou gestão implementados. Os 
 
 O primeiro run foi verificado no navegador, e a checagem de TypeScript e o build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
+Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
+
 Este repositório também é um espaço de aprendizagem: cada etapa deve produzir algo pequeno, compreensível e jogável.
 
 ## Como executar
@@ -94,6 +96,10 @@ Abra o endereço mostrado pelo Vite, normalmente `http://127.0.0.1:5173`. O nave
 
 ```sh
 npm run typecheck  # Verificar TypeScript
+npm run lint       # Validar regras de código (avisos também falham)
+npm run lint:fix   # Aplicar correções automáticas de lint
+npm run fmt        # Formatar antes de cada commit
+npm run fmt:check  # Verificar formatação sem alterar arquivos
 npm run build      # Verificar tipos e gerar dist/
 npm run preview    # Servir o build localmente
 ```
