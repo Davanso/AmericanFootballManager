@@ -421,3 +421,13 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] QB bot escolhe recebedor pela separação observada e reage à pressão; corrida planejada também tem portador bot.
 - [x] Destaque acompanha o defensor selecionado; demais atletas seguem suas atribuições.
 - [x] Testes de entrada normalizada, troca, alcance do tackle e decisão automática de passe.
+
+## 25. Partida curta offline
+
+- [x] Modo de partida com quatro períodos de 60 segundos, pontos separados e resultado final (empate permitido na demo).
+- [x] Wolves controlados no ataque e na defesa; Hawks têm ataque bot e conversão automática.
+- [x] Troca de posse, downs, punt, field goal e conversões; reposicionar o novo ataque pela posição da bola.
+- [x] Relógio corre apenas em execução; conversões são sem tempo e podem ocorrer após o último touchdown.
+- [x] Punt em arco, distância simplificada, sem retorno e com touchback.
+- [x] Testes de posse, pontuação, períodos, fim da partida, conversão final e punts.
+- [ ] Kickoff com retorno, prorrogação, timeouts e regras completas do relógio. A direção de ataque é normalizada para a direita nesta primeira demo.

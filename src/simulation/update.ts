@@ -1,3 +1,4 @@
+import { updatePunt } from './punting';
 import { attackInput } from '../ai/quarterback';
 import { moveDefender } from './defenderControl';
 import { containAthlete, ATHLETE_LIMIT } from './bounds';
@@ -65,15 +66,30 @@ export function updatePlay(state: PlayState, input: Input, dt: number) {
   if (state.controlSide === 'defense') input = attackInput(state);
   state.elapsed += dt;
   state.gameSeconds = Math.max(0, state.gameSeconds - dt);
-  if (state.lateGame && state.gameSeconds === 0 && state.phase !== 'kickFlight') {
+  if (
+    !state.matchPlay &&
+    state.lateGame &&
+    state.gameSeconds === 0 &&
+    state.phase !== 'kickFlight'
+  ) {
     state.drive.status = 'turnover';
     return finishPlay(state, 'Tempo esgotado · fim do cenário');
   }
-  if (state.phase.startsWith('kick')) return updateKick(state, dt);
-  if (state.kind === 'kick' && state.phase === 'snap') {
+  if (state.phase === 'puntFlight') return updatePunt(state, dt);
+  if (state.phase.startsWith('kick')) {
+    if (state.controlSide === 'defense' && state.phase === 'kickAim') state.phase = 'kickPower';
+    if (state.controlSide === 'defense' && state.phase === 'kickPower') {
+      state.kick = { angle: 0, power: Math.min(0.95, (77 - state.lineOfScrimmage) / 65) };
+      state.passOrigin = { x: state.lineOfScrimmage - 7, z: 0 };
+      state.phase = 'kickFlight';
+      state.flight = 0;
+    }
+    return updateKick(state, dt);
+  }
+  if ((state.kind === 'kick' || state.kind === 'punt') && state.phase === 'snap') {
     const t = Math.min(1, state.elapsed / 0.6);
     state.ball = { x: state.lineOfScrimmage - 7 * t, z: 0, height: 0.8 + Math.sin(t * Math.PI) };
-    if (t === 1) state.phase = 'kickAim';
+    if (t === 1) state.phase = state.kind === 'punt' ? 'puntFlight' : 'kickAim';
     return;
   }
   const controlled = controlledCarrier(state);

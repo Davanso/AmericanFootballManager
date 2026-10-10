@@ -6,7 +6,7 @@
 
 Um jogo de futebol americano com gestão de elenco, decisões de quarterback e uma identidade visual em pixel art inspirada nas décadas de 80, 90 e 2000.
 
-![Status: demo de drive](https://img.shields.io/badge/status-demo_de_drive-e9b44c)
+![Status: demo de drive](https://img.shields.io/badge/status-partida_curta-e9b44c)
 ![Modo: offline](https://img.shields.io/badge/modo-offline-238636)
 ![Visual: pixel art](https://img.shields.io/badge/visual-pixel_art-8957e5)
 
@@ -73,11 +73,11 @@ A demo já permite encadear descidas em um drive de treino. Os próximos marcos 
 
 ## Estado atual
 
-O projeto está na fase de **demo de drive**: treino de corrida pelo meio, passe curto, passe longo e field goal com 11 atletas por time, sprites humanos retrô provisórios e câmera ortográfica próxima e adaptativa. Uma carta mostra o desenho da jogada, com rotas coloridas e setas. As rotas desaparecem no snap, o QB recebe a bola e pode se movimentar ou passar para três recebedores. Bots correm rotas, acompanham recebedores e pressionam o QB. Toda a defesa começa a agir desde o snap.
+O projeto está na fase de **partida curta e treino livre**: treino de corrida pelo meio, passe curto, passe longo e field goal com 11 atletas por time, sprites humanos retrô provisórios e câmera ortográfica próxima e adaptativa. Uma carta mostra o desenho da jogada, com rotas coloridas e setas. As rotas desaparecem no snap, o QB recebe a bola e pode se movimentar ou passar para três recebedores. Bots correm rotas, acompanham recebedores e pressionam o QB. Toda a defesa começa a agir desde o snap.
 
 Há timer de cinco segundos, passe assistido para WR 1 ao esgotar a janela (se o QB estiver atrás da linha), recepção, passe incompleto, sack, tackle, saída de campo, touchdown e reinício. A pressão pode encerrar a jogada antes do timer. O treino tem limite de 15 segundos.
 
-**Limitações:** uma corrida pelo meio, duas jogadas de passe e field goal simplificado, bloqueios aproximados por proximidade e resistência temporária; chute sem vento, atributos ou tentativa de bloqueio; passe guiado até o recebedor em movimento; sem interceptações, atributos, animações completas de corrida/tackle, replay ou gestão. Ainda não há partida completa, ataque adversário, kickoff, punt, penalidades ou safety. Após a tentativa de conversão do touchdown ou quarta descida sem conversão, inicia-se outro drive do Wolves; o Hawks ainda não joga no ataque. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
+**Limitações:** uma corrida pelo meio, duas jogadas de passe e field goal simplificado, bloqueios aproximados por proximidade e resistência temporária; chute sem vento, atributos ou tentativa de bloqueio; passe guiado até o recebedor em movimento; sem interceptações, atributos, animações completas de corrida/tackle, replay ou gestão. A partida curta tem posse dos dois times e quatro períodos de 60 segundos. Kickoff com retorno, penalidades e safety ainda não estão implementados. No treino livre, o botão Novo drive continua iniciando outra série de treino. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
 
 **Melhorias da demo:** quando o QB corre, o ataque troca rotas por apoio e distribui bloqueios. A defesa combina perseguição, antecipação e contenção de laterais, com separação entre companheiros para reduzir aglomeração. São heurísticas iniciais, ainda sem leitura tática e atributos individuais completos.
 
@@ -93,7 +93,7 @@ Variações de velocidade, aceleração e habilidade de passe curto/médio/longo
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 56 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 63 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -184,3 +184,9 @@ O seletor **Plano defensivo** permite testar marcação individual, zona e blitz
 ### Treino de defesa
 
 Escolha **Lado controlado → Controlar defesa**. WASD/setas movem o defensor destacado, **E** troca para outro defensor perto da bola e **Espaço** tenta o tackle quando o portador está ao alcance. O QB adversário procura um recebedor livre e pode sair do pocket sob pressão. Os demais defensores continuam suas atribuições.
+
+### Partida curta offline
+
+Escolha **Modo de jogo → Partida curta · 4 × 60s**. Você ataca com os Wolves e controla a defesa quando os Hawks têm a bola. Downs, touchdown/conversão, field goal, punt e quarta descida determinam a posse. O relógio corre durante a execução e pausa entre jogadas; uma conversão necessária após o último touchdown permanece disponível. O resultado final aceita empate nesta demo.
+
+Punt tem voo em arco, avanço fixo e touchback, ainda sem retorno. Após pontuação, o novo ataque começa na própria jarda 25, sem animação de kickoff. Para manter os controles consistentes nesta primeira versão, ambos os ataques são apresentados avançando para a direita. Reiniciar começa outra partida.

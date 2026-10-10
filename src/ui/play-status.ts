@@ -26,15 +26,17 @@ export function createPlayStatus() {
   const choices = [...document.querySelectorAll<HTMLButtonElement>('[data-kind]')];
   return (state: PlayState) => {
     document.querySelector<HTMLElement>('#play-title')!.textContent =
-      state.kind === 'kick'
-        ? state.drive.attempt === 'extraPoint'
-          ? 'JOGADA · EXTRA POINT'
-          : 'JOGADA · FIELD GOAL'
-        : state.kind === 'run'
-          ? 'JOGADA · CORRIDA PELO MEIO'
-          : state.kind === 'deep'
-            ? 'JOGADA · PASSE LONGO'
-            : 'JOGADA · PASSE CURTO';
+      state.kind === 'punt'
+        ? 'JOGADA · PUNT'
+        : state.kind === 'kick'
+          ? state.drive.attempt === 'extraPoint'
+            ? 'JOGADA · EXTRA POINT'
+            : 'JOGADA · FIELD GOAL'
+          : state.kind === 'run'
+            ? 'JOGADA · CORRIDA PELO MEIO'
+            : state.kind === 'deep'
+              ? 'JOGADA · PASSE LONGO'
+              : 'JOGADA · PASSE CURTO';
     const pendingConversion = needsConversion(state);
     document.querySelector<HTMLElement>('#conversion-choice')!.hidden = !pendingConversion;
     const defenseSelect = document.querySelector<HTMLSelectElement>('#defense-plan')!;
@@ -124,6 +126,11 @@ export function createPlayStatus() {
             : state.drive.status === 'turnover'
               ? 'Quarta descida sem conversão · drive encerrado; inicie um novo drive de treino'
               : 'Jogada encerrada · avance para a próxima jogada';
+      return;
+    }
+    if (state.kind === 'punt') {
+      info.textContent = 'PUNT · EM JOGO';
+      status.textContent = 'Chute de reposicionamento · troca de posse ao final';
       return;
     }
     if (state.controlSide === 'defense' && state.kind !== 'kick') {

@@ -7,11 +7,23 @@ import { ballPresentation, fallPresentation } from './finishAnimation';
 
 export function createAthletes(scene: THREE.Scene, initial: PlayState) {
   const textures = new Map(
-    initial.athletes.map((athlete) => [
-      athlete.id,
-      Array.from({ length: 8 }, (_, frame) => createPlayerTexture(athlete.team, frame, athlete.id)),
-    ]),
+    initial.athletes.flatMap((athlete) =>
+      (['home', 'away'] as const).map(
+        (team) =>
+          [
+            `${athlete.id}:${team}`,
+            Array.from({ length: 8 }, (_, frame) => createPlayerTexture(team, frame, athlete.id)),
+          ] as const,
+      ),
+    ),
   );
+  function textureTeam(athlete: PlayState['athletes'][number], state: PlayState) {
+    return state.matchPlay && state.controlSide === 'defense'
+      ? athlete.team === 'home'
+        ? 'away'
+        : 'home'
+      : athlete.team;
+  }
   const group = new THREE.Group();
   const routes = new THREE.Group();
   const sprites = new Map<string, THREE.Sprite>();
@@ -19,7 +31,7 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
   const badges = new Map<string, THREE.Sprite>();
   for (const athlete of initial.athletes) {
     const sprite = new THREE.Sprite(
-      new THREE.SpriteMaterial({ map: textures.get(athlete.id)![0] }),
+      new THREE.SpriteMaterial({ map: textures.get(`${athlete.id}:${athlete.team}`)![0] }),
     );
     sprite.scale.set(4.4, 5.5, 1);
     group.add(sprite);
@@ -85,7 +97,7 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
       finishSeconds = 0;
     }
     finishSeconds = state.phase === 'finished' ? finishSeconds + dt : 0;
-    routes.visible = state.phase === 'ready' && state.kind !== 'kick';
+    routes.visible = state.phase === 'ready' && !['kick', 'punt'].includes(state.kind);
     for (const athlete of state.athletes) {
       const sprite = sprites.get(athlete.id)!;
       const moving =
@@ -108,7 +120,9 @@ export function createAthletes(scene: THREE.Scene, initial: PlayState) {
         state.flight > 0.12
       )
         animation = 7;
-      sprite.material.map = textures.get(athlete.id)![animation];
+      sprite.material.map = textures.get(`${athlete.id}:${textureTeam(athlete, state)}`)![
+        animation
+      ];
       sprite.material.rotation = 0;
       sprite.material.depthTest = state.fallen !== athlete.id;
       sprite.renderOrder = state.fallen === athlete.id ? 6 : 0;

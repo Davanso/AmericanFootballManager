@@ -15,11 +15,12 @@ export interface Athlete extends Position {
   waypoint: number;
   speed: number;
 }
-export type PlayKind = 'short' | 'deep' | 'run' | 'kick';
+export type PlayKind = 'short' | 'deep' | 'run' | 'kick' | 'punt';
 export type Phase =
   | 'kickAim'
   | 'kickPower'
   | 'kickFlight'
+  | 'puntFlight'
   | 'ready'
   | 'snap'
   | 'handoff'
@@ -27,6 +28,7 @@ export type Phase =
   | 'pass'
   | 'finished';
 export interface PlayState {
+  matchPlay?: boolean;
   controlSide: 'offense' | 'defense';
   selectedDefender: string;
   defensePlan: DefensivePlan;
@@ -132,7 +134,7 @@ export function createPlay(
         player.route = [];
       });
   }
-  if (kind === 'kick') {
+  if (kind === 'kick' || kind === 'punt') {
     const qb = athletes.find((athlete) => athlete.id === 'qb')!;
     qb.x = drive.spot - 7;
     const kicker = athletes.find((athlete) => athlete.id === 'rb')!;

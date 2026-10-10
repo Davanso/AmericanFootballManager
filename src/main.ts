@@ -12,6 +12,9 @@ import { chooseConversion, needsConversion } from './simulation/conversion';
 import { DEFENSIVE_PLANS } from './data/defensivePlans';
 import type { DefensivePlan } from './data/defensivePlans';
 import { switchDefender, attemptTackle } from './simulation/defenderControl';
+import { createMatch, tickMatch, nextMatchPlay, matchConversion } from './simulation/match';
+import type { MatchSession } from './simulation/match';
+import { createMatchStatus } from './ui/matchStatus';
 import { createDrive } from './simulation/drive';
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -19,9 +22,9 @@ if (!app) throw new Error('Elemento raiz não encontrado.');
 app.innerHTML = `
   <main class="clubhouse">
     <header><a class="brand" href="/" aria-label="American Football Manager">AFM<span>AMERICAN FOOTBALL MANAGER</span></a><span class="era">EST. 1985 · CAMPO DE TREINO</span></header>
-    <section class="intro"><div><p class="eyebrow">DEMO / PASSE CURTO</p><h1>Leia o campo.<br>Chame a jogada.</h1></div><p class="description">Espaço: snap · WASD ou setas: mover QB / RB / defensor<br>E: trocar defensor · Espaço: tackle na defesa<br>J, K, L: passar para a tecla sobre o atleta<br>Em passes: após 5 segundos, passe assistido para Carter.</p></section>
+    <label class="session-mode">MODO <select id="session-mode" aria-label="Modo de jogo"><option value="training">Treino livre</option><option value="match">Partida curta · 4 × 60s</option></select></label><section class="intro"><div><p class="eyebrow">DEMO / PASSE CURTO</p><h1>Leia o campo.<br>Chame a jogada.</h1></div><p class="description">Espaço: snap · WASD ou setas: mover QB / RB / defensor<br>E: trocar defensor · Espaço: tackle na defesa<br>J, K, L: passar para a tecla sobre o atleta<br>Em passes: após 5 segundos, passe assistido para Carter.</p></section>
     <section class="stadium" aria-label="Campo de treinamento">
-      <div class="scoreboard"><span>WOLVES <b id="home-score">00</b></span><span class="score-center">DRIVE DE TREINO<small id="play-info">ANTES DO SNAP</small></span><span><b>00</b> HAWKS</span></div>
+      <div class="scoreboard"><span>WOLVES <b id="home-score">00</b></span><span class="score-center">DRIVE DE TREINO<small id="play-info">ANTES DO SNAP</small></span><span><b id="away-score">00</b> HAWKS</span></div>
       <div class="field-stage"><div id="field" role="img" aria-label="Campo com atletas e rotas da jogada"></div><div id="touchdown" class="touchdown-banner" role="status" hidden><small>AURORA WOLVES</small><strong>TOUCHDOWN</strong><span>+6 PONTOS</span></div></div>
       <div class="drive-board" aria-label="Descida e distância"><div><small id="down-caption">DESCIDA ATUAL</small><strong id="down-distance">1st to 10</strong></div><span id="ball-spot">BOLA · WOLVES 31</span><button id="next-play" type="button" disabled>Próxima jogada →</button></div>
       <section id="conversion-choice" hidden aria-label="Tentativa após touchdown"><strong>TOUCHDOWN · Escolha a conversão</strong><button id="extra-point" type="button">Extra point · +1</button><button id="two-point" type="button">Conversão de dois pontos · +2</button></section>
@@ -35,7 +38,7 @@ app.innerHTML = `
       <p id="render-status" role="status">Preparando o campo…</p>
     </section>
     <section id="kick-controls" hidden aria-label="Controle do chute"><div class="kick-direction"><span id="kick-arrow">↑</span></div><label>FORÇA <meter id="kick-meter" min="0" max="1" value="0.8"></meter></label><button id="kick-confirm" type="button">Fixar direção</button><p id="kick-hint">Espaço: fixar direção, depois força.</p></section><footer class="play-controls"><div><span class="tag" id="play-title">JOGADA · PASSE CURTO</span><p id="result">Dê o snap e encontre um recebedor.</p></div><div class="actions"><button id="snap" type="button">Dar snap</button>${PASS_TARGETS.map((target, index) => `<button data-pass="${index}" type="button" aria-label="Passar para ${target.name}, tecla ${target.label}"><kbd style="--target-color:${target.color}">${target.label}</kbd> ${target.name}</button>`).join('')}<button id="restart" type="button">Reiniciar</button></div></footer>
-    <section class="playbook" aria-label="Desenho da jogada de treino"><div class="playChoices"><button type="button" data-kind="run" aria-label="Selecionar corrida pelo meio" class="play-choice">${playDiagram('run')}</button><button type="button" data-kind="short" aria-label="Selecionar passe curto" class="play-choice">${playDiagram()}</button><button type="button" data-kind="deep" aria-label="Selecionar passe longo" class="play-choice">${playDiagram('deep')}</button><button id="choose-kick" type="button" aria-label="Field goal · 3 pontos"><span>Field goal · 3 pontos</span><svg viewBox="0 0 160 64" width="160" height="64" role="img" aria-label="Formação de chute: snap para holder e chute entre os postes"><path d="M125 8V40H150V8 M137 40V57" fill="none" stroke="#f1d575" stroke-width="3"/><path d="M42 34Q80 10 132 25" fill="none" stroke="#f1d575" stroke-width="2" stroke-dasharray="4 3"/><path d="M61 8V58" stroke="#517b67"/><g fill="#eee5cc"><circle cx="61" cy="15" r="3"/><circle cx="61" cy="24" r="3"/><circle cx="61" cy="33" r="3"/><circle cx="61" cy="42" r="3"/><circle cx="61" cy="51" r="3"/><circle cx="42" cy="34" r="3"/><circle cx="32" cy="44" r="3"/></g></svg></button></div><div><p class="eyebrow">DO PLAYBOOK AO CAMPO</p><p>As cores e teclas do desenho acompanham seus recebedores.<br>Depois do snap, as rotas somem. Os alvos continuam identificados.</p></div></section>
+    <section class="playbook" aria-label="Desenho da jogada de treino"><div class="playChoices"><button type="button" data-kind="run" aria-label="Selecionar corrida pelo meio" class="play-choice">${playDiagram('run')}</button><button type="button" data-kind="short" aria-label="Selecionar passe curto" class="play-choice">${playDiagram()}</button><button type="button" data-kind="deep" aria-label="Selecionar passe longo" class="play-choice">${playDiagram('deep')}</button><button id="choose-kick" type="button" aria-label="Field goal · 3 pontos"><span>Field goal · 3 pontos</span><svg viewBox="0 0 160 64" width="160" height="64" role="img" aria-label="Formação de chute: snap para holder e chute entre os postes"><path d="M125 8V40H150V8 M137 40V57" fill="none" stroke="#f1d575" stroke-width="3"/><path d="M42 34Q80 10 132 25" fill="none" stroke="#f1d575" stroke-width="2" stroke-dasharray="4 3"/><path d="M61 8V58" stroke="#517b67"/><g fill="#eee5cc"><circle cx="61" cy="15" r="3"/><circle cx="61" cy="24" r="3"/><circle cx="61" cy="33" r="3"/><circle cx="61" cy="42" r="3"/><circle cx="61" cy="51" r="3"/><circle cx="42" cy="34" r="3"/><circle cx="32" cy="44" r="3"/></g></svg></button><button id="choose-punt" type="button">Punt · trocar posse</button></div><div><p class="eyebrow">DO PLAYBOOK AO CAMPO</p><p>As cores e teclas do desenho acompanham seus recebedores.<br>Depois do snap, as rotas somem. Os alvos continuam identificados.</p></div></section>
   </main>`;
 
 function mountDemo() {
@@ -53,6 +56,9 @@ function mountDemo() {
   const playChoices = [...document.querySelectorAll<HTMLButtonElement>('[data-kind]')];
   const defensePlan = document.querySelector<HTMLSelectElement>('#defense-plan')!;
   const controlSide = document.querySelector<HTMLSelectElement>('#control-side')!;
+  const sessionMode = document.querySelector<HTMLSelectElement>('#session-mode')!;
+  const updateMatchStatus = createMatchStatus();
+  let match: MatchSession | undefined;
   let state = createPlay();
   const field = createField(host, state);
   const onSnap = () => {
@@ -66,6 +72,12 @@ function mountDemo() {
   const controls = createControls(onSnap, onPass, () => switchDefender(state));
   snap.addEventListener('click', onSnap);
   const onRestart = () => {
+    if (match) {
+      match = createMatch();
+      state = match.play;
+      kind = state.kind;
+      return;
+    }
     state = createPlay();
     kind = 'short';
     scenario.value = 'normal';
@@ -75,6 +87,12 @@ function mountDemo() {
   };
   restart.addEventListener('click', onRestart);
   const onNext = () => {
+    if (match) {
+      nextMatchPlay(match);
+      state = match.play;
+      kind = state.kind;
+      return;
+    }
     if (state.phase !== 'finished' || needsConversion(state)) return;
     const ended = state.drive.status !== 'active';
     if (ended) kind = 'short';
@@ -91,6 +109,7 @@ function mountDemo() {
   };
   next.addEventListener('click', onNext);
   const onStartSpot = () => {
+    if (match) return;
     if (needsConversion(state) || state.drive.attempt) return;
     if (state.phase !== 'ready' && state.phase !== 'finished') return;
     state = createPlay(
@@ -106,6 +125,7 @@ function mountDemo() {
   startSpot.addEventListener('change', onStartSpot);
   scenario.addEventListener('change', onStartSpot);
   const selectKind = (value: PlayKind) => {
+    if (match && state.controlSide === 'defense') return;
     if (
       needsConversion(state) ||
       (state.drive.attempt &&
@@ -144,7 +164,11 @@ function mountDemo() {
   ];
   const conversionHandlers = conversionButtons.map((button, index) => {
     const handler = () => {
-      state = chooseConversion(state, index === 0 ? 'extraPoint' : 'twoPoint');
+      if (match) {
+        matchConversion(match, index === 0 ? 'extraPoint' : 'twoPoint');
+        state = match.play;
+      }
+      if (!match) state = chooseConversion(state, index === 0 ? 'extraPoint' : 'twoPoint');
       kind = state.kind;
     };
     button.addEventListener('click', handler);
@@ -159,6 +183,15 @@ function mountDemo() {
     if (state.phase === 'ready') state.controlSide = controlSide.value as 'offense' | 'defense';
   };
   controlSide.addEventListener('change', onControlSide);
+  const onSessionMode = () => {
+    match = sessionMode.value === 'match' ? createMatch() : undefined;
+    state = match?.play ?? createPlay();
+    kind = state.kind;
+  };
+  sessionMode.addEventListener('change', onSessionMode);
+  const puntButton = document.querySelector<HTMLButtonElement>('#choose-punt')!;
+  const onPunt = () => selectKind('punt');
+  puntButton.addEventListener('click', onPunt);
   let last = performance.now();
   let accumulator = 0;
   let frame = 0;
@@ -166,11 +199,17 @@ function mountDemo() {
     accumulator += Math.min((now - last) / 1000, 0.1);
     last = now;
     while (accumulator >= 1 / 60) {
-      updatePlay(state, controls.read(), 1 / 60);
+      if (match) {
+        match.play = state;
+        tickMatch(match, controls.read(), 1 / 60);
+        state = match.play;
+      }
+      if (!match) updatePlay(state, controls.read(), 1 / 60);
       accumulator -= 1 / 60;
     }
     field.render(state);
     updateStatus(state);
+    updateMatchStatus(match, state);
     frame = requestAnimationFrame(tick);
   }
   frame = requestAnimationFrame(tick);
@@ -181,6 +220,8 @@ function mountDemo() {
     );
     controlSide.removeEventListener('change', onControlSide);
     defensePlan.removeEventListener('change', onDefensePlan);
+    sessionMode.removeEventListener('change', onSessionMode);
+    puntButton.removeEventListener('click', onPunt);
     controls.dispose();
     field.dispose();
     snap.removeEventListener('click', onSnap);
