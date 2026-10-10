@@ -23,3 +23,14 @@ it('preserves white markings every ten yards independently of tactical indicator
   update(30, 40, true);
   expect(stripes.every((p) => p.visible)).toBe(true);
 });
+
+it('swaps end zone labels when the Hawks attack in the normalized direction', () => {
+  mockCanvas();
+  const scene = new Scene();
+  const update = decorateField(scene);
+  update(0, 10, false, true);
+  expect(scene.getObjectByName('endzone:AURORA WOLVES')!.position.x).toBe(55);
+  expect(scene.getObjectByName('endzone:CRIMSON HAWKS')!.position.x).toBe(-55);
+  update(0, 10, false, false);
+  expect(scene.getObjectByName('endzone:AURORA WOLVES')!.position.x).toBe(-55);
+});

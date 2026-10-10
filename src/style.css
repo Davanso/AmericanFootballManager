@@ -615,3 +615,16 @@ button kbd {
   align-items: center;
   flex-wrap: wrap;
 }
+
+.replay-controls {
+  display: flex;
+  align-items: center;
+  gap: 12px;
+  margin: 16px 0;
+}
+.replay-controls select {
+  background: #143b32;
+  color: #eee5cc;
+  padding: 12px;
+  border: 2px solid #456453;
+}

@@ -182,7 +182,7 @@ Adicionar bloqueios, marcação, pressão ao QB, recepção e tackle. Integrar t
 - [x] Corrida pelo meio, passe curto e passe longo.
 - [x] Pelo menos duas respostas defensivas.
 - [x] Seleção de jogadas entre snaps.
-- [ ] Replay; velocidade de reprodução a avaliar.
+- [x] Replay da última jogada em 0.5×, 1× e 2×.
 
 ### Etapa 6 — Partida offline
 
@@ -453,3 +453,12 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Pausar para aceitar/recusar; repetir descida ou conceder primeira descida; metade da distância perto das end zones.
 - [x] Testes de falta antes do snap, pausa do relógio, recusa e distâncias.
 - [ ] Faltas em conversões, flags adicionais e decisão automática do técnico adversário; validar por ano antes de ampliar.
+
+## 29. Replay e integração final da partida
+
+- [x] Registrar snapshots limitados da última jogada e reproduzir posições e bola sem alterar relógio, posse ou pontos.
+- [x] Velocidades 0.5×/1×/2× e interrupção manual; substituir gravação ao iniciar outra jogada.
+- [x] End zones e uniformes acompanham o time atacante na direção normalizada.
+- [x] Separar perfil do QB e histórico de passes dos dois times; aguardar decisão de flag na última jogada.
+- [x] Testes de independência dos snapshots, velocidade, parada, descarte, labels das end zones, perfis e flags no fim da partida.
+- [ ] Próxima fase de produto: gestão de elenco (escalação, treino, evolução e salvamento), seguida por estética de outras épocas. Regras históricas continuam exigindo validação antes de implementação.

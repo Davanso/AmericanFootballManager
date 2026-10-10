@@ -19,6 +19,7 @@ import { broadcastMarkup, updateBroadcastScoreboard } from './ui/broadcastScoreb
 import { applyRoster, QB_PROFILES } from './data/playerAttributes';
 import type { QBProfile } from './data/playerAttributes';
 import { resolvePenalty } from './simulation/penalties';
+import { createReplay } from './simulation/replay';
 import { createDrive } from './simulation/drive';
 
 const app = document.querySelector<HTMLDivElement>('#app');
@@ -34,7 +35,7 @@ app.innerHTML = `
         '',
       )}</select></label><section class="intro"><div><p class="eyebrow">DEMO / PASSE CURTO</p><h1>Leia o campo.<br>Chame a jogada.</h1></div><p class="description">Espaço: snap · WASD ou setas: mover QB / RB / defensor<br>E: trocar defensor · Espaço: tackle na defesa<br>J, K, L: passar para a tecla sobre o atleta<br>Em passes: após 5 segundos, passe assistido para Carter.</p></section>
     <section class="stadium" aria-label="Campo de treinamento">
-      <div class="scoreboard"><span>WOLVES <b id="home-score">00</b></span><span class="score-center">DRIVE DE TREINO<small id="play-info">ANTES DO SNAP</small></span><span><b id="away-score">00</b> HAWKS</span></div>
+      <div class="scoreboard"><span>WOLVES <b id="home-score">00</b></span><span class="score-center"><span id="session-caption">DRIVE DE TREINO</span><small id="play-info">ANTES DO SNAP</small></span><span><b id="away-score">00</b> HAWKS</span></div>
       <div class="field-stage"><div id="field" role="img" aria-label="Campo com atletas e rotas da jogada"></div><div id="touchdown" class="touchdown-banner" role="status" hidden><small>AURORA WOLVES</small><strong>TOUCHDOWN</strong><span>+6 PONTOS</span></div></div>
       <div class="drive-board" aria-label="Descida e distância"><div><small id="down-caption">DESCIDA ATUAL</small><strong id="down-distance">1st to 10</strong></div><span id="ball-spot">BOLA · WOLVES 31</span><button id="next-play" type="button" disabled>Próxima jogada →</button></div>
       <section id="conversion-choice" hidden aria-label="Tentativa após touchdown"><strong>TOUCHDOWN · Escolha a conversão</strong><button id="extra-point" type="button">Extra point · +1</button><button id="two-point" type="button">Conversão de dois pontos · +2</button></section>
@@ -47,7 +48,7 @@ app.innerHTML = `
         )}</select><select id="control-side" aria-label="Lado controlado"><option value="offense">Controlar ataque</option><option value="defense">Controlar defesa</option></select></label>
       <section id="penalty-choice" hidden aria-label="Decisão de penalidade"><strong id="penalty-text">FLAG</strong><button id="accept-penalty" type="button">Aceitar falta</button><button id="decline-penalty" type="button">Recusar falta</button></section><p id="render-status" role="status">Preparando o campo…</p>
     </section>
-    <section id="kick-controls" hidden aria-label="Controle do chute"><div class="kick-direction"><span id="kick-arrow">↑</span></div><label>FORÇA <meter id="kick-meter" min="0" max="1" value="0.8"></meter></label><button id="kick-confirm" type="button">Fixar direção</button><p id="kick-hint">Espaço: fixar direção, depois força.</p></section><footer class="play-controls"><div><span class="tag" id="play-title">JOGADA · PASSE CURTO</span><p id="result">Dê o snap e encontre um recebedor.</p></div><div class="actions"><button id="snap" type="button">Dar snap</button>${PASS_TARGETS.map((target, index) => `<button data-pass="${index}" type="button" aria-label="Passar para ${target.name}, tecla ${target.label}"><kbd style="--target-color:${target.color}">${target.label}</kbd> ${target.name}</button>`).join('')}<button id="restart" type="button">Reiniciar</button></div></footer>
+    <section id="kick-controls" hidden aria-label="Controle do chute"><div class="kick-direction"><span id="kick-arrow">↑</span></div><label>FORÇA <meter id="kick-meter" min="0" max="1" value="0.8"></meter></label><button id="kick-confirm" type="button">Fixar direção</button><p id="kick-hint">Espaço: fixar direção, depois força.</p></section><section class="replay-controls" aria-label="Replay da última jogada"><button id="start-replay" type="button" disabled>Replay da última jogada</button><select id="replay-speed" aria-label="Velocidade do replay"><option value="0.5">0.5×</option><option value="1" selected>1×</option><option value="2">2×</option></select><button id="stop-replay" type="button" hidden>Parar replay</button></section><footer class="play-controls"><div><span class="tag" id="play-title">JOGADA · PASSE CURTO</span><p id="result">Dê o snap e encontre um recebedor.</p></div><div class="actions"><button id="snap" type="button">Dar snap</button>${PASS_TARGETS.map((target, index) => `<button data-pass="${index}" type="button" aria-label="Passar para ${target.name}, tecla ${target.label}"><kbd style="--target-color:${target.color}">${target.label}</kbd> ${target.name}</button>`).join('')}<button id="restart" type="button">Reiniciar</button></div></footer>
     <section class="playbook" aria-label="Desenho da jogada de treino"><div class="playChoices"><button type="button" data-kind="run" aria-label="Selecionar corrida pelo meio" class="play-choice">${playDiagram('run')}</button><button type="button" data-kind="short" aria-label="Selecionar passe curto" class="play-choice">${playDiagram()}</button><button type="button" data-kind="deep" aria-label="Selecionar passe longo" class="play-choice">${playDiagram('deep')}</button><button id="choose-kick" type="button" aria-label="Field goal · 3 pontos"><span>Field goal · 3 pontos</span><svg viewBox="0 0 160 64" width="160" height="64" role="img" aria-label="Formação de chute: snap para holder e chute entre os postes"><path d="M125 8V40H150V8 M137 40V57" fill="none" stroke="#f1d575" stroke-width="3"/><path d="M42 34Q80 10 132 25" fill="none" stroke="#f1d575" stroke-width="2" stroke-dasharray="4 3"/><path d="M61 8V58" stroke="#517b67"/><g fill="#eee5cc"><circle cx="61" cy="15" r="3"/><circle cx="61" cy="24" r="3"/><circle cx="61" cy="33" r="3"/><circle cx="61" cy="42" r="3"/><circle cx="61" cy="51" r="3"/><circle cx="42" cy="34" r="3"/><circle cx="32" cy="44" r="3"/></g></svg></button><button id="choose-punt" type="button">Punt · trocar posse</button></div><div><p class="eyebrow">DO PLAYBOOK AO CAMPO</p><p>As cores e teclas do desenho acompanham seus recebedores.<br>Depois do snap, as rotas somem. Os alvos continuam identificados.</p></div></section>
   ${broadcastMarkup}</main>`;
 
@@ -72,7 +73,9 @@ function mountDemo() {
   const qbProfile = document.querySelector<HTMLSelectElement>('#qb-profile')!;
   let state = createPlay();
   const field = createField(host, state);
+  const replay = createReplay();
   const onSnap = () => {
+    if (replay.playing) return;
     if (state.controlSide === 'defense' && state.phase === 'live') return attemptTackle(state);
     if (state.phase.startsWith('kick')) return confirmKick(state);
     startPlay(state);
@@ -83,6 +86,7 @@ function mountDemo() {
   const controls = createControls(onSnap, onPass, () => switchDefender(state));
   snap.addEventListener('click', onSnap);
   const onRestart = () => {
+    replay.stop();
     if (match) {
       match = createMatch();
       state = match.play;
@@ -98,6 +102,7 @@ function mountDemo() {
   };
   restart.addEventListener('click', onRestart);
   const onNext = () => {
+    replay.stop();
     if (match) {
       nextMatchPlay(match);
       state = match.play;
@@ -120,6 +125,7 @@ function mountDemo() {
   };
   next.addEventListener('click', onNext);
   const onStartSpot = () => {
+    if (replay.playing) return;
     if (match) return;
     if (needsConversion(state) || state.drive.attempt) return;
     if (state.phase !== 'ready' && state.phase !== 'finished') return;
@@ -136,6 +142,7 @@ function mountDemo() {
   startSpot.addEventListener('change', onStartSpot);
   scenario.addEventListener('change', onStartSpot);
   const selectKind = (value: PlayKind) => {
+    if (replay.playing) return;
     if (state.pendingPenalty) return;
     if (match && state.controlSide === 'defense') return;
     if (
@@ -176,6 +183,7 @@ function mountDemo() {
   ];
   const conversionHandlers = conversionButtons.map((button, index) => {
     const handler = () => {
+      if (replay.playing) return;
       if (match) {
         matchConversion(match, index === 0 ? 'extraPoint' : 'twoPoint');
         state = match.play;
@@ -196,6 +204,7 @@ function mountDemo() {
   };
   controlSide.addEventListener('change', onControlSide);
   const onSessionMode = () => {
+    replay.stop();
     match = sessionMode.value === 'match' ? createMatch() : undefined;
     state = match?.play ?? createPlay();
     kind = state.kind;
@@ -229,22 +238,36 @@ function mountDemo() {
     button.addEventListener('click', handler);
     return handler;
   });
+  const replayButton = document.querySelector<HTMLButtonElement>('#start-replay')!;
+  const stopReplay = document.querySelector<HTMLButtonElement>('#stop-replay')!;
+  const replaySpeed = document.querySelector<HTMLSelectElement>('#replay-speed')!;
+  const onReplay = () => replay.start();
+  const onStopReplay = () => replay.stop();
+  replayButton.addEventListener('click', onReplay);
+  stopReplay.addEventListener('click', onStopReplay);
   let last = performance.now();
   let accumulator = 0;
   let frame = 0;
   function tick(now: number) {
-    accumulator += Math.min((now - last) / 1000, 0.1);
+    const frameDelta = Math.min((now - last) / 1000, 0.1);
+    accumulator += frameDelta;
     last = now;
     while (accumulator >= 1 / 60) {
+      if (replay.playing) {
+        accumulator -= 1 / 60;
+        continue;
+      }
       if (match) {
         match.play = state;
         tickMatch(match, controls.read(), 1 / 60);
         state = match.play;
       }
       if (!match) updatePlay(state, controls.read(), 1 / 60);
+      replay.record(state, 1 / 60);
       accumulator -= 1 / 60;
     }
-    field.render(state);
+    const replayFrame = replay.sample(frameDelta, Number(replaySpeed.value));
+    field.render(replayFrame ?? state);
     if (
       state.phase === 'ready' &&
       !match &&
@@ -255,6 +278,14 @@ function mountDemo() {
     updateStatus(state);
     updateMatchStatus(match, state);
     updateBroadcastScoreboard(match, state);
+    replayButton.disabled = !replay.canPlay() || replay.playing;
+    stopReplay.hidden = !replay.playing;
+    if (replay.playing) {
+      next.disabled = true;
+      snap.disabled = true;
+      document.querySelector<HTMLElement>('#broadcast-phase')!.textContent =
+        'REPLAY · ' + replaySpeed.value + '×';
+    }
     frame = requestAnimationFrame(tick);
   }
   frame = requestAnimationFrame(tick);
@@ -265,6 +296,8 @@ function mountDemo() {
     );
     controlSide.removeEventListener('change', onControlSide);
     defensePlan.removeEventListener('change', onDefensePlan);
+    replayButton.removeEventListener('click', onReplay);
+    stopReplay.removeEventListener('click', onStopReplay);
     penaltyButtons.forEach((button, index) =>
       button.removeEventListener('click', penaltyHandlers[index]),
     );

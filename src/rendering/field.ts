@@ -29,6 +29,7 @@ export function createField(host: HTMLElement, initial: PlayState) {
     mesh.rotation.x = -Math.PI / 2;
     mesh.position.set(x, y, z);
     scene.add(mesh);
+    return mesh;
   }
 
   rectangle(121, 54.1, '#ede7c5');
@@ -39,8 +40,8 @@ export function createField(host: HTMLElement, initial: PlayState) {
   turf.rotation.x = -Math.PI / 2;
   turf.position.y = 0.01;
   scene.add(turf);
-  rectangle(10, 53.33, '#183f52', -55, 0, 0.03);
-  rectangle(10, 53.33, '#9d4c38', 55, 0, 0.03);
+  const leftEndzone = rectangle(10, 53.33, '#183f52', -55, 0, 0.03);
+  const rightEndzone = rectangle(10, 53.33, '#9d4c38', 55, 0, 0.03);
   for (const z of [-26.65, 26.65]) rectangle(120, 0.35, '#e5e5bf', 0, z, 0.05);
 
   const updateMarkers = decorateField(scene);
@@ -75,7 +76,10 @@ export function createField(host: HTMLElement, initial: PlayState) {
       framing.update(state, aspect, dt);
       lastFrame = now;
       athletes.render(state, dt);
-      updateMarkers(state.lineOfScrimmage, state.firstDownLine, showKickTarget(state));
+      const swapped = Boolean(state.matchPlay && state.controlSide === 'defense');
+      leftEndzone.material.color.set(swapped ? '#9d4c38' : '#183f52');
+      rightEndzone.material.color.set(swapped ? '#183f52' : '#9d4c38');
+      updateMarkers(state.lineOfScrimmage, state.firstDownLine, showKickTarget(state), swapped);
       touchdown(state, dt);
       updateBackdrop(camera);
       renderer.render(scene, camera);

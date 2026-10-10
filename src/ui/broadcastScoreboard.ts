@@ -6,7 +6,7 @@ export const broadcastMarkup = `<aside class="broadcast-scoreboard" aria-label="
 export function scoreboardView(match: MatchSession | undefined, state: PlayState) {
   const seconds = Math.max(0, Math.ceil(match?.remaining ?? state.gameSeconds));
   const yard = Math.round(state.drive.spot < 0 ? state.drive.spot + 50 : 50 - state.drive.spot);
-  const possession = match?.possession ?? (state.controlSide === 'offense' ? 'wolves' : 'hawks');
+  const possession = match?.possession ?? 'wolves';
   return {
     wolves: String(match?.scores.wolves ?? state.drive.score).padStart(2, '0'),
     hawks: String(match?.scores.hawks ?? 0).padStart(2, '0'),

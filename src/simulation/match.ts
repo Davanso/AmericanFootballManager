@@ -1,3 +1,4 @@
+import type { QBProfile } from '../data/playerAttributes';
 import { applyRoster } from '../data/playerAttributes';
 import { createDrive } from './drive';
 import { createPlay } from './play';
@@ -6,6 +7,8 @@ import { updatePlay } from './update';
 import type { Input } from './update';
 import { chooseConversion, needsConversion } from './conversion';
 export interface MatchSession {
+  wolvesProfile: QBProfile;
+  reads: { wolves: Record<string, number>; hawks: Record<string, number> };
   quarter: number;
   remaining: number;
   periodSeconds: number;
@@ -17,6 +20,8 @@ export interface MatchSession {
 }
 export function createMatch(periodSeconds = 60): MatchSession {
   const session: MatchSession = {
+    wolvesProfile: 'balanced',
+    reads: { wolves: {}, hawks: {} },
     quarter: 1,
     remaining: periodSeconds,
     periodSeconds,
@@ -36,14 +41,14 @@ function matchPlay(session: MatchSession, drive: PlayState['drive'], kind: PlayK
     kind,
     false,
     session.remaining,
-    previous.defenseReads,
+    session.reads[session.possession],
     previous.defensePlan,
     session.possession === 'wolves' ? 'offense' : 'defense',
   );
   state.matchPlay = true;
   state.flagsEnabled = true;
   state.randomState = previous.randomState;
-  applyRoster(state, session.possession === 'wolves' ? (previous.qbProfile ?? 'balanced') : 'deep');
+  applyRoster(state, session.possession === 'wolves' ? session.wolvesProfile : 'deep');
   return state;
 }
 export function tickMatch(session: MatchSession, input: Input, dt: number) {
@@ -53,7 +58,9 @@ export function tickMatch(session: MatchSession, input: Input, dt: number) {
   state.flagsEnabled = true;
   if (!state.qbProfile) applyRoster(state, session.possession === 'wolves' ? 'balanced' : 'deep');
   state.lateGame = session.quarter === 4 && session.remaining <= 30 && !state.drive.attempt;
+  if (session.possession === 'wolves' && state.qbProfile) session.wolvesProfile = state.qbProfile;
   updatePlay(state, input, dt);
+  session.reads[session.possession] = { ...state.defenseReads };
   if (!state.drive.attempt) session.remaining = state.gameSeconds;
   session.scores[session.possession] = state.drive.score;
   if (needsConversion(state) && state.controlSide === 'defense') {

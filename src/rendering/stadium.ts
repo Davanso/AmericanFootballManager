@@ -44,11 +44,14 @@ export function decorateField(scene: THREE.Scene) {
       scene.add(number);
     }
   }
+  const endzoneLabels: THREE.Mesh[] = [];
   for (const [x, name] of [
     [-55, 'AURORA WOLVES'],
     [55, 'CRIMSON HAWKS'],
   ] as const) {
     const label = textPlane(name, 47, 5);
+    label.name = `endzone:${name}`;
+    endzoneLabels.push(label);
     label.rotation.set(-Math.PI / 2, 0, Math.PI / 2);
     label.position.set(x, 0.07, 0);
     scene.add(label);
@@ -69,7 +72,9 @@ export function decorateField(scene: THREE.Scene) {
   targetLine.position.x = 17;
   scene.add(targetLine);
   createGoalPosts(scene);
-  return (_lineOfScrimmage: number, target: number, showTarget = false) => {
+  return (_lineOfScrimmage: number, target: number, showTarget = false, swapped = false) => {
+    endzoneLabels[0].position.x = swapped ? 55 : -55;
+    endzoneLabels[1].position.x = swapped ? -55 : 55;
     line.position.x = target;
     targetLine.visible = showTarget;
   };

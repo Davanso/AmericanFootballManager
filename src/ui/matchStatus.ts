@@ -17,6 +17,7 @@ export function createMatchStatus() {
         Boolean(state.drive.attempt) ||
         Boolean(match && state.controlSide === 'defense'),
     );
+    text('#session-caption', match ? 'PARTIDA CURTA' : 'DRIVE DE TREINO');
     if (!match) {
       text('#away-score', '00');
       return;

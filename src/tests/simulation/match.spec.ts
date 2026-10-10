@@ -83,3 +83,33 @@ it('requires an untimed conversion after a touchdown on the final play', () => {
   expect(match.finished).toBe(true);
   expect(match.scores.wolves).toBe(6);
 });
+
+it('waits for a final-play flag decision instead of ending the match early', () => {
+  const match = createMatch();
+  match.quarter = 4;
+  match.remaining = 0;
+  match.play.gameSeconds = 0;
+  match.play.phase = 'finished';
+  match.play.pendingPenalty = { kind: 'facemask', original: { ...match.play.drive }, spot: 0 };
+  tickMatch(match, { x: 0, z: 0 }, 0.1);
+  expect(match.finished).toBe(false);
+  nextMatchPlay(match);
+  expect(match.quarter).toBe(4);
+});
+
+it('keeps the player QB profile and defensive reads independent from the opponent', () => {
+  const match = createMatch();
+  match.play.qbProfile = 'mobile';
+  match.play.defenseReads = { wr1: 4 };
+  tickMatch(match, { x: 0, z: 0 }, 1 / 60);
+  match.play.drive.status = 'turnover';
+  match.play.phase = 'finished';
+  nextMatchPlay(match);
+  expect(match.play.qbProfile).toBe('deep');
+  expect(match.play.defenseReads.wr1).toBeUndefined();
+  match.play.drive.status = 'turnover';
+  match.play.phase = 'finished';
+  nextMatchPlay(match);
+  expect(match.play.qbProfile).toBe('mobile');
+  expect(match.play.defenseReads.wr1).toBe(4);
+});
