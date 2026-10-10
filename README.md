@@ -6,7 +6,7 @@
 
 Um jogo de futebol americano com gestão de elenco, decisões de quarterback e uma identidade visual em pixel art inspirada nas décadas de 80, 90 e 2000.
 
-![Status: planejamento](https://img.shields.io/badge/status-planejamento-e9b44c)
+![Status: setup inicial](https://img.shields.io/badge/status-setup_inicial-e9b44c)
 ![Modo: offline](https://img.shields.io/badge/modo-offline-238636)
 ![Visual: pixel art](https://img.shields.io/badge/visual-pixel_art-8957e5)
 
@@ -51,7 +51,7 @@ Pixel art detalhada, campo em perspectiva inclinada e atletas expressivos. A int
 
 O acabamento será construído aos poucos: primeiro escala, movimento e leitura do campo; depois sprites finais, torcida, estádio, áudio e efeitos.
 
-## Stack em avaliação
+## Stack inicial
 
 | Camada | Proposta |
 |---|---|
@@ -61,7 +61,7 @@ O acabamento será construído aos poucos: primeiro escala, movimento e leitura 
 | Menus e gestão | HTML/CSS |
 | Simulação e bots | TypeScript independente da renderização |
 
-Three.js é a preferência inicial para aprender a stack. A escolha definitiva ainda está em planejamento. A apresentação deve ter aparência 2D, mesmo que o cenário use profundidade.
+O setup inicial usa TypeScript, Vite e Three.js, com câmera ortográfica e interface em HTML/CSS. A apresentação deve ter aparência 2D, mesmo que o cenário use profundidade.
 
 ## Primeiro objetivo jogável
 
@@ -73,11 +73,42 @@ Depois, o projeto evolui para um drive completo, partida offline, gestão de ele
 
 ## Estado atual
 
-O projeto está na fase de **planejamento**. Ainda não há implementação jogável, scripts de execução ou dependências configuradas.
+O projeto está na fase de **setup inicial**, com a primeira aplicação executável: tela de pré-temporada, campo estático em Three.js, arquibancadas simplificadas e câmera ortográfica responsiva. Há um botão para restaurar o enquadramento da câmera.
 
-O plano inicial e as referências de épocas estão documentados. As instruções para agentes incluem a convenção de commits e a atualização obrigatória do status deste README a cada atualização do projeto.
+Ainda não há atletas, animações, jogadas, bots ou gestão implementados. Os elementos do campo são provisórios; a pixel art final será desenvolvida nas próximas etapas. A aplicação não depende de assets ou serviços externos durante a execução local.
+
+O primeiro run foi verificado no navegador, e a checagem de TypeScript e o build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Este repositório também é um espaço de aprendizagem: cada etapa deve produzir algo pequeno, compreensível e jogável.
+
+## Como executar
+
+Requisito: Node.js 20.19+ na linha 20 ou Node.js 22.12+ (incluindo versões posteriores compatíveis), com npm.
+
+```sh
+npm install
+npm run dev
+```
+
+Abra o endereço mostrado pelo Vite, normalmente `http://127.0.0.1:5173`. O navegador precisa oferecer WebGL e aceleração gráfica. A instalação inicial das dependências requer internet; depois o servidor local funciona offline.
+
+```sh
+npm run typecheck  # Verificar TypeScript
+npm run build      # Verificar tipos e gerar dist/
+npm run preview    # Servir o build localmente
+```
+
+## Estrutura inicial
+
+```text
+src/
+  main.ts              # Interface e inicialização
+  style.css            # Apresentação da pré-temporada
+  rendering/field.ts   # Campo, câmera e recursos do Three.js
+docs/
+  plan.md              # Plano central
+  eras.md              # Referências das épocas
+```
 
 ## Documentação
 

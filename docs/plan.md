@@ -97,7 +97,7 @@ Estados iniciais: posicionado → executando rota ou bloqueio → reagindo à bo
 
 ## 6. Stack proposta
 
-A escolha definitiva ainda está pendente. Three.js é a preferência inicial para aprendizagem.
+A stack do setup inicial está definida: TypeScript, Vite, Three.js e HTML/CSS. Three.js será o motor visual inicial para aprendizagem.
 
 | Camada | Proposta |
 |---|---|
@@ -219,8 +219,8 @@ Esses itens não estão cancelados; entram depois de validar a experiência prin
 
 ## 12. Decisões pendentes
 
-- [ ] Confirmar Three.js como motor visual.
-- [ ] Definir plataforma inicial: navegador desktop é a proposta.
+- [x] Confirmar Three.js como motor visual inicial.
+- [x] Definir plataforma inicial: navegador desktop.
 - [ ] Definir controles finais e suporte a controle/gamepad.
 - [ ] Definir câmera, orientação do campo e resolução base da pixel art.
 - [ ] Definir duração e comportamento ao esgotar o timer.
@@ -242,4 +242,16 @@ Esses itens não estão cancelados; entram depois de validar a experiência prin
 - Outros atletas precisam de bots.
 - Primeiro jogo offline.
 - `docs/eras.md` guarda as diferenças entre épocas fornecidas pelo usuário.
-- Este arquivo centraliza o plano; ainda não foi iniciada a implementação do jogo.
+- Setup inicial implementado com TypeScript, Vite, Three.js e HTML/CSS; primeiro run com campo estático no navegador desktop.
+
+## 14. Progresso do setup inicial
+
+- [x] Dependências instaladas e lockfile gerado.
+- [x] Scripts de desenvolvimento, checagem de tipos, build e preview.
+- [x] Tela de pré-temporada dos anos 80.
+- [x] Prévia de campo com marcações, end zones e arquibancadas simplificadas.
+- [x] Câmera ortográfica, redimensionamento e restauração do enquadramento.
+- [x] Primeiro run verificado no navegador.
+- [x] TypeScript e build de produção verificados.
+
+O campo é uma base provisória. A etapa 1 continua com refinamento visual e validação do enquadramento para atletas; as etapas de simulação e bots ainda não foram implementadas.

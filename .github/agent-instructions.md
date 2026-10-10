@@ -4,7 +4,7 @@ Este documento reúne os padrões do repositório para Codex e outros agentes. A
 
 ## Contexto do projeto
 
-American Football Manager é um jogo offline de futebol americano, com gestão, decisões do quarterback, bots e visual pixelizado. O projeto está em planejamento.
+American Football Manager é um jogo offline de futebol americano, com gestão, decisões do quarterback, bots e visual pixelizado. O setup inicial usa TypeScript, Vite e Three.js, com HTML/CSS para a interface. Consultar o README para o estágio atual de implementação.
 
 Antes de trabalhar, consultar:
 
