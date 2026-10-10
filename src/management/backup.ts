@@ -36,6 +36,9 @@ export function parseBackup(raw: string): Backup | undefined {
       data.campaign?.version !== 1
     )
       return;
+    data.club = { era: '1980s', ...data.club };
+    if (data.campaign.active?.club)
+      data.campaign.active.club = { era: '1980s', ...data.campaign.active.club };
     const club = decodeClub(JSON.stringify(data.club));
     const campaign = decodeCampaign(JSON.stringify(data.campaign));
     if (

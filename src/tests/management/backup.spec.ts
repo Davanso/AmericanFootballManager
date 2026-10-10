@@ -57,3 +57,9 @@ it('reports unrecoverable storage failure', () => {
   };
   expect(restoreBackup(backup, storage)).toBe('partialFailure');
 });
+
+it('migrates backups saved before era selection existed', () => {
+  const backup = JSON.parse(exportBackup(defaultClub(), defaultCampaign()));
+  delete backup.club.era;
+  expect(parseBackup(JSON.stringify(backup))!.club.era).toBe('1980s');
+});

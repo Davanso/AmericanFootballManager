@@ -17,7 +17,7 @@ Referência inicial de planejamento fornecida pelo usuário. As afirmações his
 
 ## Estética por época
 
-A preencher: aparência dos jogadores, cabelos, acessórios, uniformes, equipamentos, estádios, placares, interface, sons e estilo de transmissão.
+Primeira implementação visual: anos 80 mantêm mullets, bigodes e identidade retrô; anos 90 usam detalhes de mangas e publicidade azul; anos 2000 usam visor/luvas e painel luminoso. Ano, tonalidade e placar acompanham a escolha. São escolhas artísticas para a liga fictícia, sem alegação de uniformidade histórica ou novas regras. Estádios finais, sprites direcionais e sons por época permanecem planejados.
 
 ## Aplicação no jogo
 

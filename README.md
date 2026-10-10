@@ -6,7 +6,7 @@
 
 Um jogo de futebol americano com gestão de elenco, decisões de quarterback e uma identidade visual em pixel art inspirada nas décadas de 80, 90 e 2000.
 
-![Status: demo de drive](https://img.shields.io/badge/status-campanha_offline-e9b44c)
+![Status: campanha offline](https://img.shields.io/badge/status-campanha_offline-e9b44c)
 ![Modo: offline](https://img.shields.io/badge/modo-offline-238636)
 ![Visual: pixel art](https://img.shields.io/badge/visual-pixel_art-8957e5)
 
@@ -35,9 +35,9 @@ Os demais atletas são controlados por bots locais. A primeira versão será **o
 
 ## Futebol americano através das décadas
 
-O ponto de partida são atletas humanos com estética dos **anos 80**. As próximas épocas poderão transformar jogadores, uniformes, equipamentos, estádios, placares e apresentação.
+O ponto de partida são atletas humanos com estética dos **anos 80**. Configurações já permite escolher variações visuais dos anos 80, 90 e 2000. Novos assets, sons e diferenças históricas de regras continuam planejados.
 
-| Época | Direção visual planejada |
+| Época | Direção visual |
 |---|---|
 | **Anos 80** | Mullets, bigodes, uniformes retrô e transmissão vintage |
 | **Anos 90** | Novos acessórios, publicidade e gráficos esportivos da época |
@@ -69,15 +69,15 @@ Um campo, dois times e uma jogada de passe com três opções de recebedor. O pr
 
 O primeiro marco é simples: **sentir a tensão da decisão e compreender o resultado olhando para o campo**.
 
-A demo já permite encadear descidas em um drive de treino. Os próximos marcos incluem múltiplas jogadas, partida offline, gestão de elenco e novas épocas.
+O marco inicial foi concluído. Hoje há múltiplas jogadas, partida offline, gestão de elenco, treino, campanha salva e primeiras variações visuais por época.
 
 ## Estado atual
 
-O projeto está na fase de **partida curta e treino livre**: treino de corrida pelo meio, passe curto, passe longo e field goal com 11 atletas por time, sprites humanos retrô provisórios e câmera ortográfica próxima e adaptativa. Uma carta mostra o desenho da jogada, com rotas coloridas e setas. As rotas desaparecem no snap, o QB recebe a bola e pode se movimentar ou passar para três recebedores. Bots correm rotas, acompanham recebedores e pressionam o QB. Toda a defesa começa a agir desde o snap.
+O projeto está na fase de **gestão e campanha offline**: páginas de partida, elenco, treino, campanha e configurações, com escalação persistente de ataque/defesa, evolução semanal, autosave e backup. Em campo: treino de corrida pelo meio, passe curto, passe longo e field goal com 11 atletas por time, sprites humanos retrô provisórios e câmera ortográfica próxima e adaptativa. Uma carta mostra o desenho da jogada, com rotas coloridas e setas. As rotas desaparecem no snap, o QB recebe a bola e pode se movimentar ou passar para três recebedores. Bots correm rotas, acompanham recebedores e pressionam o QB. Toda a defesa começa a agir desde o snap.
 
 Há timer de cinco segundos, passe assistido para WR 1 ao esgotar a janela (se o QB estiver atrás da linha), recepção, passe incompleto, sack, tackle, saída de campo, touchdown e reinício. A pressão pode encerrar a jogada antes do timer. O treino tem limite de 15 segundos.
 
-**Limitações:** uma corrida pelo meio, duas jogadas de passe e field goal simplificado, bloqueios aproximados por proximidade e resistência temporária; chute sem vento, atributos ou tentativa de bloqueio; passe guiado até o recebedor em movimento; sem retorno de interceptação, animações completas de corrida/tackle ou gestão. A partida curta tem posse dos dois times e quatro períodos de 60 segundos. Kickoff com retorno e safety ainda não estão implementados. No treino livre, o botão Novo drive continua iniciando outra série de treino. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
+**Limitações:** uma corrida pelo meio, duas jogadas de passe e field goal simplificado, bloqueios aproximados por proximidade e resistência temporária; chute sem vento, atributos ou tentativa de bloqueio; passe guiado até o recebedor em movimento; sem retorno de interceptação, animações finais direcionais, calendário de liga, contratações ou temporada completa. A partida curta tem posse dos dois times e quatro períodos de 60, 120 ou 180 segundos, conforme Configurações. Kickoff com retorno e safety ainda não estão implementados. No treino livre, o botão Novo drive continua iniciando outra série de treino. Os elementos visuais são provisórios. Todos os assets são locais; a execução não depende de serviços externos.
 
 **Melhorias da demo:** quando o QB corre, o ataque troca rotas por apoio e distribui bloqueios. A defesa combina perseguição, antecipação e contenção de laterais, com separação entre companheiros para reduzir aglomeração. São heurísticas iniciais, ainda sem leitura tática e atributos individuais completos.
 
@@ -93,7 +93,7 @@ Perfis de QB equilibrado, móvel e de profundidade já alteram velocidade e prec
 
 **Controles:** espaço ou botão para snap; WASD/setas para mover o QB ou o RB na corrida planejada; J (Carter), K (Hayes) e L (Brooks), ou botões, para passar; a mesma tecla e cor aparecem sobre cada recebedor; Reiniciar para repetir. O ataque avança para a direita; não é permitido passar após cruzar a linha de scrimmage. Após a recepção, o bot controla o avanço.
 
-A demo foi verificada no navegador. Os 115 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
+A demo foi verificada no navegador. Os 121 testes de simulação e regressão visual, apoio à corrida, apresentação das animações, alinhamento da câmera, progressão do drive, limites dos atletas e chutes, lint, formatação, TypeScript e build de produção passaram. O build emite um aviso de bundle acima de 500 kB devido à inclusão do motor gráfico; a divisão do bundle pode ser avaliada conforme a aplicação crescer.
 
 Oxlint e Oxfmt estão configurados para lint e formatação. A formatação deve ser executada antes de cada commit, conforme as instruções para agentes.
 
@@ -159,7 +159,7 @@ Os atletas são limitados à área do campo, com margem para o tamanho dos sprit
 
 Para testar o chute: escolha a jarda 20 ou 5 do Hawks, selecione **Field goal · 3 pontos**, dê o snap e use **Espaço** ou o botão duas vezes: primeiro fixa a direção da seta oscilante, depois a força. A bola precisa chegar além da linha da trave, acima da barra e entre os postes para somar três pontos. Chutes curtos ou desviados encerram o drive sem pontuar.
 
-O seletor **Situação do treino → Fim de jogo · 20s** habilita um cenário de contagem regressiva. Somente nesse cenário, nos últimos 30 segundos e a partir do meio de campo, aparece a linha branca de alcance de um chute de 50 jardas. O botão de field goal fica disponível ao entrar nesse alcance. É um cenário de treino; ainda não há relógio, quartos e ataque adversário de uma partida completa. Um chute lançado antes de esgotar o tempo pode terminar sua trajetória.
+O seletor **Situação do treino → Fim de jogo · 20s** habilita um cenário de contagem regressiva. Somente nesse cenário, nos últimos 30 segundos e a partir do meio de campo, aparece a linha branca de alcance de um chute de 50 jardas. O botão de field goal fica disponível ao entrar nesse alcance. Esse seletor configura o treino livre; o modo Partida curta possui relógio, quartos e ataque adversário. Um chute lançado antes de esgotar o tempo pode terminar sua trajetória.
 
 ### Próximos passos planejados
 
@@ -175,7 +175,7 @@ Pequenos ajustes do QB no pocket preservam as rotas. Os recebedores passam a blo
 
 A carta **Corrida pelo meio** mostra a entrega e a rota verde do RB #34. Após o snap, o QB recebe a bola e a entrega ao corredor em uma animação curta. Depois, **WASD ou setas controlam o RB**; sem pressionar uma direção, ele para. Os botões de passe ficam desabilitados nessa jogada e não há passe automático ao fim do timer.
 
-O ataque distribui bloqueios desde a entrega, enquanto a defesa persegue e contém o corredor. Tackle, lateral, first down e touchdown seguem a progressão do drive. A corrida também pode ser selecionada numa tentativa de dois pontos. Os bloqueios ainda são aproximações; novas formações e respostas defensivas serão o próximo marco.
+O ataque distribui bloqueios desde a entrega, enquanto a defesa persegue e contém o corredor. Tackle, lateral, first down e touchdown seguem a progressão do drive. A corrida também pode ser selecionada numa tentativa de dois pontos. Os bloqueios ainda são aproximações. As respostas defensivas já incluem marcação individual, zona e blitz; novas formações permanecem planejadas.
 
 ### Respostas defensivas
 
@@ -218,12 +218,12 @@ Após o resultado, **Replay da última jogada** reproduz posições e bola em 0.
 
 ### Elenco de ataque e defesa
 
-Escalação das 22 posições, com três QBs e 42 atletas de linha, recepção, corrida e defesa. Trocas respeitam posição e não duplicam titulares. Número, aparência, velocidade e recepção acompanham a seleção. A escalação é aplicada no snap para a unidade dos Wolves. Bots também consideram a velocidade individual. Treino e campanha permanecem como próximas etapas.
+Escalação das 22 posições, com três QBs e 42 atletas de linha, recepção, corrida e defesa. Trocas respeitam posição e não duplicam titulares. Número, aparência, velocidade e recepção acompanham a seleção. A escalação é aplicada no snap para a unidade dos Wolves. Bots também consideram a velocidade individual. Treino e campanha estão implementados nas páginas descritas abaixo.
 
 
 ### Treino e evolução semanal
 
-Página `/treino` com três sessões por semana, escolha de atleta e habilidade e relatório de evolução. Velocidade cresce 0.1 e habilidades 0.5 ponto percentual por sessão, com limites. Passe é exclusivo dos QBs. A evolução fica salva e afeta o próximo snap. Avançar semana recupera sessões; calendário ainda independente das partidas. Salvamento da campanha é a próxima etapa.
+Página `/treino` com três sessões por semana, escolha de atleta e habilidade e relatório de evolução. Velocidade cresce 0.1 e habilidades 0.5 ponto percentual por sessão, com limites. Passe é exclusivo dos QBs. A evolução fica salva e afeta o próximo snap. Avançar semana recupera sessões; calendário ainda independente das partidas. A campanha já conta com autosave e retomada pausada.
 
 
 ### Campanha offline e retomada
@@ -234,3 +234,8 @@ Página `/campanha` com resultado dos últimos 20 jogos e partida salva. Autosav
 ### Backup do progresso
 
 Configurações permite exportar um JSON com elenco, treino, preferências, campanha e partida salva. Importar valida formato, tamanho e conteúdo antes de mostrar uma prévia; só Restaurar backup substitui os dados locais. Falhas de gravação tentam recuperar os dados anteriores e exibem o resultado. Salvamento é local, sem nuvem. O replay continua temporário.
+
+
+### Primeiras variações visuais por época
+
+Configurações oferece anos 80, 90 e 2000. Anos 80 preservam a direção inicial; anos 90 mudam detalhes do uniforme e publicidade do estádio; anos 2000 acrescentam visor/luvas e painel com detalhes luminosos. Ano, tonalidade do fundo e apresentação do placar acompanham a seleção. São variações procedurais sobre a arte atual, não estádios finais diferentes. A época é preservada no save da partida. Regras e estilos históricos ainda não variam.

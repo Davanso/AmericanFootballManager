@@ -1,3 +1,5 @@
+import { decodeEra } from '../data/eras';
+import type { EraId } from '../data/eras';
 import { defaultTraining, decodeTraining } from './training';
 import type { TrainingState } from './training';
 import { defaultLineup, decodeLineup } from './roster';
@@ -8,6 +10,7 @@ export const QUARTERBACKS: { id: string; name: string; number: number; profile: 
   { id: 'walker', name: 'Dean Walker', number: 16, profile: 'deep' },
 ];
 export interface ClubSave {
+  era: EraId;
   training: TrainingState;
   lineup: Record<string, string>;
   version: 1;
@@ -18,6 +21,7 @@ export interface ClubSave {
 export const SAVE_KEY = 'afm.club.v1';
 export function defaultClub(): ClubSave {
   return {
+    era: '1980s',
     training: defaultTraining(),
     lineup: defaultLineup(),
     version: 1,
@@ -32,6 +36,7 @@ export function decodeClub(raw: string | null): ClubSave {
     const value = JSON.parse(raw);
     if (!value || value.version !== 1) return defaultClub();
     return {
+      era: decodeEra(value.era),
       training: decodeTraining(value.training),
       lineup: decodeLineup(value.lineup),
       version: 1,

@@ -26,3 +26,12 @@ it('renders the selected quarterback appearance without changing opposing unifor
   createPlayerTexture('home', 0, 'qb', { ...playerAppearance('reyes', 'home'), number: 7 });
   expect(canvases[0].calls).not.toEqual(canvases[1].calls);
 });
+
+it('varies uniform and equipment pixels across epochs at the same resolution', () => {
+  const canvases = mockCanvas();
+  for (const era of ['1980s', '1990s', '2000s'] as const)
+    createPlayerTexture('home', 0, 'qb', playerAppearance('qb', 'home', era));
+  expect(canvases[0].calls).not.toEqual(canvases[1].calls);
+  expect(canvases[1].calls).not.toEqual(canvases[2].calls);
+  expect(canvases.every((c) => c.width === 32 && c.height === 40)).toBe(true);
+});

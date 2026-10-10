@@ -1,3 +1,4 @@
+import type { EraId } from '../data/eras';
 import type { playerAppearance } from '../data/playerAppearance';
 import * as THREE from 'three';
 import { createAthletes } from './athletes';
@@ -14,12 +15,14 @@ export function createField(
   host: HTMLElement,
   initial: PlayState,
   appearances?: Record<string, ReturnType<typeof playerAppearance>>,
+  era: EraId = '1980s',
 ) {
   const scene = new THREE.Scene();
   scene.background = new THREE.Color('#35583c');
   const updateBackdrop = createStadiumBackdrop(
     scene,
     new THREE.TextureLoader().load('/assets/stadium1985.png'),
+    era,
   );
   const camera = new THREE.OrthographicCamera(-80, 80, 55, -55, 0.1, 500);
   const renderer = new THREE.WebGLRenderer({ antialias: true });
@@ -52,7 +55,7 @@ export function createField(
   const updateMarkers = decorateField(scene);
   updateMarkers(initial.lineOfScrimmage, initial.firstDownLine);
 
-  const athletes = createAthletes(scene, initial, appearances);
+  const athletes = createAthletes(scene, initial, appearances, era);
   const framing = createAdaptiveCamera(camera);
   const touchdown = createTouchdownEffect(scene);
   let aspect = 1;

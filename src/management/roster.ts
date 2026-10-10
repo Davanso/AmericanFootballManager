@@ -1,3 +1,4 @@
+import type { EraId } from '../data/eras';
 import type { PlayerAttributes } from '../data/playerAttributes';
 import { playerAppearance } from '../data/playerAppearance';
 import type { PlayState } from '../simulation/play';
@@ -112,11 +113,11 @@ export function applyLineup(state: PlayState, lineup: Record<string, string>) {
     athlete.speed = player.attributes.speed;
   }
 }
-export function lineupAppearance(lineup: Record<string, string>) {
+export function lineupAppearance(lineup: Record<string, string>, era: EraId = '1980s') {
   return Object.fromEntries(
     SLOTS.map((slot) => {
       const player = selectedPlayer(lineup, slot.id);
-      return [slot.id, { ...playerAppearance(player.id, 'home'), number: player.number }];
+      return [slot.id, { ...playerAppearance(player.id, 'home', era), number: player.number }];
     }),
   );
 }

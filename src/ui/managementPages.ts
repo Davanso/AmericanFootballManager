@@ -1,3 +1,5 @@
+import { ERAS } from '../data/eras';
+import type { EraId } from '../data/eras';
 import { backupMarkup, mountBackupControls } from './backupControls';
 import { trainedAttributes } from '../management/training';
 import { depthChart } from './rosterPage';
@@ -7,9 +9,10 @@ import { QB_PROFILES } from '../data/playerAttributes';
 import { navigation } from './navigation';
 export function mountManagement(path: string) {
   const club = loadClub();
+  document.documentElement.dataset.era = club.era;
   const roster = path === '/elenco';
   const app = document.querySelector('#app')!;
-  app.innerHTML = `<main class="clubhouse management"><header><a class="brand" href="/">AFM<span>AURORA WOLVES · 1985</span></a><span class="era">SALA DO TÉCNICO</span></header>${navigation(roster ? 'roster' : 'config')}<p class="eyebrow">${roster ? 'ESCALAÇÃO / QUARTERBACKS' : 'PREFERÊNCIAS / OFFLINE'}</p><h1>${roster ? 'Quem lidera<br>seu ataque?' : 'Seu ritmo.<br>Seu jogo.'}</h1><p>${roster ? 'Escolha o titular para a próxima partida. Cada quarterback tem sua especialidade.' : 'As preferências valem para novas partidas e ficam salvas neste navegador.'}</p>${
+  app.innerHTML = `<main class="clubhouse management"><header><a class="brand" href="/">AFM<span>AURORA WOLVES · ${ERAS[club.era].year}</span></a><span class="era">SALA DO TÉCNICO</span></header>${navigation(roster ? 'roster' : 'config')}<p class="eyebrow">${roster ? 'ESCALAÇÃO / QUARTERBACKS' : 'PREFERÊNCIAS / OFFLINE'}</p><h1>${roster ? 'Quem lidera<br>seu ataque?' : 'Seu ritmo.<br>Seu jogo.'}</h1><p>${roster ? 'Escolha o titular para a próxima partida. Cada quarterback tem sua especialidade.' : 'As preferências valem para novas partidas e ficam salvas neste navegador.'}</p>${
     roster
       ? `<section class="roster-grid" aria-label="Quarterbacks">${QUARTERBACKS.map((player) => {
           const attributes = {
@@ -22,7 +25,16 @@ export function mountManagement(path: string) {
           };
           return `<article class="roster-card"><span class="jersey-number">${player.number}</span><p class="eyebrow">QB · ${attributes.name}</p><h2>${player.name}</h2><dl><dt>Velocidade</dt><dd>${attributes.speed}</dd><dt>Passe curto</dt><dd>${Math.round(attributes.shortPass * 100)}</dd><dt>Passe longo</dt><dd>${Math.round(attributes.longPass * 100)}</dd></dl><button data-starter="${player.id}" aria-pressed="${club.starter === player.id}">${club.starter === player.id ? 'Titular' : 'Escalar ' + player.name}</button></article>`;
         }).join('')}</section><p>${depthChart(club)}</p>`
-      : `<form id="settings" class="settings-panel"><label>Duração de cada quarto<select name="period" aria-label="Duração de cada quarto">${[60, 120, 180].map((n) => `<option value="${n}" ${club.periodSeconds === n ? 'selected' : ''}>${n / 60} minuto${n > 60 ? 's' : ''}</option>`).join('')}</select></label><label>Velocidade padrão do replay<select name="speed" aria-label="Velocidade padrão do replay">${[0.5, 1, 2].map((n) => `<option value="${n}" ${club.replaySpeed === n ? 'selected' : ''}>${n}×</option>`).join('')}</select></label><button>Salvar configurações</button></form>`
+      : `<form id="settings" class="settings-panel"><label>Época visual<select name="era" aria-label="Época visual">${Object.entries(
+          ERAS,
+        )
+          .map(
+            ([id, era]) =>
+              `<option value="${id}" ${club.era === id ? 'selected' : ''}>${era.name}</option>`,
+          )
+          .join(
+            '',
+          )}</select></label><p>A época altera a apresentação. Regras e táticas históricas ainda não variam.</p><label>Duração de cada quarto<select name="period" aria-label="Duração de cada quarto">${[60, 120, 180].map((n) => `<option value="${n}" ${club.periodSeconds === n ? 'selected' : ''}>${n / 60} minuto${n > 60 ? 's' : ''}</option>`).join('')}</select></label><label>Velocidade padrão do replay<select name="speed" aria-label="Velocidade padrão do replay">${[0.5, 1, 2].map((n) => `<option value="${n}" ${club.replaySpeed === n ? 'selected' : ''}>${n}×</option>`).join('')}</select></label><button>Salvar configurações</button></form>`
   }${!roster ? backupMarkup : ''}<p id="save-status" role="status">Escalação e configurações são salvas neste navegador. Partidas são salvas automaticamente; use Campanha para retomar.</p><a class="return-field" href="/">Ir para o campo →</a></main>`;
   if (!roster) mountBackupControls();
   document.querySelectorAll<HTMLButtonElement>('[data-starter]').forEach((button) =>
@@ -53,6 +65,8 @@ export function mountManagement(path: string) {
   document.querySelector<HTMLFormElement>('#settings')?.addEventListener('submit', (event) => {
     event.preventDefault();
     const data = new FormData(event.currentTarget as HTMLFormElement);
+    club.era = String(data.get('era')) as EraId;
+    document.documentElement.dataset.era = club.era;
     club.periodSeconds = Number(data.get('period'));
     club.replaySpeed = Number(data.get('speed'));
     document.querySelector('#save-status')!.textContent = saveClub(club)

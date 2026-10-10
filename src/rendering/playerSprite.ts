@@ -48,6 +48,11 @@ export function createPlayerTexture(
   rect(dark, 22, 18, 4, 9);
   rect('#fff0cc', 7, 18, 4, 2);
   rect('#fff0cc', 23, 18, 3, 2);
+  if (appearance.era === '1990s') {
+    rect('#fff0cc', 6, 20, 4, 2);
+    rect('#fff0cc', 24, 20, 3, 2);
+  }
+
   const leftY = frame === 4 ? 27 : frame === 5 ? 23 : 23 + stride;
   const rightY = frame === 6 ? 8 : frame === 5 ? 23 : 23 - stride;
   rect('#20362d', 4, 21, 5, 9);
@@ -64,6 +69,11 @@ export function createPlayerTexture(
   rect(appearance.skin, 15, 10, 9, 6);
   rect('#20362d', 21, 11, 2, 1);
   if (appearance.moustache) rect(appearance.hair, 19, 14, 4, 1);
+  if (appearance.era === '2000s') {
+    rect('#5b8797', 19, 10, 5, 3);
+    rect('#e6edf1', 5, leftY + 3, 4, 2);
+    rect('#e6edf1', 25, rightY + 4, 4, 2);
+  }
   rect('#e1dfc4', 24, 10, 2, 7);
   rect('#e1dfc4', 18, 16, 8, 1);
   const number = String(appearance.number).padStart(2, '0');

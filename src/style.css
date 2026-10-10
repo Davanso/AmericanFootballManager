@@ -749,3 +749,27 @@ button kbd {
   font-size: 13px;
   color: #e9dcb7;
 }
+
+html[data-era='1990s'] .clubhouse {
+  --era-accent: #cde5ff;
+}
+html[data-era='1990s'] .broadcast-scoreboard {
+  border-color: #cde5ff;
+  box-shadow: 0 0 0 3px #254a68;
+}
+html[data-era='2000s'] .broadcast-scoreboard {
+  border-color: #5ae1ee;
+  box-shadow: 0 0 0 3px #111f31;
+}
+html[data-era='2000s'] .broadcast-brand {
+  background: #111f31;
+  color: #5ae1ee;
+}
+html[data-era='1990s'] .brand,
+html[data-era='1990s'] .era {
+  color: #cde5ff;
+}
+html[data-era='2000s'] .brand,
+html[data-era='2000s'] .era {
+  color: #5ae1ee;
+}

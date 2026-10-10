@@ -45,3 +45,8 @@ it('persists the save and restores it through storage', () => {
   expect(saveClub(save)).toBe(true);
   expect(loadClub()).toEqual(save);
 });
+
+it('saves the selected epoch and migrates older club data', () => {
+  expect(decodeClub(JSON.stringify({ ...defaultClub(), era: '1990s' })).era).toBe('1990s');
+  expect(decodeClub('{"version":1,"starter":"miller"}').era).toBe('1980s');
+});

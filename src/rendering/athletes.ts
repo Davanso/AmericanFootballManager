@@ -1,4 +1,5 @@
-import type { playerAppearance } from '../data/playerAppearance';
+import type { EraId } from '../data/eras';
+import { playerAppearance } from '../data/playerAppearance';
 import * as THREE from 'three';
 import type { PlayState } from '../simulation/play';
 import { PASS_TARGETS } from '../data/passTargets';
@@ -10,6 +11,7 @@ export function createAthletes(
   scene: THREE.Scene,
   initial: PlayState,
   appearances?: Record<string, ReturnType<typeof playerAppearance>>,
+  era: EraId = '1980s',
 ) {
   const textures = new Map(
     initial.athletes.flatMap((athlete) =>
@@ -22,7 +24,9 @@ export function createAthletes(
                 team,
                 frame,
                 athlete.id,
-                team === 'home' ? appearances?.[athlete.id] : undefined,
+                team === 'home'
+                  ? (appearances?.[athlete.id] ?? playerAppearance(athlete.id, team, era))
+                  : playerAppearance(athlete.id, team, era),
               ),
             ),
           ] as const,

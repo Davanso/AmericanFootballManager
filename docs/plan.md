@@ -2,6 +2,8 @@
 
 Documento central de planejamento. Atualizar conforme decisões forem tomadas, preservando requisitos e registrando mudanças de escopo.
 
+**Estado atual:** demo jogável, gestão de elenco, treino/evolução, campanha offline com autosave e backup e primeiras variações visuais dos anos 80, 90 e 2000. Itens detalhados abaixo preservam decisões de cada etapa; o estado consolidado ao final prevalece quando houver descrições históricas.
+
 ## 1. Visão do jogo
 
 Jogo de futebol americano com gestão inspirada em Football Manager e participação direta nas decisões do quarterback durante as jogadas, inspirada em Madden.
@@ -140,7 +142,7 @@ Essa estrutura é proposta; adaptar à implementação sem misturar o estado da 
 
 Meta: dar o snap, ver todos os atletas agir e sentir a tensão de escolher entre passar e correr.
 
-- [ ] Campo com perspectiva e direção visual dos anos 80.
+- [x] Campo com perspectiva e direção visual dos anos 80.
 - [x] Dois times com 11 atletas, inicialmente com sprites simples.
 - [x] Uma jogada de passe com três opções de recebedor.
 - [x] Posicionamento inicial de ataque e defesa.
@@ -149,7 +151,7 @@ Meta: dar o snap, ver todos os atletas agir e sentir a tensão de escolher entre
 - [x] Animação do snap e posse de bola pelo QB.
 - [x] QB controlável com opções de passe e corrida.
 - [x] Timer visível de decisão.
-- [ ] Bots executando rotas, bloqueios, cobertura e pressão.
+- [x] Bots executando rotas, bloqueios, cobertura e pressão.
 - [x] Passe completo, passe incompleto e sack.
 - [x] Avanço do portador da bola e término básico da jogada.
 - [x] Resultado compreensível e opção de reiniciar a situação.
@@ -406,7 +408,7 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 - [x] Passe desabilitado, sem passe assistido ou timer de decisão de passe nessa jogada.
 - [x] Tackle, lateral, progressão do drive, touchdown e corrida numa tentativa de dois pontos.
 - [x] Testes de posse, entrega, controle, diagonal, lateral, reposicionamento, tackle, touchdown único, conversão e apresentação da carta/rota/interface.
-- [ ] Próximo marco: respostas defensivas distintas (man, zone e blitz) e calibração dos bloqueios contra corrida.
+- [x] Respostas defensivas distintas (man, zone e blitz); calibração contínua dos bloqueios permanece necessária.
 
 ## 23. Respostas defensivas
 
@@ -474,12 +476,12 @@ As diferenças entre atletas são essenciais e devem afetar a simulação, os bo
 
 ### Elenco de ataque e defesa
 
-Escalação das 22 posições, com três QBs e 42 atletas de linha, recepção, corrida e defesa. Trocas respeitam posição e não duplicam titulares. Número, aparência, velocidade e recepção acompanham a seleção. A escalação é aplicada no snap para a unidade dos Wolves. Bots também consideram a velocidade individual. Treino e campanha permanecem como próximas etapas.
+Escalação das 22 posições, com três QBs e 42 atletas de linha, recepção, corrida e defesa. Trocas respeitam posição e não duplicam titulares. Número, aparência, velocidade e recepção acompanham a seleção. A escalação é aplicada no snap para a unidade dos Wolves. Bots também consideram a velocidade individual. Treino e campanha concluídos nas etapas seguintes.
 
 
 ### Treino e evolução semanal
 
-Página `/treino` com três sessões por semana, escolha de atleta e habilidade e relatório de evolução. Velocidade cresce 0.1 e habilidades 0.5 ponto percentual por sessão, com limites. Passe é exclusivo dos QBs. A evolução fica salva e afeta o próximo snap. Avançar semana recupera sessões; calendário ainda independente das partidas. Salvamento da campanha é a próxima etapa.
+Página `/treino` com três sessões por semana, escolha de atleta e habilidade e relatório de evolução. Velocidade cresce 0.1 e habilidades 0.5 ponto percentual por sessão, com limites. Passe é exclusivo dos QBs. A evolução fica salva e afeta o próximo snap. Avançar semana recupera sessões; calendário ainda independente das partidas. Salvamento concluído na etapa seguinte.
 
 
 ### Campanha offline e retomada
@@ -493,9 +495,15 @@ Página `/campanha` com resultado dos últimos 20 jogos e partida salva. Autosav
 - [x] Treino semanal e evolução persistente que afetam a simulação.
 - [x] Campanha offline, autosave, pausa/retomada e resultados únicos.
 - [x] Backup/importação do progresso com prévia e validação.
-- [ ] Próximo marco: expansão das épocas visuais, depois calendário e temporada da liga fictícia.
+- [x] Primeiras variações visuais das épocas.
+- [ ] Assets finais por época, calendário e temporada da liga fictícia.
 
 
 ### Backup do progresso
 
 Configurações permite exportar um JSON com elenco, treino, preferências, campanha e partida salva. Importar valida formato, tamanho e conteúdo antes de mostrar uma prévia; só Restaurar backup substitui os dados locais. Falhas de gravação tentam recuperar os dados anteriores e exibem o resultado. Salvamento é local, sem nuvem. O replay continua temporário.
+
+
+### Primeiras variações visuais por época
+
+Configurações oferece anos 80, 90 e 2000. Anos 80 preservam a direção inicial; anos 90 mudam detalhes do uniforme e publicidade do estádio; anos 2000 acrescentam visor/luvas e painel com detalhes luminosos. Ano, tonalidade do fundo e apresentação do placar acompanham a seleção. São variações procedurais sobre a arte atual, não estádios finais diferentes. A época é preservada no save da partida. Regras e estilos históricos ainda não variam.

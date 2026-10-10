@@ -1,3 +1,4 @@
+import { ERAS } from '../data/eras';
 import { loadClub, saveClub, QUARTERBACKS } from '../management/club';
 import { ROSTER } from '../management/roster';
 import { QB_PROFILES } from '../data/playerAttributes';
@@ -15,7 +16,7 @@ export function trainingMarkup() {
     })),
     ...ROSTER,
   ];
-  return `<main class="clubhouse management"><header><a class="brand" href="/">AFM<span>AURORA WOLVES · 1985</span></a><span class="era">CENTRO DE TREINAMENTO</span></header>${navigation('training')}<p class="eyebrow">SEMANA ${club.training.week} · ${club.training.remaining} SESSÕES DISPONÍVEIS</p><h1>Prepare o time.<br>Ganhe jardas.</h1><p>Cada sessão desenvolve um atleta. Velocidade: +0.1; recepção e precisão: +0.5 ponto percentual. Máximo de dez sessões por habilidade e atleta.</p><form id="training" class="settings-panel"><label>Atleta<select name="player" aria-label="Atleta para treinar">${players.map((p) => `<option value="${p.id}">${p.position} · ${p.name}</option>`).join('')}</select></label><label>Habilidade<select name="focus" aria-label="Habilidade de treino">${Object.entries(
+  return `<main class="clubhouse management"><header><a class="brand" href="/">AFM<span>AURORA WOLVES · ${ERAS[loadClub().era].year}</span></a><span class="era">CENTRO DE TREINAMENTO</span></header>${navigation('training')}<p class="eyebrow">SEMANA ${club.training.week} · ${club.training.remaining} SESSÕES DISPONÍVEIS</p><h1>Prepare o time.<br>Ganhe jardas.</h1><p>Cada sessão desenvolve um atleta. Velocidade: +0.1; recepção e precisão: +0.5 ponto percentual. Máximo de dez sessões por habilidade e atleta.</p><form id="training" class="settings-panel"><label>Atleta<select name="player" aria-label="Atleta para treinar">${players.map((p) => `<option value="${p.id}">${p.position} · ${p.name}</option>`).join('')}</select></label><label>Habilidade<select name="focus" aria-label="Habilidade de treino">${Object.entries(
     FOCUSES,
   )
     .map(([id, label]) => `<option value="${id}">${label}</option>`)
@@ -32,6 +33,7 @@ export function trainingMarkup() {
   }</section></main>`;
 }
 export function mountTraining() {
+  document.documentElement.dataset.era = loadClub().era;
   document.querySelector('#app')!.innerHTML = trainingMarkup();
   const club = loadClub();
   const finish = (success: string) => {
