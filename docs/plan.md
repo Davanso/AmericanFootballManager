@@ -492,4 +492,10 @@ Página `/campanha` com resultado dos últimos 20 jogos e partida salva. Autosav
 - [x] Elenco de ataque/defesa e escalação sem duplicação.
 - [x] Treino semanal e evolução persistente que afetam a simulação.
 - [x] Campanha offline, autosave, pausa/retomada e resultados únicos.
-- [ ] Próximo marco: backup/importação do progresso, seguido por expansão das épocas visuais.
+- [x] Backup/importação do progresso com prévia e validação.
+- [ ] Próximo marco: expansão das épocas visuais, depois calendário e temporada da liga fictícia.
+
+
+### Backup do progresso
+
+Configurações permite exportar um JSON com elenco, treino, preferências, campanha e partida salva. Importar valida formato, tamanho e conteúdo antes de mostrar uma prévia; só Restaurar backup substitui os dados locais. Falhas de gravação tentam recuperar os dados anteriores e exibem o resultado. Salvamento é local, sem nuvem. O replay continua temporário.
